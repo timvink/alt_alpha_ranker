@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternative Keyboard Layout Rankings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            background: #f7fafc;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        body.dark-mode .filter-group {
+            background: #1a202c;
+            border-color: #4a5568;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            color: #4a5568;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        body.dark-mode .filter-group label {
+            color: #cbd5e0;
+        }
+
+        .filter-group input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        body.dark-mode table {
+            background: #2d3748;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            transition: background 0.2s ease;
+        }
+
+        th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        th::after {
+            content: '⇅';
+            position: absolute;
+            right: 1rem;
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+
+        th.sort-asc::after {
+            content: '↑';
+            opacity: 1;
+        }
+
+        th.sort-desc::after {
+            content: '↓';
+            opacity: 1;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        .layout-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .layout-name a {
+            color: #2d3748;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .layout-name a:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+
+        body.dark-mode .layout-name a {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .layout-name a:hover {
+            color: #9f7aea;
+        }
+
+        .stat-value {
+            font-variant-numeric: tabular-nums;
+            color: #4a5568;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .link-cell a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .link-cell a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(20deg);
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        }
+
+        body.dark-mode .container {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode h1 {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .subtitle {
+            color: #a0aec0;
+        }
+
+        body.dark-mode .search-box {
+            background: #1a202c;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+
+        body.dark-mode .search-box:focus {
+            border-color: #667eea;
+        }
+
+        body.dark-mode td {
+            border-bottom-color: #4a5568;
+        }
+
+        body.dark-mode tbody tr:hover {
+            background: #1a202c;
+        }
+
+        body.dark-mode .layout-name {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .stat-value {
+            color: #cbd5e0;
+        }
+
+        body.dark-mode .footer {
+            color: #a0aec0;
+        }
+
+        body.dark-mode .link-cell a {
+            color: #9f7aea;
+        }
+
+        body.dark-mode .link-cell a:hover {
+            color: #b794f4;
+        }
+
+        .external-link-icon {
+            display: inline-block;
+            margin-left: 0.25rem;
+            font-size: 0.85rem;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+        }
+
+        .external-link-icon:hover {
+            opacity: 1;
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted currentColor;
+        }
+
+        body.dark-mode .no-results,
+        body.dark-mode .loading {
+            color: #a0aec0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+    
+    <div class="container">
+        <h1>⌨️ Alternative Keyboard Layout Rankings</h1>
+        <p class="subtitle" id="lastUpdated">Loading data...</p>
+
+        <div class="controls">
+            <input 
+                type="text" 
+                class="search-box" 
+                id="searchInput" 
+                placeholder="🔍 Search layouts..."
+            >
+            <div class="filter-group">
+                <label>
+                    <input type="radio" name="thumbFilter" value="all" checked>
+                    All
+                </label>
+                <label>
+                    <input type="radio" name="thumbFilter" value="true">
+                    With Thumbs
+                </label>
+                <label>
+                    <input type="radio" name="thumbFilter" value="false">
+                    No Thumbs
+                </label>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="layoutTable">
+                <thead>
+                    <tr>
+                        <th data-column="name">Layout Name</th>
+                        <th data-column="total_word_effort">Total Word Effort</th>
+                        <th data-column="effort">Effort</th>
+                        <th data-column="same_finger_bigrams" title="Same Finger Bigrams">
+                            <span class="tooltip">SFBs</span>
+                        </th>
+                        <th data-column="skip_bigrams">Skip</th>
+                        <th data-column="lat_stretch_bigrams" title="Lateral Stretch Bigrams">
+                            <span class="tooltip">LSBs</span>
+                        </th>
+                        <th data-column="scissors">Scissors</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="7" class="loading">Loading layouts...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>Data scraped from <a href="https://cyanophage.github.io/" target="_blank">cyanophage.github.io</a></p>
+            <p id="layoutCount"></p>
+        </div>
+    </div>
+
+    <script>
+        let layoutsData = [];
+        let currentSort = { column: null, direction: 'asc' };
+        let currentThumbFilter = 'all';
+
+        // Dark mode toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Apply dark mode if saved as dark, or if no saved preference and system prefers dark
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Filter and render data
+        function getFilteredData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = layoutsData.filter(layout => {
+                // Apply search filter
+                const matchesSearch = layout.name.toLowerCase().includes(searchTerm);
+                
+                // Apply thumb filter
+                const matchesThumb = currentThumbFilter === 'all' || 
+                                     layout.thumb.toString() === currentThumbFilter;
+                
+                return matchesSearch && matchesThumb;
+            });
+            
+            return filtered;
+        }
+
+        // Fetch and display data
+        async function loadData() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                layoutsData = data.layouts;
+                
+                // Update last updated time
+                const date = new Date(data.scraped_at);
+                document.getElementById('lastUpdated').textContent = 
+                    `Last updated: ${date.toLocaleString()}`;
+
+                // Update layout count in footer
+                document.getElementById('layoutCount').textContent = 
+                    `${layoutsData.length} layout${layoutsData.length !== 1 ? 's' : ''}`;
+                
+                // Initial render
+                renderTable(layoutsData);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('tableBody').innerHTML = 
+                    '<tr><td colspan="4" class="no-results">Error loading data. Please try again later.</td></tr>';
+            }
+        }
+
+        // Render table with data
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-results">No layouts found matching your search.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(layout => `
+                <tr>
+                    <td class="layout-name">
+                        ${layout.website 
+                            ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}</a>`
+                            : layout.name
+                        }
+                        <a href="${layout.url}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="View in playground">↗</a>
+                    </td>
+                    <td class="stat-value">${layout.total_word_effort || 'N/A'}</td>
+                    <td class="stat-value">${layout.effort || 'N/A'}</td>
+                    <td class="stat-value">${layout.same_finger_bigrams || 'N/A'}</td>
+                    <td class="stat-value">${layout.skip_bigrams || 'N/A'}</td>
+                    <td class="stat-value">${layout.lat_stretch_bigrams || 'N/A'}</td>
+                    <td class="stat-value">${layout.scissors || 'N/A'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const filtered = getFilteredData();
+            renderTable(filtered);
+        });
+
+        // Thumb filter functionality
+        document.querySelectorAll('input[name="thumbFilter"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                currentThumbFilter = e.target.value;
+                const filtered = getFilteredData();
+                renderTable(filtered);
+            });
+        });
+
+        // Sort functionality
+        document.querySelectorAll('th[data-column]').forEach(th => {
+            th.addEventListener('click', () => {
+                const column = th.dataset.column;
+                
+                // Toggle sort direction
+                if (currentSort.column === column) {
+                    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort.column = column;
+                    currentSort.direction = 'asc';
+                }
+
+                // Update UI
+                document.querySelectorAll('th').forEach(header => {
+                    header.classList.remove('sort-asc', 'sort-desc');
+                });
+                th.classList.add(`sort-${currentSort.direction}`);
+
+                // Get filtered data first, then sort
+                const filtered = getFilteredData();
+                const sorted = [...filtered].sort((a, b) => {
+                    let aVal = a[column];
+                    let bVal = b[column];
+
+                    // Convert to numbers if numeric column
+                    if (column === 'total_word_effort' || column === 'effort') {
+                        aVal = parseFloat(aVal) || 0;
+                        bVal = parseFloat(bVal) || 0;
+                    } else if (column === 'same_finger_bigrams' || column === 'skip_bigrams' || 
+                               column === 'lat_stretch_bigrams' || column === 'scissors') {
+                        // Remove % sign and convert to number
+                        aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
+                        bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
+                    } else {
+                        aVal = (aVal || '').toString().toLowerCase();
+                        bVal = (bVal || '').toString().toLowerCase();
+                    }
+
+                    if (currentSort.direction === 'asc') {
+                        return aVal > bVal ? 1 : -1;
+                    } else {
+                        return aVal < bVal ? 1 : -1;
+                    }
+                });
+
+                renderTable(sorted);
+            });
+        });
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

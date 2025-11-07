@@ -1,0 +1,18 @@
+layouts:
+- name: qwerty
+  link: https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5Eback&mode=ergo&lan=english&thumb=l
+  thumb: false
+- name: dvorak
+  link: https://cyanophage.github.io/playground.html?layout=%27%2C.pyfgcrl%2Faoeuidhtns-%3Bqjkxbmwvz%5C%5E&mode=ergo&lan=english&thumb=l
+  thumb: false
+- name: colemak
+  link: https://cyanophage.github.io/playground.html?layout=qwfpgjluy%3B-arstdhneio%27zxcvbkm%2C.%2F%5C%5E&mode=ergo&lan=english&thumb=l
+  thumb: false
+- name: enthium_v11
+  link: https://cyanophage.github.io/playground.html?layout=zyou%3Dqldpx%5Cciae%3Bkhtnsf%27-%2C.%2Fjmgbv*rw&mode=ergo&lan=english&thumb=r
+  website: https://github.com/sunaku/enthium/tree/v11
+  thumb: true
+- name: nordrassil_rejuvenated
+  link: https://cyanophage.github.io/playground.html?layout=jyou-qgnwk%3Dhiea.mdrspvx%2F%27%2C%3Bzclfb%5Ct&thumb=r&mode=ergo&lan=english
+  website: https://www.reddit.com/r/KeyboardLayouts/comments/1oqqfql/%F0%96%A3%82nordrassils_rejuvenation%EF%BE%9F_a_refinement_of_the/
+  thumb: true
