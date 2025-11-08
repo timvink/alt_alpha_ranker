@@ -1,62 +1,95 @@
 {
-  "scraped_at": "2025-11-07T19:18:59.210945",
+  "scraped_at": "2025-11-08T20:00:30.809742",
+  "languages": [
+    "english"
+  ],
   "layouts": [
     {
       "name": "qwerty",
       "url": "https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5Eback&mode=ergo&lan=english&thumb=l",
       "thumb": false,
-      "total_word_effort": "2070.6",
-      "effort": "1258.15",
-      "same_finger_bigrams": "4.38%",
-      "skip_bigrams": "1.43%",
-      "lat_stretch_bigrams": "4.55%",
-      "scissors": "1.46%"
+      "metrics": {
+        "english": {
+          "total_word_effort": "2070.6",
+          "effort": "1258.15",
+          "same_finger_bigrams": "4.38%",
+          "skip_bigrams": "1.43%",
+          "lat_stretch_bigrams": "4.55%",
+          "scissors": "1.46%",
+          "pinky_off": "2.47%"
+        }
+      },
+      "year": 1873
     },
     {
       "name": "dvorak",
       "url": "https://cyanophage.github.io/playground.html?layout=%27%2C.pyfgcrl%2Faoeuidhtns-%3Bqjkxbmwvz%5C%5E&mode=ergo&lan=english&thumb=l",
       "thumb": false,
-      "total_word_effort": "1185.2",
-      "effort": "769.69",
-      "same_finger_bigrams": "1.87%",
-      "skip_bigrams": "0.45%",
-      "lat_stretch_bigrams": "0.80%",
-      "scissors": "0.08%"
+      "metrics": {
+        "english": {
+          "total_word_effort": "1185.2",
+          "effort": "769.69",
+          "same_finger_bigrams": "1.87%",
+          "skip_bigrams": "0.45%",
+          "lat_stretch_bigrams": "0.80%",
+          "scissors": "0.08%",
+          "pinky_off": "4.13%"
+        }
+      },
+      "year": 1936
     },
     {
       "name": "colemak",
       "url": "https://cyanophage.github.io/playground.html?layout=qwfpgjluy%3B-arstdhneio%27zxcvbkm%2C.%2F%5C%5E&mode=ergo&lan=english&thumb=l",
       "thumb": false,
-      "total_word_effort": "1099.6",
-      "effort": "634.08",
-      "same_finger_bigrams": "0.91%",
-      "skip_bigrams": "0.46%",
-      "lat_stretch_bigrams": "2.26%",
-      "scissors": "0.26%"
+      "metrics": {
+        "english": {
+          "total_word_effort": "1099.6",
+          "effort": "634.08",
+          "same_finger_bigrams": "0.91%",
+          "skip_bigrams": "0.46%",
+          "lat_stretch_bigrams": "2.26%",
+          "scissors": "0.26%",
+          "pinky_off": "0.78%"
+        }
+      },
+      "year": 2016
     },
     {
       "name": "enthium_v11",
       "url": "https://cyanophage.github.io/playground.html?layout=zyou%3Dqldpx%5Cciae%3Bkhtnsf%27-%2C.%2Fjmgbv*rw&mode=ergo&lan=english&thumb=r",
       "thumb": true,
-      "total_word_effort": "725.0",
-      "effort": "418.25",
-      "same_finger_bigrams": "0.55%",
-      "skip_bigrams": "0.34%",
-      "lat_stretch_bigrams": "0.02%",
-      "scissors": "0.17%",
-      "website": "https://github.com/sunaku/enthium/tree/v11"
+      "metrics": {
+        "english": {
+          "total_word_effort": "725.0",
+          "effort": "418.25",
+          "same_finger_bigrams": "0.55%",
+          "skip_bigrams": "0.34%",
+          "lat_stretch_bigrams": "0.02%",
+          "scissors": "0.17%",
+          "pinky_off": "3.31%"
+        }
+      },
+      "website": "https://github.com/sunaku/enthium/tree/v11",
+      "year": 2025
     },
     {
       "name": "nordrassil_rejuvenated",
       "url": "https://cyanophage.github.io/playground.html?layout=jyou-qgnwk%3Dhiea.mdrspvx%2F%27%2C%3Bzclfb%5Ct&thumb=r&mode=ergo&lan=english",
       "thumb": true,
-      "total_word_effort": "752.2",
-      "effort": "428.19",
-      "same_finger_bigrams": "0.71%",
-      "skip_bigrams": "0.47%",
-      "lat_stretch_bigrams": "0.37%",
-      "scissors": "0.37%",
-      "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1oqqfql/%F0%96%A3%82nordrassils_rejuvenation%EF%BE%9F_a_refinement_of_the/"
+      "metrics": {
+        "english": {
+          "total_word_effort": "752.2",
+          "effort": "428.19",
+          "same_finger_bigrams": "0.71%",
+          "skip_bigrams": "0.47%",
+          "lat_stretch_bigrams": "0.37%",
+          "scissors": "0.37%",
+          "pinky_off": "3.06%"
+        }
+      },
+      "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1oqqfql/%F0%96%A3%82nordrassils_rejuvenation%EF%BE%9F_a_refinement_of_the/",
+      "year": 2025
     }
   ]
 }

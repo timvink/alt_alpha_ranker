@@ -25,6 +25,7 @@
             border-radius: 1rem;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 2rem;
+            overflow: visible;
         }
 
         h1 {
@@ -33,10 +34,64 @@
             font-size: 2.5rem;
         }
 
-        .subtitle {
-            color: #718096;
+        .ascii-title {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.2;
+            color: #667eea;
+            margin-bottom: 1rem;
+            white-space: pre;
+            overflow-x: auto;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .ascii-title:hover {
+            color: #764ba2;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            transform: scale(1.02);
+        }
+
+        .ascii-title-large {
+            display: block;
+        }
+
+        .ascii-title-small {
+            display: none;
+            font-size: 0.6rem;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        body.dark-mode .ascii-title {
+            color: #9f7aea;
+        }
+
+        body.dark-mode .ascii-title:hover {
+            color: #c4b5fd;
+            text-shadow: 0 0 25px rgba(159, 122, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .ascii-title-large {
+                display: none;
+            }
+
+            .ascii-title-small {
+                display: block;
+            }
+        }
+
+        h2 {
+            color: #4a5568;
+            font-size: 1.25rem;
+            font-weight: 500;
             margin-bottom: 2rem;
-            font-size: 0.95rem;
+        }
+
+        body.dark-mode h2 {
+            color: #a0aec0;
         }
 
         .controls {
@@ -90,6 +145,36 @@
             cursor: pointer;
         }
 
+        .language-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.375rem;
+            font-size: 0.95rem;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .language-select:hover {
+            border-color: #667eea;
+        }
+
+        .language-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        body.dark-mode .language-select {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+
+        body.dark-mode .language-select:hover {
+            border-color: #667eea;
+        }
+
         .search-box:focus {
             outline: none;
             border-color: #667eea;
@@ -98,14 +183,18 @@
 
         .table-wrapper {
             overflow-x: auto;
+            overflow-y: visible;
             border-radius: 0.5rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding-top: 3rem;
+            margin-top: -3rem;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
+            overflow: visible;
         }
 
         body.dark-mode table {
@@ -115,6 +204,7 @@
         thead {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            overflow: visible;
         }
 
         th {
@@ -125,6 +215,7 @@
             user-select: none;
             position: relative;
             transition: background 0.2s ease;
+            overflow: visible;
         }
 
         th:hover {
@@ -218,6 +309,23 @@
             font-size: 0.85rem;
         }
 
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        body.dark-mode .footer a {
+            color: #9f7aea;
+        }
+
+        body.dark-mode .footer a:hover {
+            color: #b794f4;
+        }
+
         .loading {
             text-align: center;
             padding: 3rem;
@@ -246,7 +354,7 @@
 
         /* Dark mode styles */
         body.dark-mode {
-            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
         }
 
         body.dark-mode .container {
@@ -256,10 +364,6 @@
 
         body.dark-mode h1 {
             color: #e2e8f0;
-        }
-
-        body.dark-mode .subtitle {
-            color: #a0aec0;
         }
 
         body.dark-mode .search-box {
@@ -302,20 +406,98 @@
 
         .external-link-icon {
             display: inline-block;
-            margin-left: 0.25rem;
-            font-size: 0.85rem;
+            margin-left: 0.35rem;
+            font-size: 0.8rem;
             opacity: 0.6;
             transition: opacity 0.2s ease;
+            text-decoration: none;
+            color: inherit;
         }
 
         .external-link-icon:hover {
             opacity: 1;
         }
 
+        .thumb-icon {
+            display: inline-block;
+            margin-left: 0.35rem;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            color: inherit;
+        }
+
         .tooltip {
             position: relative;
             cursor: help;
             border-bottom: 1px dotted currentColor;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            background: #2d3748;
+            color: #fff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 1000;
+        }
+
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #2d3748;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        /* Right-aligned tooltips for last columns */
+        th:nth-last-child(-n+2) .tooltip::after {
+            left: auto;
+            right: 0;
+            transform: translateX(0) translateY(-8px);
+        }
+
+        th:nth-last-child(-n+2) .tooltip::before {
+            left: auto;
+            right: 1rem;
+            transform: translateX(0);
+        }
+
+        th:nth-last-child(-n+2) .tooltip:hover::after {
+            transform: translateX(0) translateY(-12px);
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-12px);
+        }
+
+        .tooltip:hover::before {
+            opacity: 1;
+        }
+
+        body.dark-mode .tooltip::after {
+            background: #1a202c;
+            border: 1px solid #4a5568;
+        }
+
+        body.dark-mode .tooltip::before {
+            border-top-color: #1a202c;
         }
 
         body.dark-mode .no-results,
@@ -342,13 +524,29 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
 </head>
 <body>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
     
     <div class="container">
-        <h1>⌨️ Alternative Keyboard Layout Rankings</h1>
-        <p class="subtitle" id="lastUpdated">Loading data...</p>
+        <pre class="ascii-title ascii-title-large">
+ █████╗ ██╗  ████████╗     █████╗ ██╗     ██████╗ ██╗  ██╗ █████╗     ██████╗  █████╗ ███╗   ██╗██╗  ██╗███████╗██████╗ 
+██╔══██╗██║  ╚══██╔══╝    ██╔══██╗██║     ██╔══██╗██║  ██║██╔══██╗    ██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝██╔══██╗
+███████║██║     ██║       ███████║██║     ██████╔╝███████║███████║    ██████╔╝███████║██╔██╗ ██║█████╔╝ █████╗  ██████╔╝
+██╔══██║██║     ██║       ██╔══██║██║     ██╔═══╝ ██╔══██║██╔══██║    ██╔══██╗██╔══██║██║╚██╗██║██╔═██╗ ██╔══╝  ██╔══██╗
+██║  ██║███████╗██║       ██║  ██║███████╗██║     ██║  ██║██║  ██║    ██║  ██║██║  ██║██║ ╚████║██║  ██╗███████╗██║  ██║
+╚═╝  ╚═╝╚══════╝╚═╝       ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝</pre>
+        <pre class="ascii-title ascii-title-small">
+ █████╗ ██╗  ████████╗     █████╗ ██╗     ██████╗ ██╗  ██╗ █████╗  
+██╔══██╗██║  ╚══██╔══╝    ██╔══██╗██║     ██╔══██╗██║  ██║██╔══██╗ 
+███████║██║     ██║       ███████║██║     ██████╔╝███████║███████║ 
+██╔══██║██║     ██║       ██╔══██║██║     ██╔═══╝ ██╔══██║██╔══██║ 
+██║  ██║███████╗██║       ██║  ██║███████╗██║     ██║  ██║██║  ██║ 
+╚═╝  ╚═╝╚══════╝╚═╝       ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝ 
+</pre>
+        <h2>⌨️ Alternative Keyboard Layout Rankings</h2>
 
         <div class="controls">
             <input 
@@ -371,6 +569,12 @@
                     No Thumbs
                 </label>
             </div>
+            <div class="filter-group">
+                <label for="languageSelect">Language:</label>
+                <select id="languageSelect" class="language-select">
+                    <option value="english">English</option>
+                </select>
+            </div>
         </div>
 
         <div class="table-wrapper">
@@ -380,19 +584,26 @@
                         <th data-column="name">Layout Name</th>
                         <th data-column="total_word_effort">Total Word Effort</th>
                         <th data-column="effort">Effort</th>
-                        <th data-column="same_finger_bigrams" title="Same Finger Bigrams">
-                            <span class="tooltip">SFBs</span>
+                        <th data-column="same_finger_bigrams">
+                            <span class="tooltip" data-tooltip="Same-finger bigrams (SFB): two keys typed by the same finger">SFBs</span>
                         </th>
-                        <th data-column="skip_bigrams">Skip</th>
-                        <th data-column="lat_stretch_bigrams" title="Lateral Stretch Bigrams">
-                            <span class="tooltip">LSBs</span>
+                        <th data-column="skip_bigrams">
+                            <span class="tooltip" data-tooltip="Skip bigrams: two-key sequences with 2u distance">Skip</span>
                         </th>
-                        <th data-column="scissors">Scissors</th>
+                        <th data-column="lat_stretch_bigrams">
+                            <span class="tooltip" data-tooltip="Lateral stretch bigrams (LSB): two keys typed by adjacent fingers involving lateral stretch (abduction)">LSBs</span>
+                        </th>
+                        <th data-column="scissors">
+                            <span class="tooltip" data-tooltip="Scissors: one finger extends while an adjacent, longer finger flexes to a lower row">Scissors</span>
+                        </th>
+                        <th data-column="pinky_off">
+                            <span class="tooltip" data-tooltip="Off-home pinky usage: pinky keys outside the home position">Pinky Off</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     <tr>
-                        <td colspan="7" class="loading">Loading layouts...</td>
+                        <td colspan="8" class="loading">Loading layouts...</td>
                     </tr>
                 </tbody>
             </table>
@@ -400,14 +611,21 @@
 
         <div class="footer">
             <p>Data scraped from <a href="https://cyanophage.github.io/" target="_blank">cyanophage.github.io</a></p>
-            <p id="layoutCount"></p>
+            <p>
+                Credits: <a href="https://getreuer.info/posts/keyboards/alt-layouts/stats.html" target="_blank">Pascal's Stats Table</a>
+            </p>
+            <p id="lastUpdated" style="font-size: 0.8rem; margin-top: 0.5rem;">
+                Last updated: <time id="lastUpdatedTime" datetime=""></time>
+            </p>
         </div>
     </div>
 
     <script>
         let layoutsData = [];
+        let allLanguages = [];
         let currentSort = { column: null, direction: 'asc' };
         let currentThumbFilter = 'all';
+        let currentLanguage = 'english';
 
         // Dark mode toggle
         const themeToggle = document.getElementById('themeToggle');
@@ -430,6 +648,49 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
 
+        // Populate language dropdown
+        function populateLanguageDropdown(languages) {
+            const languageFlags = {
+                'dutch': '🇳🇱',
+                'english': '🇬🇧',
+                'french': '🇫🇷',
+                'german': '🇩🇪',
+                'spanish': '🇪🇸'
+            };
+            
+            const select = document.getElementById('languageSelect');
+            select.innerHTML = languages.map(lang => {
+                const flag = languageFlags[lang] || '🌐';
+                const displayName = lang.charAt(0).toUpperCase() + lang.slice(1);
+                return `<option value="${lang}">${flag} ${displayName}</option>`;
+            }).join('');
+            
+            // Set saved language or default to english
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'english';
+            if (languages.includes(savedLanguage)) {
+                currentLanguage = savedLanguage;
+                select.value = savedLanguage;
+            }
+        }
+
+        // Language filter functionality
+        function setupLanguageFilter() {
+            document.getElementById('languageSelect').addEventListener('change', (e) => {
+                currentLanguage = e.target.value;
+                localStorage.setItem('selectedLanguage', currentLanguage);
+                
+                // Re-render with new language and apply current sort
+                const filtered = getFilteredData();
+                const sorted = sortData(filtered);
+                renderTable(sorted);
+            });
+        }
+
+        // Get metrics for current language
+        function getMetrics(layout) {
+            return layout.metrics?.[currentLanguage] || {};
+        }
+
         // Filter and render data
         function getFilteredData() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -448,28 +709,59 @@
             return filtered;
         }
 
+        // Update search placeholder with count
+        function updateSearchPlaceholder() {
+            const filtered = layoutsData.filter(layout => {
+                // Apply thumb filter only (not search)
+                const matchesThumb = currentThumbFilter === 'all' || 
+                                     layout.thumb.toString() === currentThumbFilter;
+                return matchesThumb;
+            });
+            
+            const count = filtered.length;
+            document.getElementById('searchInput').placeholder = 
+                `🔍 Search ${count} layout${count !== 1 ? 's' : ''}...`;
+        }
+
         // Fetch and display data
         async function loadData() {
             try {
                 const response = await fetch('data.json');
                 const data = await response.json();
                 layoutsData = data.layouts;
+                allLanguages = data.languages || ['english'];
                 
-                // Update last updated time
+                // Populate language dropdown
+                populateLanguageDropdown(allLanguages);
+                setupLanguageFilter();
+                
+                // Update last updated time in footer with relative time
                 const date = new Date(data.scraped_at);
-                document.getElementById('lastUpdated').textContent = 
-                    `Last updated: ${date.toLocaleString()}`;
-
-                // Update layout count in footer
-                document.getElementById('layoutCount').textContent = 
-                    `${layoutsData.length} layout${layoutsData.length !== 1 ? 's' : ''}`;
+                const timeElement = document.getElementById('lastUpdatedTime');
+                timeElement.setAttribute('datetime', date.toISOString());
+                timeElement.textContent = timeago.format(date);
                 
-                // Initial render
-                renderTable(layoutsData);
+                // Update every minute
+                setInterval(() => {
+                    timeElement.textContent = timeago.format(date);
+                }, 60000);
+
+                // Update search placeholder
+                updateSearchPlaceholder();
+                
+                // Set default sort to effort ascending
+                currentSort = { column: 'effort', direction: 'asc' };
+                
+                // Initial render with default sort
+                const sorted = sortData(layoutsData);
+                renderTable(sorted);
+                
+                // Update UI to show sort indicator
+                updateSortIndicators();
             } catch (error) {
                 console.error('Error loading data:', error);
                 document.getElementById('tableBody').innerHTML = 
-                    '<tr><td colspan="4" class="no-results">Error loading data. Please try again later.</td></tr>';
+                    '<tr><td colspan="8" class="no-results">Error loading data. Please try again later.</td></tr>';
             }
         }
 
@@ -478,41 +770,107 @@
             const tbody = document.getElementById('tableBody');
             
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="no-results">No layouts found matching your search.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="no-results">No layouts found matching your search.</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = data.map(layout => `
-                <tr>
-                    <td class="layout-name">
-                        ${layout.website 
-                            ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}</a>`
-                            : layout.name
-                        }
-                        <a href="${layout.url}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="View in playground">↗</a>
-                    </td>
-                    <td class="stat-value">${layout.total_word_effort || 'N/A'}</td>
-                    <td class="stat-value">${layout.effort || 'N/A'}</td>
-                    <td class="stat-value">${layout.same_finger_bigrams || 'N/A'}</td>
-                    <td class="stat-value">${layout.skip_bigrams || 'N/A'}</td>
-                    <td class="stat-value">${layout.lat_stretch_bigrams || 'N/A'}</td>
-                    <td class="stat-value">${layout.scissors || 'N/A'}</td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = data.map(layout => {
+                const metrics = getMetrics(layout);
+                const yearSuffix = layout.year ? ` (${layout.year})` : '';
+                const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i></span>' : '';
+                return `
+                    <tr>
+                        <td class="layout-name">
+                            ${layout.website 
+                                ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}${yearSuffix}</a>`
+                                : `${layout.name}${yearSuffix}`
+                            }
+                            <a href="${layout.url}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="Analyze in playground"><i class="fa-solid fa-square-poll-vertical"></i></a>
+                            ${thumbIcon}
+                        </td>
+                        <td class="stat-value">${metrics.total_word_effort || 'N/A'}</td>
+                        <td class="stat-value">${metrics.effort || 'N/A'}</td>
+                        <td class="stat-value">${metrics.same_finger_bigrams || 'N/A'}</td>
+                        <td class="stat-value">${metrics.skip_bigrams || 'N/A'}</td>
+                        <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>
+                        <td class="stat-value">${metrics.scissors || 'N/A'}</td>
+                        <td class="stat-value">${metrics.pinky_off || 'N/A'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Sort data based on current sort settings
+        function sortData(data) {
+            if (!currentSort.column) {
+                return data;
+            }
+            
+            return [...data].sort((a, b) => {
+                let aVal, bVal;
+                
+                // Get values from metrics for current language
+                if (currentSort.column === 'name') {
+                    aVal = a[currentSort.column];
+                    bVal = b[currentSort.column];
+                } else {
+                    const aMetrics = getMetrics(a);
+                    const bMetrics = getMetrics(b);
+                    aVal = aMetrics[currentSort.column];
+                    bVal = bMetrics[currentSort.column];
+                }
+
+                // Convert to numbers if numeric column
+                if (currentSort.column === 'total_word_effort' || currentSort.column === 'effort') {
+                    aVal = parseFloat(aVal) || 0;
+                    bVal = parseFloat(bVal) || 0;
+                } else if (currentSort.column === 'same_finger_bigrams' || currentSort.column === 'skip_bigrams' || 
+                           currentSort.column === 'lat_stretch_bigrams' || currentSort.column === 'scissors' || currentSort.column === 'pinky_off') {
+                    // Remove % sign and convert to number
+                    aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
+                    bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
+                } else {
+                    aVal = (aVal || '').toString().toLowerCase();
+                    bVal = (bVal || '').toString().toLowerCase();
+                }
+
+                if (currentSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+        }
+
+        // Update sort indicators in table headers
+        function updateSortIndicators() {
+            document.querySelectorAll('th').forEach(header => {
+                header.classList.remove('sort-asc', 'sort-desc');
+            });
+            
+            if (currentSort.column) {
+                const th = document.querySelector(`th[data-column="${currentSort.column}"]`);
+                if (th) {
+                    th.classList.add(`sort-${currentSort.direction}`);
+                }
+            }
         }
 
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const filtered = getFilteredData();
-            renderTable(filtered);
+            const sorted = sortData(filtered);
+            renderTable(sorted);
         });
 
         // Thumb filter functionality
         document.querySelectorAll('input[name="thumbFilter"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 currentThumbFilter = e.target.value;
+                updateSearchPlaceholder();
                 const filtered = getFilteredData();
-                renderTable(filtered);
+                const sorted = sortData(filtered);
+                renderTable(sorted);
             });
         });
 
@@ -530,38 +888,11 @@
                 }
 
                 // Update UI
-                document.querySelectorAll('th').forEach(header => {
-                    header.classList.remove('sort-asc', 'sort-desc');
-                });
-                th.classList.add(`sort-${currentSort.direction}`);
+                updateSortIndicators();
 
                 // Get filtered data first, then sort
                 const filtered = getFilteredData();
-                const sorted = [...filtered].sort((a, b) => {
-                    let aVal = a[column];
-                    let bVal = b[column];
-
-                    // Convert to numbers if numeric column
-                    if (column === 'total_word_effort' || column === 'effort') {
-                        aVal = parseFloat(aVal) || 0;
-                        bVal = parseFloat(bVal) || 0;
-                    } else if (column === 'same_finger_bigrams' || column === 'skip_bigrams' || 
-                               column === 'lat_stretch_bigrams' || column === 'scissors') {
-                        // Remove % sign and convert to number
-                        aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
-                        bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
-                    } else {
-                        aVal = (aVal || '').toString().toLowerCase();
-                        bVal = (bVal || '').toString().toLowerCase();
-                    }
-
-                    if (currentSort.direction === 'asc') {
-                        return aVal > bVal ? 1 : -1;
-                    } else {
-                        return aVal < bVal ? 1 : -1;
-                    }
-                });
-
+                const sorted = sortData(filtered);
                 renderTable(sorted);
             });
         });
