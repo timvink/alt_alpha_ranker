@@ -404,6 +404,78 @@
             color: #b794f4;
         }
 
+        .pin-star-column {
+            width: 60px;
+            text-align: center;
+            padding: 1rem 0.25rem !important;
+        }
+
+        .pin-star-icons {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pin-icon,
+        .star-icon {
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #cbd5e0;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .pin-icon:hover {
+            color: #667eea;
+            transform: scale(1.2);
+        }
+
+        .pin-icon.pinned {
+            color: #667eea;
+        }
+
+        body.dark-mode .pin-icon {
+            color: #4a5568;
+        }
+
+        body.dark-mode .pin-icon.pinned {
+            color: #9f7aea;
+        }
+
+        .star-icon:hover {
+            color: #f59e0b;
+            transform: scale(1.2);
+        }
+
+        .star-icon.starred {
+            color: #f59e0b;
+        }
+
+        body.dark-mode .star-icon {
+            color: #4a5568;
+        }
+
+        body.dark-mode .star-icon.starred {
+            color: #fbbf24;
+        }
+
+        tbody tr.starred {
+            background: #fef3c7;
+        }
+
+        body.dark-mode tbody tr.starred {
+            background: #78350f;
+        }
+
+        tbody tr.starred:hover {
+            background: #fde68a !important;
+        }
+
+        body.dark-mode tbody tr.starred:hover {
+            background: #92400e !important;
+        }
+
         .external-link-icon {
             display: inline-block;
             margin-left: 0.35rem;
@@ -581,6 +653,7 @@
             <table id="layoutTable">
                 <thead>
                     <tr>
+                        <th class="pin-star-column" data-column="starred"></th>
                         <th data-column="name">Layout Name</th>
                         <th data-column="total_word_effort">Total Word Effort</th>
                         <th data-column="effort">Effort</th>
@@ -609,7 +682,7 @@
                 </thead>
                 <tbody id="tableBody">
                     <tr>
-                        <td colspan="10" class="loading">Loading layouts...</td>
+                        <td colspan="11" class="loading">Loading layouts...</td>
                     </tr>
                 </tbody>
             </table>
@@ -632,6 +705,64 @@
         let currentSort = { column: null, direction: 'asc' };
         let currentThumbFilter = 'all';
         let currentLanguage = 'english';
+        let pinnedLayouts = new Set();
+        let starredLayouts = new Set();
+
+        // Load pinned layouts from localStorage
+        function loadPinnedLayouts() {
+            const saved = localStorage.getItem('pinnedLayouts');
+            if (saved) {
+                pinnedLayouts = new Set(JSON.parse(saved));
+            }
+        }
+
+        // Save pinned layouts to localStorage
+        function savePinnedLayouts() {
+            localStorage.setItem('pinnedLayouts', JSON.stringify([...pinnedLayouts]));
+        }
+
+        // Load starred layouts from localStorage
+        function loadStarredLayouts() {
+            const saved = localStorage.getItem('starredLayouts');
+            if (saved) {
+                starredLayouts = new Set(JSON.parse(saved));
+            }
+        }
+
+        // Save starred layouts to localStorage
+        function saveStarredLayouts() {
+            localStorage.setItem('starredLayouts', JSON.stringify([...starredLayouts]));
+        }
+
+        // Toggle pin status for a layout
+        function togglePin(layoutName) {
+            if (pinnedLayouts.has(layoutName)) {
+                pinnedLayouts.delete(layoutName);
+            } else {
+                pinnedLayouts.add(layoutName);
+            }
+            savePinnedLayouts();
+            
+            // Re-render with current filters and sort
+            const filtered = getFilteredData();
+            const sorted = sortData(filtered);
+            renderTable(sorted);
+        }
+
+        // Toggle star status for a layout
+        function toggleStar(layoutName) {
+            if (starredLayouts.has(layoutName)) {
+                starredLayouts.delete(layoutName);
+            } else {
+                starredLayouts.add(layoutName);
+            }
+            saveStarredLayouts();
+            
+            // Re-render with current filters and sort
+            const filtered = getFilteredData();
+            const sorted = sortData(filtered);
+            renderTable(sorted);
+        }
 
         // Dark mode toggle
         const themeToggle = document.getElementById('themeToggle');
@@ -732,6 +863,10 @@
         // Fetch and display data
         async function loadData() {
             try {
+                // Load pinned and starred layouts from localStorage
+                loadPinnedLayouts();
+                loadStarredLayouts();
+                
                 const response = await fetch('data.json');
                 const data = await response.json();
                 layoutsData = data.layouts;
@@ -776,7 +911,7 @@
             const tbody = document.getElementById('tableBody');
             
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="no-results">No layouts found matching your search.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="11" class="no-results">No layouts found matching your search.</td></tr>';
                 return;
             }
 
@@ -784,6 +919,16 @@
                 const metrics = getMetrics(layout);
                 const yearSuffix = layout.year ? ` (${layout.year})` : '';
                 const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i></span>' : '';
+                
+                const isPinned = pinnedLayouts.has(layout.name);
+                const pinClass = isPinned ? 'pinned' : '';
+                const pinIcon = isPinned ? '<i class="fa-solid fa-thumbtack" style="font-size: 0.75em;"></i>' : '<i class="fa-solid fa-map-pin" style="opacity: 0.8; font-size: 0.75em;"></i>';
+                
+                const isStarred = starredLayouts.has(layout.name);
+                const starClass = isStarred ? 'starred' : '';
+                const starIcon = isStarred ? '★' : '☆';
+                
+                const rowClass = isStarred ? 'starred' : '';
                 
                 // Calculate rolls sum (bigram roll in + bigram roll out + roll in + roll out)
                 const calculateRolls = (metrics) => {
@@ -796,7 +941,13 @@
                 };
                 
                 return `
-                    <tr>
+                    <tr class="${rowClass}">
+                        <td class="pin-star-column">
+                            <div class="pin-star-icons">
+                                <span class="pin-icon ${pinClass}" data-layout="${layout.name}" title="${isPinned ? 'Unpin layout' : 'Pin layout to top'}">${pinIcon}</span>
+                                <span class="star-icon ${starClass}" data-layout="${layout.name}" title="${isStarred ? 'Unstar layout' : 'Star layout for highlighting'}">${starIcon}</span>
+                            </div>
+                        </td>
                         <td class="layout-name">
                             ${layout.website 
                                 ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}${yearSuffix}</a>`
@@ -817,67 +968,99 @@
                     </tr>
                 `;
             }).join('');
+            
+            // Add click handlers for pin icons
+            document.querySelectorAll('.pin-icon').forEach(pin => {
+                pin.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const layoutName = pin.dataset.layout;
+                    togglePin(layoutName);
+                });
+            });
+            
+            // Add click handlers for star icons
+            document.querySelectorAll('.star-icon').forEach(star => {
+                star.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const layoutName = star.dataset.layout;
+                    toggleStar(layoutName);
+                });
+            });
         }
 
         // Sort data based on current sort settings
         function sortData(data) {
-            if (!currentSort.column) {
-                return data;
-            }
+            // Separate pinned and unpinned layouts
+            const pinned = data.filter(layout => pinnedLayouts.has(layout.name));
+            const unpinned = data.filter(layout => !pinnedLayouts.has(layout.name));
             
-            return [...data].sort((a, b) => {
-                let aVal, bVal;
+            // Sort function for a group
+            const sortGroup = (group) => {
+                if (!currentSort.column) {
+                    return group;
+                }
                 
-                // Get values from metrics for current language
-                if (currentSort.column === 'name') {
-                    aVal = a[currentSort.column];
-                    bVal = b[currentSort.column];
-                } else if (currentSort.column === 'rolls') {
-                    // Calculate rolls sum for sorting
-                    const aMetrics = getMetrics(a);
-                    const bMetrics = getMetrics(b);
+                return [...group].sort((a, b) => {
+                    let aVal, bVal;
                     
-                    const aRolls = (parseFloat((aMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
-                                   (parseFloat((aMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
-                                   (parseFloat((aMetrics.roll_in || '0').replace('%', '')) || 0) +
-                                   (parseFloat((aMetrics.roll_out || '0').replace('%', '')) || 0);
-                    
-                    const bRolls = (parseFloat((bMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
-                                   (parseFloat((bMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
-                                   (parseFloat((bMetrics.roll_in || '0').replace('%', '')) || 0) +
-                                   (parseFloat((bMetrics.roll_out || '0').replace('%', '')) || 0);
-                    
-                    aVal = aRolls;
-                    bVal = bRolls;
-                } else {
-                    const aMetrics = getMetrics(a);
-                    const bMetrics = getMetrics(b);
-                    aVal = aMetrics[currentSort.column];
-                    bVal = bMetrics[currentSort.column];
-                }
+                    // Get values from metrics for current language
+                    if (currentSort.column === 'name') {
+                        aVal = a[currentSort.column];
+                        bVal = b[currentSort.column];
+                    } else if (currentSort.column === 'starred') {
+                        // Sort by starred status (starred first when descending)
+                        aVal = starredLayouts.has(a.name) ? 1 : 0;
+                        bVal = starredLayouts.has(b.name) ? 1 : 0;
+                    } else if (currentSort.column === 'rolls') {
+                        // Calculate rolls sum for sorting
+                        const aMetrics = getMetrics(a);
+                        const bMetrics = getMetrics(b);
+                        
+                        const aRolls = (parseFloat((aMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
+                                       (parseFloat((aMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
+                                       (parseFloat((aMetrics.roll_in || '0').replace('%', '')) || 0) +
+                                       (parseFloat((aMetrics.roll_out || '0').replace('%', '')) || 0);
+                        
+                        const bRolls = (parseFloat((bMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
+                                       (parseFloat((bMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
+                                       (parseFloat((bMetrics.roll_in || '0').replace('%', '')) || 0) +
+                                       (parseFloat((bMetrics.roll_out || '0').replace('%', '')) || 0);
+                        
+                        aVal = aRolls;
+                        bVal = bRolls;
+                    } else {
+                        const aMetrics = getMetrics(a);
+                        const bMetrics = getMetrics(b);
+                        aVal = aMetrics[currentSort.column];
+                        bVal = bMetrics[currentSort.column];
+                    }
 
-                // Convert to numbers if numeric column
-                if (currentSort.column === 'total_word_effort' || currentSort.column === 'effort') {
-                    aVal = parseFloat(aVal) || 0;
-                    bVal = parseFloat(bVal) || 0;
-                } else if (currentSort.column === 'same_finger_bigrams' || currentSort.column === 'skip_bigrams' || 
-                           currentSort.column === 'lat_stretch_bigrams' || currentSort.column === 'scissors' || 
-                           currentSort.column === 'pinky_off' || currentSort.column === 'redirect') {
-                    // Remove % sign and convert to number
-                    aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
-                    bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
-                } else if (currentSort.column !== 'rolls') {
-                    // String comparison for name column
-                    aVal = (aVal || '').toString().toLowerCase();
-                    bVal = (bVal || '').toString().toLowerCase();
-                }
+                    // Convert to numbers if numeric column
+                    if (currentSort.column === 'total_word_effort' || currentSort.column === 'effort') {
+                        aVal = parseFloat(aVal) || 0;
+                        bVal = parseFloat(bVal) || 0;
+                    } else if (currentSort.column === 'same_finger_bigrams' || currentSort.column === 'skip_bigrams' || 
+                               currentSort.column === 'lat_stretch_bigrams' || currentSort.column === 'scissors' || 
+                               currentSort.column === 'pinky_off' || currentSort.column === 'redirect') {
+                        // Remove % sign and convert to number
+                        aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
+                        bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
+                    } else if (currentSort.column !== 'rolls' && currentSort.column !== 'starred') {
+                        // String comparison for name column
+                        aVal = (aVal || '').toString().toLowerCase();
+                        bVal = (bVal || '').toString().toLowerCase();
+                    }
 
-                if (currentSort.direction === 'asc') {
-                    return aVal > bVal ? 1 : -1;
-                } else {
-                    return aVal < bVal ? 1 : -1;
-                }
-            });
+                    if (currentSort.direction === 'asc') {
+                        return aVal > bVal ? 1 : -1;
+                    } else {
+                        return aVal < bVal ? 1 : -1;
+                    }
+                });
+            };
+            
+            // Sort both groups separately and concatenate
+            return [...sortGroup(pinned), ...sortGroup(unpinned)];
         }
 
         // Update sort indicators in table headers
