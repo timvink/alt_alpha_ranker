@@ -1,16 +1,16 @@
 # Languages available on https://cyanophage.github.io/
 languages:
-  # - dutch
   - english
+  - dutch
   # - estonian
   # - finnish
-  # - french
-  # - german
+  - french
+  - german
   # - hungarian
-  # - italian
+  - italian
   # - lithuanian
   # - norweigian
   # - polish
-  # - portuguese
-  # - spanish
+  - portuguese
+  - spanish
   # - swedish
