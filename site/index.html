@@ -599,11 +599,17 @@
                         <th data-column="pinky_off">
                             <span class="tooltip" data-tooltip="Off-home pinky usage: pinky keys outside the home position">Pinky Off</span>
                         </th>
+                        <th data-column="rolls">
+                            <span class="tooltip" data-tooltip="Rolls: sum of bigram roll in, bigram roll out, roll in, and roll out">Rolls</span>
+                        </th>
+                        <th data-column="redirect">
+                            <span class="tooltip" data-tooltip="Redirect: changing direction mid-trigram">Redirect</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     <tr>
-                        <td colspan="8" class="loading">Loading layouts...</td>
+                        <td colspan="10" class="loading">Loading layouts...</td>
                     </tr>
                 </tbody>
             </table>
@@ -761,7 +767,7 @@
             } catch (error) {
                 console.error('Error loading data:', error);
                 document.getElementById('tableBody').innerHTML = 
-                    '<tr><td colspan="8" class="no-results">Error loading data. Please try again later.</td></tr>';
+                    '<tr><td colspan="10" class="no-results">Error loading data. Please try again later.</td></tr>';
             }
         }
 
@@ -770,7 +776,7 @@
             const tbody = document.getElementById('tableBody');
             
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-results">No layouts found matching your search.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="no-results">No layouts found matching your search.</td></tr>';
                 return;
             }
 
@@ -778,6 +784,17 @@
                 const metrics = getMetrics(layout);
                 const yearSuffix = layout.year ? ` (${layout.year})` : '';
                 const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i></span>' : '';
+                
+                // Calculate rolls sum (bigram roll in + bigram roll out + roll in + roll out)
+                const calculateRolls = (metrics) => {
+                    const bigramRollIn = parseFloat((metrics.bigram_roll_in || '0').replace('%', '')) || 0;
+                    const bigramRollOut = parseFloat((metrics.bigram_roll_out || '0').replace('%', '')) || 0;
+                    const rollIn = parseFloat((metrics.roll_in || '0').replace('%', '')) || 0;
+                    const rollOut = parseFloat((metrics.roll_out || '0').replace('%', '')) || 0;
+                    const sum = bigramRollIn + bigramRollOut + rollIn + rollOut;
+                    return sum > 0 ? `${sum.toFixed(2)}%` : 'N/A';
+                };
+                
                 return `
                     <tr>
                         <td class="layout-name">
@@ -795,6 +812,8 @@
                         <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>
                         <td class="stat-value">${metrics.scissors || 'N/A'}</td>
                         <td class="stat-value">${metrics.pinky_off || 'N/A'}</td>
+                        <td class="stat-value">${calculateRolls(metrics)}</td>
+                        <td class="stat-value">${metrics.redirect || 'N/A'}</td>
                     </tr>
                 `;
             }).join('');
@@ -813,6 +832,23 @@
                 if (currentSort.column === 'name') {
                     aVal = a[currentSort.column];
                     bVal = b[currentSort.column];
+                } else if (currentSort.column === 'rolls') {
+                    // Calculate rolls sum for sorting
+                    const aMetrics = getMetrics(a);
+                    const bMetrics = getMetrics(b);
+                    
+                    const aRolls = (parseFloat((aMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
+                                   (parseFloat((aMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
+                                   (parseFloat((aMetrics.roll_in || '0').replace('%', '')) || 0) +
+                                   (parseFloat((aMetrics.roll_out || '0').replace('%', '')) || 0);
+                    
+                    const bRolls = (parseFloat((bMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
+                                   (parseFloat((bMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
+                                   (parseFloat((bMetrics.roll_in || '0').replace('%', '')) || 0) +
+                                   (parseFloat((bMetrics.roll_out || '0').replace('%', '')) || 0);
+                    
+                    aVal = aRolls;
+                    bVal = bRolls;
                 } else {
                     const aMetrics = getMetrics(a);
                     const bMetrics = getMetrics(b);
@@ -825,11 +861,13 @@
                     aVal = parseFloat(aVal) || 0;
                     bVal = parseFloat(bVal) || 0;
                 } else if (currentSort.column === 'same_finger_bigrams' || currentSort.column === 'skip_bigrams' || 
-                           currentSort.column === 'lat_stretch_bigrams' || currentSort.column === 'scissors' || currentSort.column === 'pinky_off') {
+                           currentSort.column === 'lat_stretch_bigrams' || currentSort.column === 'scissors' || 
+                           currentSort.column === 'pinky_off' || currentSort.column === 'redirect') {
                     // Remove % sign and convert to number
                     aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
                     bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
-                } else {
+                } else if (currentSort.column !== 'rolls') {
+                    // String comparison for name column
                     aVal = (aVal || '').toString().toLowerCase();
                     bVal = (bVal || '').toString().toLowerCase();
                 }

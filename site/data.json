@@ -1,12 +1,12 @@
 {
-  "scraped_at": "2025-11-08T20:00:30.809742",
+  "scraped_at": "2025-11-08T21:28:33.584105",
   "languages": [
     "english"
   ],
   "layouts": [
     {
       "name": "qwerty",
-      "url": "https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5Eback&mode=ergo&lan=english&thumb=l",
+      "url": "https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5Eback&mode=ergo&lan=english",
       "thumb": false,
       "metrics": {
         "english": {
@@ -16,14 +16,20 @@
           "skip_bigrams": "1.43%",
           "lat_stretch_bigrams": "4.55%",
           "scissors": "1.46%",
-          "pinky_off": "2.47%"
+          "pinky_off": "2.47%",
+          "bigram_roll_in": "20.38%",
+          "bigram_roll_out": "17.58%",
+          "roll_in": "1.32%",
+          "roll_out": "1.48%",
+          "redirect": "6.22%",
+          "weak_redirect": "0.44%"
         }
       },
       "year": 1873
     },
     {
       "name": "dvorak",
-      "url": "https://cyanophage.github.io/playground.html?layout=%27%2C.pyfgcrl%2Faoeuidhtns-%3Bqjkxbmwvz%5C%5E&mode=ergo&lan=english&thumb=l",
+      "url": "https://cyanophage.github.io/playground.html?layout=%27%2C.pyfgcrl%2Faoeuidhtns-%3Bqjkxbmwvz%5C%5E&mode=ergo&lan=english",
       "thumb": false,
       "metrics": {
         "english": {
@@ -33,14 +39,20 @@
           "skip_bigrams": "0.45%",
           "lat_stretch_bigrams": "0.80%",
           "scissors": "0.08%",
-          "pinky_off": "4.13%"
+          "pinky_off": "4.13%",
+          "bigram_roll_in": "23.51%",
+          "bigram_roll_out": "15.14%",
+          "roll_in": "0.28%",
+          "roll_out": "0.27%",
+          "redirect": "1.55%",
+          "weak_redirect": "0.64%"
         }
       },
       "year": 1936
     },
     {
       "name": "colemak",
-      "url": "https://cyanophage.github.io/playground.html?layout=qwfpgjluy%3B-arstdhneio%27zxcvbkm%2C.%2F%5C%5E&mode=ergo&lan=english&thumb=l",
+      "url": "https://cyanophage.github.io/playground.html?layout=qwfpgjluy%3B-arstdhneio%27zxcvbkm%2C.%2F%5C%5E&mode=ergo&lan=english",
       "thumb": false,
       "metrics": {
         "english": {
@@ -50,10 +62,869 @@
           "skip_bigrams": "0.46%",
           "lat_stretch_bigrams": "2.26%",
           "scissors": "0.26%",
-          "pinky_off": "0.78%"
+          "pinky_off": "0.78%",
+          "bigram_roll_in": "25.18%",
+          "bigram_roll_out": "21.54%",
+          "roll_in": "1.50%",
+          "roll_out": "0.98%",
+          "redirect": "5.33%",
+          "weak_redirect": "1.09%"
+        }
+      },
+      "website": "https://colemak.com/",
+      "year": 2006
+    },
+    {
+      "name": "colemak-dh",
+      "url": "https://cyanophage.github.io/playground.html?layout=qwfpbjluy%3B-arstgmneio%27zxcdvkh%2C.%2F%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1047.9",
+          "effort": "534.99",
+          "same_finger_bigrams": "0.91%",
+          "skip_bigrams": "0.41%",
+          "lat_stretch_bigrams": "1.27%",
+          "scissors": "0.15%",
+          "pinky_off": "0.78%",
+          "bigram_roll_in": "25.18%",
+          "bigram_roll_out": "21.54%",
+          "roll_in": "1.50%",
+          "roll_out": "0.98%",
+          "redirect": "5.33%",
+          "weak_redirect": "1.09%"
+        }
+      },
+      "website": "https://colemakmods.github.io/mod-dh/",
+      "year": 2014
+    },
+    {
+      "name": "graphite",
+      "url": "https://cyanophage.github.io/playground.html?layout=bldwz%27fouj%3Bnrtsgyhaei%2Cqxmcvkp.-%2F%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "952.5",
+          "effort": "521.49",
+          "same_finger_bigrams": "0.68%",
+          "skip_bigrams": "0.24%",
+          "lat_stretch_bigrams": "0.87%",
+          "scissors": "0.41%",
+          "pinky_off": "2.34%",
+          "bigram_roll_in": "21.68%",
+          "bigram_roll_out": "22.65%",
+          "roll_in": "0.50%",
+          "roll_out": "1.18%",
+          "redirect": "1.80%",
+          "weak_redirect": "0.26%"
+        }
+      },
+      "website": "https://github.com/rdavison/graphite-layout",
+      "year": 2023
+    },
+    {
+      "name": "gallium",
+      "url": "https://cyanophage.github.io/playground.html?layout=bldcvzyou%2C-nrtsgphaei%2Fqxmwjkf%27%3B.%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "978.4",
+          "effort": "515.84",
+          "same_finger_bigrams": "0.64%",
+          "skip_bigrams": "0.24%",
+          "lat_stretch_bigrams": "0.96%",
+          "scissors": "0.95%",
+          "pinky_off": "3.07%",
+          "bigram_roll_in": "21.35%",
+          "bigram_roll_out": "23.05%",
+          "roll_in": "0.45%",
+          "roll_out": "1.21%",
+          "redirect": "1.93%",
+          "weak_redirect": "0.26%"
+        }
+      },
+      "website": "https://github.com/GalileoBlues/Gallium",
+      "year": 2023
+    },
+    {
+      "name": "canary",
+      "url": "https://cyanophage.github.io/playground.html?layout=wlypbzfou%3B-crstgmneia%27qjvdkxh%2F%2C.%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1016.7",
+          "effort": "519.83",
+          "same_finger_bigrams": "0.66%",
+          "skip_bigrams": "0.15%",
+          "lat_stretch_bigrams": "1.75%",
+          "scissors": "0.42%",
+          "pinky_off": "2.96%",
+          "bigram_roll_in": "23.70%",
+          "bigram_roll_out": "24.70%",
+          "roll_in": "1.17%",
+          "roll_out": "0.80%",
+          "redirect": "3.39%",
+          "weak_redirect": "0.10%"
+        }
+      },
+      "website": "https://github.com/Apsu/Canary",
+      "year": 2022
+    },
+    {
+      "name": "aptV3",
+      "url": "https://cyanophage.github.io/playground.html?layout=wgdfbqluoy-rsthkjneai%3Bxcmpvz%2C.%27%2F%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "924.7",
+          "effort": "510.34",
+          "same_finger_bigrams": "0.81%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.33%",
+          "scissors": "0.11%",
+          "pinky_off": "3.45%",
+          "bigram_roll_in": "32.63%",
+          "bigram_roll_out": "14.12%",
+          "roll_in": "2.26%",
+          "roll_out": "0.54%",
+          "redirect": "3.60%",
+          "weak_redirect": "0.42%"
+        }
+      },
+      "year": 2021
+    },
+    {
+      "name": "handsdown-neu",
+      "url": "https://cyanophage.github.io/playground.html?layout=wfmpv%2F.q%3B%27zrsntb%2Caeihjxcldg-uoyk%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "967.7",
+          "effort": "537.57",
+          "same_finger_bigrams": "0.76%",
+          "skip_bigrams": "0.49%",
+          "lat_stretch_bigrams": "1.26%",
+          "scissors": "0.42%",
+          "pinky_off": "2.89%",
+          "bigram_roll_in": "32.20%",
+          "bigram_roll_out": "10.63%",
+          "roll_in": "1.14%",
+          "roll_out": "0.07%",
+          "redirect": "1.47%",
+          "weak_redirect": "0.49%"
+        }
+      },
+      "year": 2021
+    },
+    {
+      "name": "sturdy",
+      "url": "https://cyanophage.github.io/playground.html?layout=vmlcpxfouj-strdy.naei%2Fzkqgwbh%27%3B%2C%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1073.8",
+          "effort": "575.18",
+          "same_finger_bigrams": "0.62%",
+          "skip_bigrams": "0.20%",
+          "lat_stretch_bigrams": "1.58%",
+          "scissors": "0.42%",
+          "pinky_off": "2.09%",
+          "bigram_roll_in": "23.03%",
+          "bigram_roll_out": "24.96%",
+          "roll_in": "1.36%",
+          "roll_out": "0.76%",
+          "redirect": "2.85%",
+          "weak_redirect": "0.16%"
+        }
+      },
+      "website": "https://o-x-e-y.github.io/layouts/sturdy/index.html",
+      "year": 2021
+    },
+    {
+      "name": "engram",
+      "url": "https://cyanophage.github.io/playground.html?layout=byou%27-ldwvzciea%2C.htsnqgxjk%2F%3Brmfp%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "899.5",
+          "effort": "457.11",
+          "same_finger_bigrams": "1.01%",
+          "skip_bigrams": "0.40%",
+          "lat_stretch_bigrams": "0.41%",
+          "scissors": "0.36%",
+          "pinky_off": "5.70%",
+          "bigram_roll_in": "28.12%",
+          "bigram_roll_out": "14.08%",
+          "roll_in": "1.82%",
+          "roll_out": "0.29%",
+          "redirect": "2.27%",
+          "weak_redirect": "0.74%"
+        }
+      },
+      "website": "https://engram.dev/",
+      "year": 2021
+    },
+    {
+      "name": "carbyne",
+      "url": "https://cyanophage.github.io/playground.html?layout=fwhgzqouypjsnrtv-aeic%27bmldk%3Bx%2C.%2F%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "921.3",
+          "effort": "475.58",
+          "same_finger_bigrams": "0.77%",
+          "skip_bigrams": "0.25%",
+          "lat_stretch_bigrams": "0.32%",
+          "scissors": "0.19%",
+          "pinky_off": "5.31%",
+          "bigram_roll_in": "23.00%",
+          "bigram_roll_out": "19.81%",
+          "roll_in": "0.34%",
+          "roll_out": "0.32%",
+          "redirect": "3.23%",
+          "weak_redirect": "0.44%"
+        }
+      }
+    },
+    {
+      "name": "really",
+      "url": "https://cyanophage.github.io/playground.html?layout=yuolzqchgwkiearxvsntd%27-%2F%2C.%3Bjfpmb%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "947.2",
+          "effort": "446.80",
+          "same_finger_bigrams": "0.68%",
+          "skip_bigrams": "0.38%",
+          "lat_stretch_bigrams": "0.13%",
+          "scissors": "0.08%",
+          "pinky_off": "5.40%",
+          "bigram_roll_in": "25.42%",
+          "bigram_roll_out": "24.84%",
+          "roll_in": "0.87%",
+          "roll_out": "0.48%",
+          "redirect": "4.92%",
+          "weak_redirect": "0.79%"
+        }
+      }
+    },
+    {
+      "name": "whorf",
+      "url": "https://cyanophage.github.io/playground.html?layout=flhdmvwou%2C%2Fsrntkgyaei-xjbzqpc%27%3B.%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1163.9",
+          "effort": "614.12",
+          "same_finger_bigrams": "0.45%",
+          "skip_bigrams": "0.18%",
+          "lat_stretch_bigrams": "1.66%",
+          "scissors": "0.77%",
+          "pinky_off": "3.74%",
+          "bigram_roll_in": "22.60%",
+          "bigram_roll_out": "22.39%",
+          "roll_in": "0.29%",
+          "roll_out": "1.38%",
+          "redirect": "4.42%",
+          "weak_redirect": "0.13%"
+        }
+      },
+      "year": 2021
+    },
+    {
+      "name": "northstar",
+      "url": "https://cyanophage.github.io/playground.html?layout=qwmbzjfou%3B-nrstgyheia%27xlcdvkp%2C.%2F%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "961.9",
+          "effort": "509.25",
+          "same_finger_bigrams": "0.86%",
+          "skip_bigrams": "0.56%",
+          "lat_stretch_bigrams": "0.99%",
+          "scissors": "0.41%",
+          "pinky_off": "0.87%",
+          "bigram_roll_in": "20.72%",
+          "bigram_roll_out": "23.13%",
+          "roll_in": "0.20%",
+          "roll_out": "1.22%",
+          "redirect": "1.93%",
+          "weak_redirect": "0.16%"
+        }
+      }
+    },
+    {
+      "name": "semimak",
+      "url": "https://cyanophage.github.io/playground.html?layout=flhvzqwuoy-srntkcdeai%3Bx%27bmjpg%2C.%2F%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1050.8",
+          "effort": "553.38",
+          "same_finger_bigrams": "0.59%",
+          "skip_bigrams": "0.20%",
+          "lat_stretch_bigrams": "1.65%",
+          "scissors": "0.39%",
+          "pinky_off": "3.76%",
+          "bigram_roll_in": "20.37%",
+          "bigram_roll_out": "22.32%",
+          "roll_in": "0.94%",
+          "roll_out": "1.07%",
+          "redirect": "4.48%",
+          "weak_redirect": "0.26%"
+        }
+      },
+      "year": 2021
+    },
+    {
+      "name": "mtgap",
+      "url": "https://cyanophage.github.io/playground.html?layout=ypoujkdlcw-inea%2Cmhtsr%27qz%2F.%3Bbfgvx%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "902.5",
+          "effort": "521.04",
+          "same_finger_bigrams": "0.92%",
+          "skip_bigrams": "0.26%",
+          "lat_stretch_bigrams": "0.46%",
+          "scissors": "0.15%",
+          "pinky_off": "3.80%",
+          "bigram_roll_in": "28.38%",
+          "bigram_roll_out": "15.81%",
+          "roll_in": "1.61%",
+          "roll_out": "0.53%",
+          "redirect": "1.78%",
+          "weak_redirect": "1.40%"
+        }
+      },
+      "year": 2010
+    },
+    {
+      "name": "ctgap",
+      "url": "https://cyanophage.github.io/playground.html?layout=qplcjxfou%2F-rntsgyheia%3Bzbmwvkd%27%2C.%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "974.5",
+          "effort": "499.86",
+          "same_finger_bigrams": "0.74%",
+          "skip_bigrams": "0.39%",
+          "lat_stretch_bigrams": "1.01%",
+          "scissors": "0.68%",
+          "pinky_off": "1.23%",
+          "bigram_roll_in": "18.51%",
+          "bigram_roll_out": "25.10%",
+          "roll_in": "0.40%",
+          "roll_out": "1.44%",
+          "redirect": "2.28%",
+          "weak_redirect": "0.13%"
+        }
+      },
+      "year": 2022
+    },
+    {
+      "name": "recurva",
+      "url": "https://cyanophage.github.io/playground.html?layout=frdpvqjuoy-sntcb.heai%2Fzxkgwml%3B%27%2C%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1119.7",
+          "effort": "629.72",
+          "same_finger_bigrams": "0.56%",
+          "skip_bigrams": "0.21%",
+          "lat_stretch_bigrams": "1.19%",
+          "scissors": "0.44%",
+          "pinky_off": "4.40%",
+          "bigram_roll_in": "22.98%",
+          "bigram_roll_out": "25.11%",
+          "roll_in": "1.02%",
+          "roll_out": "1.08%",
+          "redirect": "2.79%",
+          "weak_redirect": "0.75%"
+        }
+      },
+      "year": 2023
+    },
+    {
+      "name": "halmak",
+      "url": "https://cyanophage.github.io/playground.html?layout=wlrbzqgudj-shnt%2C.aeoi%27fmvc%2F%3Bpxky%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1008.1",
+          "effort": "442.21",
+          "same_finger_bigrams": "1.97%",
+          "skip_bigrams": "0.61%",
+          "lat_stretch_bigrams": "0.40%",
+          "scissors": "0.56%",
+          "pinky_off": "5.48%",
+          "bigram_roll_in": "20.13%",
+          "bigram_roll_out": "18.01%",
+          "roll_in": "1.38%",
+          "roll_out": "0.59%",
+          "redirect": "2.52%",
+          "weak_redirect": "0.30%"
         }
       },
       "year": 2016
+    },
+    {
+      "name": "workman",
+      "url": "https://cyanophage.github.io/playground.html?layout=qdrwbjfup%3B-ashtgyneoi%27zxmcvkl%2C.%2F%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1108.3",
+          "effort": "525.34",
+          "same_finger_bigrams": "1.97%",
+          "skip_bigrams": "0.60%",
+          "lat_stretch_bigrams": "1.11%",
+          "scissors": "0.47%",
+          "pinky_off": "0.78%",
+          "bigram_roll_in": "23.86%",
+          "bigram_roll_out": "20.36%",
+          "roll_in": "1.89%",
+          "roll_out": "1.29%",
+          "redirect": "6.05%",
+          "weak_redirect": "0.81%"
+        }
+      },
+      "year": 2010
+    },
+    {
+      "name": "nerps",
+      "url": "https://cyanophage.github.io/playground.html?layout=xldpvzkou%3Bqnrtsgyheia-%2Fjmcwbf%27%2C.%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1061.7",
+          "effort": "565.02",
+          "same_finger_bigrams": "0.85%",
+          "skip_bigrams": "0.40%",
+          "lat_stretch_bigrams": "1.24%",
+          "scissors": "1.11%",
+          "pinky_off": "1.32%",
+          "bigram_roll_in": "19.72%",
+          "bigram_roll_out": "24.74%",
+          "roll_in": "0.40%",
+          "roll_out": "1.44%",
+          "redirect": "1.66%",
+          "weak_redirect": "0.28%"
+        }
+      },
+      "year": 2022
+    },
+    {
+      "name": "focal",
+      "url": "https://cyanophage.github.io/playground.html?layout=vlhgkqfouj-srntbycaei%2Fzxmdp%27w.%3B%2C%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1057.2",
+          "effort": "537.81",
+          "same_finger_bigrams": "0.53%",
+          "skip_bigrams": "0.30%",
+          "lat_stretch_bigrams": "0.99%",
+          "scissors": "0.46%",
+          "pinky_off": "2.09%",
+          "bigram_roll_in": "23.41%",
+          "bigram_roll_out": "22.18%",
+          "roll_in": "0.22%",
+          "roll_out": "1.20%",
+          "redirect": "2.93%",
+          "weak_redirect": "0.14%"
+        }
+      },
+      "year": 2024
+    },
+    {
+      "name": "isrt",
+      "url": "https://cyanophage.github.io/playground.html?layout=yclmkzfu%2C%27-isrtgpneao%3Bqvwdjbh%2F.x%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1049.8",
+          "effort": "497.86",
+          "same_finger_bigrams": "0.65%",
+          "skip_bigrams": "0.40%",
+          "lat_stretch_bigrams": "1.51%",
+          "scissors": "0.28%",
+          "pinky_off": "2.41%",
+          "bigram_roll_in": "22.68%",
+          "bigram_roll_out": "26.42%",
+          "roll_in": "0.77%",
+          "roll_out": "0.83%",
+          "redirect": "5.16%",
+          "weak_redirect": "0.76%"
+        }
+      },
+      "year": 2021
+    },
+    {
+      "name": "irst",
+      "url": "https://cyanophage.github.io/playground.html?layout=ylcmkzfu%2C%27-irstgbneao%3Bjxwdvph%2F.q%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1067.7",
+          "effort": "538.61",
+          "same_finger_bigrams": "0.64%",
+          "skip_bigrams": "0.20%",
+          "lat_stretch_bigrams": "1.45%",
+          "scissors": "0.11%",
+          "pinky_off": "2.39%",
+          "bigram_roll_in": "23.71%",
+          "bigram_roll_out": "25.43%",
+          "roll_in": "0.89%",
+          "roll_out": "0.85%",
+          "redirect": "5.02%",
+          "weak_redirect": "0.68%"
+        }
+      }
+    },
+    {
+      "name": "pine_v1",
+      "url": "https://cyanophage.github.io/playground.html?layout=ylrdwjmou%2C-csntgphaei%3Bxzqvkbf%27%2F.%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1096.0",
+          "effort": "575.12",
+          "same_finger_bigrams": "0.90%",
+          "skip_bigrams": "0.27%",
+          "lat_stretch_bigrams": "2.44%",
+          "scissors": "0.97%",
+          "pinky_off": "3.57%",
+          "bigram_roll_in": "21.26%",
+          "bigram_roll_out": "26.59%",
+          "roll_in": "0.24%",
+          "roll_out": "1.05%",
+          "redirect": "3.13%",
+          "weak_redirect": "0.18%"
+        }
+      }
+    },
+    {
+      "name": "pine_v4",
+      "url": "https://cyanophage.github.io/playground.html?layout=qlcmk%27fuoy-nrstwpheai%2Fjxzgvbd%3B%2C.%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "1020.4",
+          "effort": "574.16",
+          "same_finger_bigrams": "0.69%",
+          "skip_bigrams": "0.27%",
+          "lat_stretch_bigrams": "1.47%",
+          "scissors": "0.26%",
+          "pinky_off": "2.81%",
+          "bigram_roll_in": "21.57%",
+          "bigram_roll_out": "22.38%",
+          "roll_in": "0.98%",
+          "roll_out": "0.93%",
+          "redirect": "3.10%",
+          "weak_redirect": "0.24%"
+        }
+      }
+    },
+    {
+      "name": "beakl19bis",
+      "url": "https://cyanophage.github.io/playground.html?layout=qyouzwdnck-hiea%2Cgtrsp%3Bj%27%2F.xvmlfb%5C%5E&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "946.4",
+          "effort": "517.32",
+          "same_finger_bigrams": "0.95%",
+          "skip_bigrams": "0.70%",
+          "lat_stretch_bigrams": "1.52%",
+          "scissors": "0.39%",
+          "pinky_off": "2.26%",
+          "bigram_roll_in": "31.64%",
+          "bigram_roll_out": "11.03%",
+          "roll_in": "0.99%",
+          "roll_out": "0.08%",
+          "redirect": "1.50%",
+          "weak_redirect": "0.39%"
+        }
+      },
+      "year": 2020
+    },
+    {
+      "name": "maltron",
+      "url": "https://cyanophage.github.io/playground.html?layout=qpycbvmuzl%3Danisfdthor%27%2C.jg%3B%2Fwk-x%5Ce&mode=ergo&lan=english",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "805.9",
+          "effort": "518.95",
+          "same_finger_bigrams": "0.66%",
+          "skip_bigrams": "0.13%",
+          "lat_stretch_bigrams": "0.70%",
+          "scissors": "0.11%",
+          "pinky_off": "4.86%",
+          "bigram_roll_in": "21.79%",
+          "bigram_roll_out": "23.59%",
+          "roll_in": "2.99%",
+          "roll_out": "2.53%",
+          "redirect": "6.62%",
+          "weak_redirect": "1.76%"
+        }
+      },
+      "website": "https://en.wikipedia.org/wiki/Maltron#Layouts",
+      "year": 1977
+    },
+    {
+      "name": "rsthd",
+      "url": "https://cyanophage.github.io/playground.html?layout=jcyfkzl%2Cuq%3Drsthdmnaio%27%2Fvgpbxw.%3B-%5Ce&mode=ergo&lan=english",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "763.1",
+          "effort": "510.19",
+          "same_finger_bigrams": "0.70%",
+          "skip_bigrams": "0.29%",
+          "lat_stretch_bigrams": "0.81%",
+          "scissors": "0.09%",
+          "pinky_off": "0.79%",
+          "bigram_roll_in": "32.83%",
+          "bigram_roll_out": "15.30%",
+          "roll_in": "4.59%",
+          "roll_out": "0.48%",
+          "redirect": "6.40%",
+          "weak_redirect": "3.47%"
+        }
+      },
+      "website": "https://xsznix.wordpress.com/2016/05/16/introducing-the-rsthd-layout/",
+      "year": 2016
+    },
+    {
+      "name": "dsthk",
+      "url": "https://cyanophage.github.io/playground.html?layout=zcwbj-mu%27q%3Ddsthkvniao%2Ffgpr%3Bxly%2C.%5Ce&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "740.3",
+          "effort": "379.15",
+          "same_finger_bigrams": "0.87%",
+          "skip_bigrams": "0.69%",
+          "lat_stretch_bigrams": "0.42%",
+          "scissors": "0.43%",
+          "pinky_off": "2.82%",
+          "bigram_roll_in": "33.39%",
+          "bigram_roll_out": "14.35%",
+          "roll_in": "4.96%",
+          "roll_out": "0.95%",
+          "redirect": "6.43%",
+          "weak_redirect": "1.94%"
+        }
+      }
+    },
+    {
+      "name": "aptmak",
+      "url": "https://cyanophage.github.io/playground.html?layout=vwfpbjluy%27%3Drsthkxnaio%3B%2Fcgdqzm%2C.-%5Ce&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "727.9",
+          "effort": "393.84",
+          "same_finger_bigrams": "0.75%",
+          "skip_bigrams": "0.33%",
+          "lat_stretch_bigrams": "0.17%",
+          "scissors": "0.29%",
+          "pinky_off": "1.53%",
+          "bigram_roll_in": "31.96%",
+          "bigram_roll_out": "15.29%",
+          "roll_in": "4.57%",
+          "roll_out": "0.58%",
+          "redirect": "6.25%",
+          "weak_redirect": "3.94%"
+        }
+      }
+    },
+    {
+      "name": "caster",
+      "url": "https://cyanophage.github.io/playground.html?layout=bwdl%3B%2Ffouj-cstrxqnaih%27vygmz%3Dp.%2Ck%5Ce&mode=ergo&lan=english",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "673.2",
+          "effort": "353.33",
+          "same_finger_bigrams": "0.63%",
+          "skip_bigrams": "0.40%",
+          "lat_stretch_bigrams": "0.05%",
+          "scissors": "0.54%",
+          "pinky_off": "3.40%",
+          "bigram_roll_in": "28.46%",
+          "bigram_roll_out": "18.24%",
+          "roll_in": "2.64%",
+          "roll_out": "1.52%",
+          "redirect": "5.65%",
+          "weak_redirect": "2.02%"
+        }
+      },
+      "year": 2024
+    },
+    {
+      "name": "handsdown-vibranium",
+      "url": "https://cyanophage.github.io/playground.html?layout=xwmgqz.%27jb%3Bscntk%2Caeih%3Dvpld%2F-uoyf%5Cr&mode=ergo&lan=english",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "791.0",
+          "effort": "423.86",
+          "same_finger_bigrams": "0.57%",
+          "skip_bigrams": "0.35%",
+          "lat_stretch_bigrams": "0.36%",
+          "scissors": "0.44%",
+          "pinky_off": "4.11%",
+          "bigram_roll_in": "32.84%",
+          "bigram_roll_out": "12.26%",
+          "roll_in": "1.62%",
+          "roll_out": "0.20%",
+          "redirect": "1.29%",
+          "weak_redirect": "0.55%"
+        }
+      },
+      "year": 2023
+    },
+    {
+      "name": "handsdown-promethium",
+      "url": "https://cyanophage.github.io/playground.html?layout=fpdlx%3Buoybzsnthk%2Caeicqvwgmj-.%27%3D%2F%5Cr&mode=ergo&lan=english",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "732.1",
+          "effort": "398.09",
+          "same_finger_bigrams": "0.58%",
+          "skip_bigrams": "0.36%",
+          "lat_stretch_bigrams": "0.24%",
+          "scissors": "0.11%",
+          "pinky_off": "4.08%",
+          "bigram_roll_in": "29.17%",
+          "bigram_roll_out": "14.56%",
+          "roll_in": "1.72%",
+          "roll_out": "0.29%",
+          "redirect": "1.53%",
+          "weak_redirect": "0.87%"
+        }
+      },
+      "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1g66ivi/hands_down_promethium_snth_meets_hd_silverengram/",
+      "year": 2024
+    },
+    {
+      "name": "snth",
+      "url": "https://cyanophage.github.io/playground.html?layout=xpdmq%3Dyou%2C-snthvgcaei%3Bfbkljzw%27%2F.%5Cr&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "796.3",
+          "effort": "418.16",
+          "same_finger_bigrams": "0.36%",
+          "skip_bigrams": "0.37%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.64%",
+          "pinky_off": "3.76%",
+          "bigram_roll_in": "27.32%",
+          "bigram_roll_out": "17.32%",
+          "roll_in": "0.65%",
+          "roll_out": "1.35%",
+          "redirect": "2.32%",
+          "weak_redirect": "0.48%"
+        }
+      }
+    },
+    {
+      "name": "sunlight",
+      "url": "https://cyanophage.github.io/playground.html?layout=fwhgk%2Couypjsnltv.aeic%27xbmdq%3D%3B%2F-z%5Cr&mode=ergo&lan=english",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "total_word_effort": "787.0",
+          "effort": "458.46",
+          "same_finger_bigrams": "0.47%",
+          "skip_bigrams": "0.19%",
+          "lat_stretch_bigrams": "0.32%",
+          "scissors": "0.04%",
+          "pinky_off": "4.32%",
+          "bigram_roll_in": "23.14%",
+          "bigram_roll_out": "20.48%",
+          "roll_in": "0.70%",
+          "roll_out": "0.40%",
+          "redirect": "2.85%",
+          "weak_redirect": "0.46%"
+        }
+      }
+    },
+    {
+      "name": "nordrassil",
+      "url": "https://cyanophage.github.io/playground.html?layout=qyou-jgnwk%3Dhiea.pdrslzx%2F%27%2C%3Bbcmfv%5Ct&thumb=r&mode=ergo&lan=english",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "776.8",
+          "effort": "438.44",
+          "same_finger_bigrams": "0.77%",
+          "skip_bigrams": "0.54%",
+          "lat_stretch_bigrams": "0.85%",
+          "scissors": "0.33%",
+          "pinky_off": "1.88%",
+          "bigram_roll_in": "30.77%",
+          "bigram_roll_out": "11.80%",
+          "roll_in": "1.02%",
+          "roll_out": "0.04%",
+          "redirect": "1.10%",
+          "weak_redirect": "0.86%"
+        }
+      },
+      "website": "https://github.com/empressabyss/nordrassil",
+      "year": 2024
+    },
+    {
+      "name": "night",
+      "url": "https://cyanophage.github.io/playground.html?layout=bflkqpgou.%3Dnshtmycaei%3Bxvjdz%27w-%2F%2C%5Cr&mode=ergo&lan=english",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "857.5",
+          "effort": "491.42",
+          "same_finger_bigrams": "0.41%",
+          "skip_bigrams": "0.12%",
+          "lat_stretch_bigrams": "1.26%",
+          "scissors": "0.63%",
+          "pinky_off": "3.06%",
+          "bigram_roll_in": "22.90%",
+          "bigram_roll_out": "20.98%",
+          "roll_in": "0.61%",
+          "roll_out": "1.38%",
+          "redirect": "3.00%",
+          "weak_redirect": "0.09%"
+        }
+      },
+      "year": 2024
+    },
+    {
+      "name": "enthium_v9",
+      "url": "https://cyanophage.github.io/playground.html?layout=zwdlx%2Fouyq%5Csnthk%2Caeicbfpgmj%3B.%3D-%27vr&mode=ergo&lan=english&thumb=l",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "total_word_effort": "743.9",
+          "effort": "453.44",
+          "same_finger_bigrams": "0.48%",
+          "skip_bigrams": "0.35%",
+          "lat_stretch_bigrams": "0.18%",
+          "scissors": "0.08%",
+          "pinky_off": "3.51%",
+          "bigram_roll_in": "27.53%",
+          "bigram_roll_out": "16.51%",
+          "roll_in": "0.89%",
+          "roll_out": "0.37%",
+          "redirect": "2.06%",
+          "weak_redirect": "0.92%"
+        }
+      },
+      "website": "https://github.com/sunaku/enthium/tree/v9",
+      "year": 2025
     },
     {
       "name": "enthium_v11",
@@ -67,7 +938,13 @@
           "skip_bigrams": "0.34%",
           "lat_stretch_bigrams": "0.02%",
           "scissors": "0.17%",
-          "pinky_off": "3.31%"
+          "pinky_off": "3.31%",
+          "bigram_roll_in": "28.01%",
+          "bigram_roll_out": "17.08%",
+          "roll_in": "1.56%",
+          "roll_out": "0.37%",
+          "redirect": "1.36%",
+          "weak_redirect": "0.92%"
         }
       },
       "website": "https://github.com/sunaku/enthium/tree/v11",
@@ -85,7 +962,13 @@
           "skip_bigrams": "0.47%",
           "lat_stretch_bigrams": "0.37%",
           "scissors": "0.37%",
-          "pinky_off": "3.06%"
+          "pinky_off": "3.06%",
+          "bigram_roll_in": "32.02%",
+          "bigram_roll_out": "10.98%",
+          "roll_in": "1.02%",
+          "roll_out": "0.04%",
+          "redirect": "0.83%",
+          "weak_redirect": "0.87%"
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1oqqfql/%F0%96%A3%82nordrassils_rejuvenation%EF%BE%9F_a_refinement_of_the/",

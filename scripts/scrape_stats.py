@@ -63,12 +63,52 @@ def scrape_layout_stats(url: str) -> dict:
             except Exception as e:
                 print(f"Could not calculate pinky off: {e}")
             
+            # Calculate trigram percentages using JavaScript
+            trigram_percentages = None
+            try:
+                trigram_percentages = page.evaluate("""
+                    () => {
+                        if (typeof m_trigram_count !== 'undefined') {
+                            // Calculate the total sum of all values
+                            const total_sum = Object.values(m_trigram_count).reduce((sum, value) => sum + value, 0);
+                            
+                            // Create the new object with percentages
+                            const m_trigram_percentage = Object.entries(m_trigram_count).reduce((acc, [key, value]) => {
+                                // Calculate percentage, multiply by 100, and round to 2 decimal places
+                                acc[key] = Math.round((value / total_sum) * 10000) / 100; 
+                                return acc;
+                            }, {});
+                            
+                            return m_trigram_percentage;
+                        }
+                        return null;
+                    }
+                """)
+            except Exception as e:
+                print(f"Could not calculate trigram percentages: {e}")
+            
             # Try to find the statistics on the page
             # This will need to be adjusted based on the actual HTML structure
             stats = {}
             
             if pinky_off_pct:
                 stats['pinky_off'] = pinky_off_pct
+            
+            # Add trigram percentages to stats
+            if trigram_percentages:
+                # Format percentages with % sign
+                if 'bigram roll in' in trigram_percentages:
+                    stats['bigram_roll_in'] = f"{trigram_percentages['bigram roll in']:.2f}%"
+                if 'bigram roll out' in trigram_percentages:
+                    stats['bigram_roll_out'] = f"{trigram_percentages['bigram roll out']:.2f}%"
+                if 'roll in' in trigram_percentages:
+                    stats['roll_in'] = f"{trigram_percentages['roll in']:.2f}%"
+                if 'roll out' in trigram_percentages:
+                    stats['roll_out'] = f"{trigram_percentages['roll out']:.2f}%"
+                if 'redirect' in trigram_percentages:
+                    stats['redirect'] = f"{trigram_percentages['redirect']:.2f}%"
+                if 'weak redirect' in trigram_percentages:
+                    stats['weak_redirect'] = f"{trigram_percentages['weak redirect']:.2f}%"
             
             # Get all visible text from the page
             all_text = page.inner_text('body')
@@ -137,6 +177,18 @@ def scrape_layout_stats(url: str) -> dict:
                 stats['scissors'] = None
             if 'pinky_off' not in stats:
                 stats['pinky_off'] = None
+            if 'bigram_roll_in' not in stats:
+                stats['bigram_roll_in'] = None
+            if 'bigram_roll_out' not in stats:
+                stats['bigram_roll_out'] = None
+            if 'roll_in' not in stats:
+                stats['roll_in'] = None
+            if 'roll_out' not in stats:
+                stats['roll_out'] = None
+            if 'redirect' not in stats:
+                stats['redirect'] = None
+            if 'weak_redirect' not in stats:
+                stats['weak_redirect'] = None
             
             browser.close()
             return stats
@@ -219,7 +271,13 @@ def main():
                 'skip_bigrams': stats.get('skip_bigrams'),
                 'lat_stretch_bigrams': stats.get('lat_stretch_bigrams'),
                 'scissors': stats.get('scissors'),
-                'pinky_off': stats.get('pinky_off')
+                'pinky_off': stats.get('pinky_off'),
+                'bigram_roll_in': stats.get('bigram_roll_in'),
+                'bigram_roll_out': stats.get('bigram_roll_out'),
+                'roll_in': stats.get('roll_in'),
+                'roll_out': stats.get('roll_out'),
+                'redirect': stats.get('redirect'),
+                'weak_redirect': stats.get('weak_redirect')
             }
             
             print(f"  Results:")
@@ -230,6 +288,12 @@ def main():
             print(f"    Lat Stretch Bigrams: {stats.get('lat_stretch_bigrams', 'N/A')}")
             print(f"    Scissors: {stats.get('scissors', 'N/A')}")
             print(f"    Pinky Off: {stats.get('pinky_off', 'N/A')}")
+            print(f"    Bigram Roll In: {stats.get('bigram_roll_in', 'N/A')}")
+            print(f"    Bigram Roll Out: {stats.get('bigram_roll_out', 'N/A')}")
+            print(f"    Roll In: {stats.get('roll_in', 'N/A')}")
+            print(f"    Roll Out: {stats.get('roll_out', 'N/A')}")
+            print(f"    Redirect: {stats.get('redirect', 'N/A')}")
+            print(f"    Weak Redirect: {stats.get('weak_redirect', 'N/A')}")
         
         results['layouts'].append(layout_data)
     
