@@ -301,7 +301,7 @@ function renderTable(data) {
             // Get the layout data for this row
             const layout = data[index];
             if (layout && window.keyboardAccordion) {
-                window.keyboardAccordion.toggle(layout.name, layout.url, row);
+                window.keyboardAccordion.toggle(layout.name, layout.url, row, layout.thumb);
             }
         });
     });

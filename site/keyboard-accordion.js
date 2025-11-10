@@ -146,12 +146,27 @@ function createKey(id, x, y, isHome, isThumb) {
 
 /**
  * Draws the entire 40-key keyboard skeleton.
+ * @param {SVGElement} svgElement - The SVG element to draw in
+ * @param {boolean} showThumbs - Whether to show thumb keys
  */
-function drawKeyboard(svgElement) {
+function drawKeyboard(svgElement, showThumbs = true) {
     svgElement.innerHTML = '';
+    
+    // Adjust SVG viewBox height based on whether thumbs are shown
+    if (showThumbs) {
+        svgElement.setAttribute('viewBox', '0 0 800 280');
+        svgElement.setAttribute('height', '280');
+    } else {
+        svgElement.setAttribute('viewBox', '0 0 800 220');
+        svgElement.setAttribute('height', '220');
+    }
+    
     keyPositions.forEach((pos, i) => {
         const isHome = (i >= 12 && i <= 17) || (i >= 18 && i <= 23);
         const isThumb = i >= 36;
+        
+        // Skip thumb keys if not showing thumbs
+        if (isThumb && !showThumbs) return;
         
         const key = createKey(i, pos.x, pos.y, isHome, isThumb);
         svgElement.appendChild(key);
@@ -260,6 +275,9 @@ function parseAndDisplay(rawValue, svgElement) {
     }
     
     updateLayout(finalLayout, svgElement);
+    
+    // Return whether thumbs are used
+    return thumbSide !== null;
 }
 
 // Accordion management
@@ -274,7 +292,7 @@ class KeyboardAccordion {
         this.isInitialized = true;
     }
 
-    toggle(layoutName, layoutUrl, rowElement) {
+    toggle(layoutName, layoutUrl, rowElement, hasThumbs) {
         // Check if this row is already open
         const accordionRow = rowElement.nextElementSibling;
         const isOpen = accordionRow && accordionRow.classList.contains('accordion-row');
@@ -284,11 +302,11 @@ class KeyboardAccordion {
             this.close(rowElement);
         } else {
             // Open it
-            this.open(layoutName, layoutUrl, rowElement);
+            this.open(layoutName, layoutUrl, rowElement, hasThumbs);
         }
     }
 
-    open(layoutName, layoutUrl, rowElement) {
+    open(layoutName, layoutUrl, rowElement, hasThumbs = false) {
         // Create accordion row
         const accordionRow = this.createAccordionRow(layoutName, layoutUrl);
         rowElement.insertAdjacentElement('afterend', accordionRow);
@@ -302,7 +320,7 @@ class KeyboardAccordion {
         
         // Parse and display the layout
         const svg = accordionRow.querySelector('#keyboard-svg');
-        drawKeyboard(svg);
+        drawKeyboard(svg, hasThumbs);
         parseAndDisplay(layoutUrl, svg);
         
         // Add to open rows set
