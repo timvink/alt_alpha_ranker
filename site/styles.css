@@ -32,7 +32,7 @@ h1 {
     font-size: 0.85rem;
     line-height: 1.2;
     color: #667eea;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     white-space: pre;
     overflow-x: auto;
     font-weight: bold;
@@ -46,17 +46,6 @@ h1 {
     transform: scale(1.02);
 }
 
-.ascii-title-large {
-    display: block;
-}
-
-.ascii-title-small {
-    display: none;
-    font-size: 0.42rem;
-    text-align: center;
-    line-height: 1.1;
-}
-
 body.dark-mode .ascii-title {
     color: #9f7aea;
 }
@@ -66,13 +55,120 @@ body.dark-mode .ascii-title:hover {
     text-shadow: 0 0 25px rgba(159, 122, 234, 0.6);
 }
 
+/* Tablet size - medium */
 @media (max-width: 768px) {
-    .ascii-title-large {
-        display: none;
+    .ascii-title {
+        font-size: 0.42rem;
+        text-align: center;
+        line-height: 1.1;
+    }
+}
+
+/* Mobile size - extra small */
+@media (max-width: 480px) {
+    .ascii-title {
+        font-size: 0.28rem;
+        line-height: 1.0;
+    }
+}
+
+/* Intro Section Styling */
+.intro-section {
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 2.5rem;
+}
+
+.intro-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #2d3748;
+    margin-bottom: 1.25rem;
+}
+
+.usage-text {
+    font-size: 0.925rem;
+    line-height: 1.65;
+    color: #718096;
+}
+
+.intro-text p,
+.usage-text p {
+    margin-bottom: 0.5rem;
+}
+
+.intro-text p:last-child,
+.usage-text p:last-child {
+    margin-bottom: 0;
+}
+
+.intro-section a {
+    color: #667eea;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.2s ease;
+}
+
+.intro-section a:hover {
+    color: #5a67d8;
+    border-bottom-color: #5a67d8;
+}
+
+.intro-section i {
+    color: #667eea;
+    font-size: 0.85rem;
+}
+
+/* Dark mode styles for intro section */
+body.dark-mode .intro-section {
+    background: transparent;
+}
+
+body.dark-mode .intro-text {
+    color: #e2e8f0;
+}
+
+body.dark-mode .usage-text {
+    color: #a0aec0;
+}
+
+body.dark-mode .intro-section a {
+    color: #9f7aea;
+    border-bottom-color: rgba(159, 122, 234, 0.3);
+}
+
+body.dark-mode .intro-section a:hover {
+    color: #b794f4;
+    border-bottom-color: #b794f4;
+}
+
+body.dark-mode .intro-section i {
+    color: #9f7aea;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .intro-section {
+        margin-bottom: 2rem;
     }
 
-    .ascii-title-small {
-        display: block;
+    .intro-text {
+        font-size: 1rem;
+    }
+
+    .usage-text {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .intro-text {
+        font-size: 0.95rem;
+    }
+
+    .usage-text {
+        font-size: 0.875rem;
     }
 }
 
