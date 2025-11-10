@@ -1,0 +1,65 @@
+name: Add New Keyboard Layout
+description: Submit a new keyboard layout to be added to the ranker
+title: "[New Layout]: "
+labels: ["new-layout"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing a new keyboard layout! Please fill out the information below.
+        
+  - type: input
+    id: name
+    attributes:
+      label: Layout Name
+      description: The name of the keyboard layout
+      placeholder: e.g., graphite, canary, colemak-dh
+    validations:
+      required: true
+      
+  - type: input
+    id: link
+    attributes:
+      label: Cyanophage Link
+      description: The URL to the layout on cyanophage.github.io playground
+      placeholder: https://cyanophage.github.io/playground.html?layout=...
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: thumb
+    attributes:
+      label: Uses Thumb Keys
+      description: Does this layout use thumb keys for letters?
+      options:
+        - "false"
+        - "true"
+    validations:
+      required: true
+      
+  - type: input
+    id: year
+    attributes:
+      label: Year Created
+      description: What year was this layout created? (Optional)
+      placeholder: e.g., 2023
+    validations:
+      required: false
+      
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      description: Official website or repository for the layout (Optional)
+      placeholder: https://github.com/username/layout-name
+    validations:
+      required: false
+      
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any other relevant information about this layout
+      placeholder: Additional context, features, or notes about the layout
+    validations:
+      required: false
