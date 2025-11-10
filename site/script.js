@@ -73,13 +73,11 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 // Apply dark mode if saved as dark, or if no saved preference and system prefers dark
 if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
     body.classList.add('dark-mode');
-    themeToggle.textContent = '☀️';
 }
 
 themeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-mode');
     const isDark = body.classList.contains('dark-mode');
-    themeToggle.textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 

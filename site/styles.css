@@ -52,7 +52,7 @@ h1 {
 
 .ascii-title-small {
     display: none;
-    font-size: 0.6rem;
+    font-size: 0.42rem;
     text-align: center;
     line-height: 1.1;
 }
@@ -308,6 +308,7 @@ body.dark-mode .layout-name a:hover {
     text-align: center;
     color: #718096;
     font-size: 0.85rem;
+    position: relative;
 }
 
 .footer a {
@@ -334,23 +335,36 @@ body.dark-mode .footer a:hover {
 }
 
 .theme-toggle {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    background: rgba(255, 255, 255, 0.2);
+    background: transparent;
     border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
     cursor: pointer;
-    font-size: 1.5rem;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    padding: 0.25rem;
+    color: #718096;
+    margin-top: 1rem;
+    opacity: 0.7;
 }
 
 .theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: rotate(20deg);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.theme-toggle-light {
+    display: none;
+}
+
+body.dark-mode .theme-toggle {
+    color: #a0aec0;
+}
+
+body.dark-mode .theme-toggle-light {
+    display: inline;
+}
+
+body.dark-mode .theme-toggle-dark {
+    display: none;
 }
 
 /* Dark mode styles */
