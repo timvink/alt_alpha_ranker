@@ -291,6 +291,22 @@ function renderTable(data) {
             toggleStar(layoutName);
         });
     });
+    
+    // Add click handlers for table rows to toggle keyboard accordion
+    document.querySelectorAll('#layoutTable tbody tr').forEach((row, index) => {
+        row.addEventListener('click', (e) => {
+            // Don't toggle accordion if clicking on links or icons
+            if (e.target.closest('a') || e.target.closest('.pin-icon') || e.target.closest('.star-icon')) {
+                return;
+            }
+            
+            // Get the layout data for this row
+            const layout = data[index];
+            if (layout && window.keyboardAccordion) {
+                window.keyboardAccordion.toggle(layout.name, layout.url, row);
+            }
+        });
+    });
 }
 
 // Sort data based on current sort settings

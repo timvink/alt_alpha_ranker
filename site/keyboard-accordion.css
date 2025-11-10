@@ -1,0 +1,113 @@
+/* Accordion Styles */
+.accordion-row {
+    background: transparent;
+}
+
+.accordion-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.accordion-content.open {
+    max-height: 350px;
+    padding: 0.75rem 0 0.25rem 0;
+}
+
+.keyboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    background: transparent;
+    width: 100%;
+}
+
+.keyboard-container svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Keyboard SVG Styles */
+.key-legend {
+    font-size: 14px;
+    font-weight: 500;
+    fill: #111827;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+    user-select: none;
+}
+
+.key-rect {
+    fill: #f3f4f6;
+    stroke: #9ca3af;
+    stroke-width: 1.5;
+    rx: 6;
+    ry: 6;
+}
+
+.home-key .key-rect {
+    fill: #dbeafe;
+}
+
+.thumb-key .key-rect {
+    fill: #e0e7ff;
+}
+
+/* Dark mode support for accordion */
+body.dark-mode .accordion-row {
+    background: transparent;
+}
+
+body.dark-mode .key-legend {
+    fill: #e2e8f0;
+}
+
+body.dark-mode .key-rect {
+    fill: #4a5568;
+    stroke: #718096;
+}
+
+body.dark-mode .home-key .key-rect {
+    fill: #2c5282;
+}
+
+body.dark-mode .thumb-key .key-rect {
+    fill: #434190;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .accordion-content.open {
+        max-height: 600px;
+    }
+    
+    .keyboard-container svg {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Make table rows clickable */
+#layoutTable tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#layoutTable tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+#layoutTable tbody tr.active {
+    background-color: rgba(102, 126, 234, 0.1);
+}
+
+body.dark-mode #layoutTable tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.15);
+}
+
+body.dark-mode #layoutTable tbody tr.active {
+    background-color: rgba(102, 126, 234, 0.25);
+}
