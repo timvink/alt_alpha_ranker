@@ -171,10 +171,10 @@ layouts:
   website: https://www.reddit.com/r/KeyboardLayouts/comments/1g66ivi/hands_down_promethium_snth_meets_hd_silverengram/
 - name: snth
   link: https://cyanophage.github.io/playground.html?layout=xpdmq%3Dyou%2C-snthvgcaei%3Bfbkljzw%27%2F.%5Cr&mode=ergo&lan=english
-  thumb: false
+  thumb: true
 - name: sunlight
   link: https://cyanophage.github.io/playground.html?layout=fwhgk%2Couypjsnltv.aeic%27xbmdq%3D%3B%2F-z%5Cr&mode=ergo&lan=english
-  thumb: false
+  thumb: true
 - name: nordrassil
   link: https://cyanophage.github.io/playground.html?layout=qyou-jgnwk%3Dhiea.pdrslzx%2F%27%2C%3Bbcmfv%5Ct&thumb=r&mode=ergo&lan=english
   thumb: true
