@@ -48,6 +48,12 @@
     ry: 6;
 }
 
+.home-position-key .key-rect {
+    fill: #e5e7eb;
+    stroke: #9ca3af;
+    stroke-width: 1.5;
+}
+
 /* Dark mode support for accordion */
 body.dark-mode .accordion-row {
     background: transparent;
@@ -60,6 +66,12 @@ body.dark-mode .key-legend {
 body.dark-mode .key-rect {
     fill: #4a5568;
     stroke: #718096;
+}
+
+body.dark-mode .home-position-key .key-rect {
+    fill: #3a4556;
+    stroke: #718096;
+    stroke-width: 1.5;
 }
 
 /* Responsive design */

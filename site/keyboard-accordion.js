@@ -13,7 +13,8 @@ const GAP = 5;
 const KS = KEY_W + GAP;
 
 // Columnar stagger (vertical offset for each column)
-const STAGGER = [30, 15, 0, 0, 15, 30];
+// ZSA Voyager stagger: middle finger highest, ring/index same & lower, pinky twice as low
+const STAGGER = [20, 20, 10, 0, 10, 20];
 
 // Hand offsets
 const LEFT_HAND_X = 50;
@@ -102,10 +103,27 @@ function createKey(id, x, y, isHome, isThumb) {
     const group = document.createElementNS(ns, 'g');
     group.setAttribute('id', `key-group-${id}`);
     
+    // Home position keys are the 8 keys where fingers rest (A,S,D,F and J,K,L,;)
+    const isHomePosition = (id >= 13 && id <= 16) || (id >= 19 && id <= 22);
+    
     let groupClass = 'key';
     if (isHome) groupClass += ' home-key';
     if (isThumb) groupClass += ' thumb-key';
+    if (isHomePosition) groupClass += ' home-position-key';
     group.setAttribute('class', groupClass);
+
+    // Apply rotation for thumb keys (20% incline towards middle)
+    if (isThumb) {
+        let angle = 0;
+        if (id === 36) angle = 6;   // Left inner thumb: slight clockwise
+        if (id === 37) angle = 12;  // Left outer thumb: more clockwise
+        if (id === 38) angle = -12; // Right outer thumb: more counter-clockwise
+        if (id === 39) angle = -6;  // Right inner thumb: slight counter-clockwise
+        
+        const centerX = x + KEY_W / 2;
+        const centerY = y + KEY_H / 2;
+        group.setAttribute('transform', `rotate(${angle} ${centerX} ${centerY})`);
+    }
 
     const rect = document.createElementNS(ns, 'rect');
     rect.setAttribute('x', x);
