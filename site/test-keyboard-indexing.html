@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Indexing Test</title>
+    <link rel="stylesheet" href="keyboard.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        pre {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .svg-container {
+            margin: 20px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Keyboard Indexing System Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Full Layout (QWERTY)</h2>
+        <div id="test1-output"></div>
+        <div class="svg-container">
+            <svg id="keyboard1"></svg>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Partial Layout (Some Unassigned Keys)</h2>
+        <div id="test2-output"></div>
+        <div class="svg-container">
+            <svg id="keyboard2"></svg>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Key Index Access</h2>
+        <div id="test3-output"></div>
+    </div>
+
+    <script src="keyboard.js"></script>
+    <script src="keyboard_visualization.js"></script>
+    <script>
+        // Test 1: Full QWERTY layout
+        function test1() {
+            const layout = new KeyboardLayout();
+            
+            // QWERTY top row: q w e r t y u i o p (10 keys, 5 per hand)
+            // Left hand cols 1-5, Right hand cols 0-4
+            layout.setLeftKey(0, 1, 'q');
+            layout.setLeftKey(0, 2, 'w');
+            layout.setLeftKey(0, 3, 'e');
+            layout.setLeftKey(0, 4, 'r');
+            layout.setLeftKey(0, 5, 't');
+            
+            layout.setRightKey(0, 0, 'y');
+            layout.setRightKey(0, 1, 'u');
+            layout.setRightKey(0, 2, 'i');
+            layout.setRightKey(0, 3, 'o');
+            layout.setRightKey(0, 4, 'p');
+            
+            // QWERTY home row: a s d f g h j k l ;
+            layout.setLeftKey(1, 1, 'a');
+            layout.setLeftKey(1, 2, 's');
+            layout.setLeftKey(1, 3, 'd');
+            layout.setLeftKey(1, 4, 'f');
+            layout.setLeftKey(1, 5, 'g');
+            
+            layout.setRightKey(1, 0, 'h');
+            layout.setRightKey(1, 1, 'j');
+            layout.setRightKey(1, 2, 'k');
+            layout.setRightKey(1, 3, 'l');
+            layout.setRightKey(1, 4, ';');
+            
+            // QWERTY bottom row: z x c v b n m , . /
+            layout.setLeftKey(2, 1, 'z');
+            layout.setLeftKey(2, 2, 'x');
+            layout.setLeftKey(2, 3, 'c');
+            layout.setLeftKey(2, 4, 'v');
+            layout.setLeftKey(2, 5, 'b');
+            
+            layout.setRightKey(2, 0, 'n');
+            layout.setRightKey(2, 1, 'm');
+            layout.setRightKey(2, 2, ',');
+            layout.setRightKey(2, 3, '.');
+            layout.setRightKey(2, 4, '/');
+            
+            // Render
+            renderKeyboard(layout, document.getElementById('keyboard1'));
+            
+            // Test getKeyByIndex
+            let output = '<pre>';
+            output += 'Testing getKeyByIndex for home row positions (13-16, 19-22):\n';
+            output += 'Left hand home row (resting position, cols 1-4):\n';
+            for (let i = 13; i <= 16; i++) {
+                const info = layout.getKeyInfo(i);
+                output += `  Index ${i}: '${layout.getKeyByIndex(i)}' - ${info.hand} ${info.finger}, col ${info.col}, home=${info.homePosition}\n`;
+            }
+            output += '\nRight hand home row (resting position, cols 1-4):\n';
+            for (let i = 19; i <= 22; i++) {
+                const info = layout.getKeyInfo(i);
+                output += `  Index ${i}: '${layout.getKeyByIndex(i)}' - ${info.hand} ${info.finger}, col ${info.col}, home=${info.homePosition}\n`;
+            }
+            output += '</pre>';
+            document.getElementById('test1-output').innerHTML = output;
+        }
+        
+        // Test 2: Partial layout with unassigned keys
+        function test2() {
+            const layout = new KeyboardLayout();
+            
+            // Only assign keys to middle positions, leaving outer keys unassigned
+            // Left hand - only middle 3 keys per row
+            layout.setLeftKey(0, 2, 'q');
+            layout.setLeftKey(0, 3, 'w');
+            layout.setLeftKey(0, 4, 'e');
+            
+            layout.setLeftKey(1, 2, 'a');
+            layout.setLeftKey(1, 3, 's');
+            layout.setLeftKey(1, 4, 'd');
+            
+            layout.setLeftKey(2, 2, 'z');
+            layout.setLeftKey(2, 3, 'x');
+            layout.setLeftKey(2, 4, 'c');
+            
+            // Right hand - only middle 3 keys per row
+            layout.setRightKey(0, 1, 'i');
+            layout.setRightKey(0, 2, 'o');
+            layout.setRightKey(0, 3, 'p');
+            
+            layout.setRightKey(1, 1, 'k');
+            layout.setRightKey(1, 2, 'l');
+            layout.setRightKey(1, 3, ';');
+            
+            layout.setRightKey(2, 1, 'm');
+            layout.setRightKey(2, 2, ',');
+            layout.setRightKey(2, 3, '.');
+            
+            // Thumb keys
+            layout.leftHand.thumbInner = ' ';
+            layout.rightHand.thumbInner = ' ';
+            
+            // Render
+            renderKeyboard(layout, document.getElementById('keyboard2'));
+            
+            // Show which keys are assigned
+            let output = '<pre>';
+            output += 'Assigned keys by index:\n';
+            const flatArray = layout.toFlatArray();
+            for (let i = 0; i < 40; i++) {
+                if (layout.isKeyAssigned(i)) {
+                    const info = layout.getKeyInfo(i);
+                    output += `  Index ${i}: '${flatArray[i]}' (${info.hand} ${info.finger})\n`;
+                }
+            }
+            output += '\nUnassigned key count: ' + flatArray.filter(c => c === ' ').length;
+            output += '</pre>';
+            document.getElementById('test2-output').innerHTML = output;
+        }
+        
+        // Test 3: Key index manipulation
+        function test3() {
+            const layout = new KeyboardLayout();
+            
+            let output = '<pre>';
+            output += 'Testing setKeyByIndex and findCharacterIndices:\n\n';
+            
+            // Set some keys using the new index-based method
+            layout.setKeyByIndex(14, 'x'); // L_HOME_RING (col 2)
+            layout.setKeyByIndex(21, 'y'); // R_HOME_RING (col 3)
+            layout.setKeyByIndex(36, 'z'); // L_THUMB_INNER
+            
+            output += 'Set keys:\n';
+            output += `  Index 14 (L_HOME_RING): '${layout.getKeyByIndex(14)}'\n`;
+            output += `  Index 21 (R_HOME_RING): '${layout.getKeyByIndex(21)}'\n`;
+            output += `  Index 36 (L_THUMB_INNER): '${layout.getKeyByIndex(36)}'\n\n`;
+            
+            // Test finding characters
+            layout.setKeyByIndex(13, 'a'); // Left home pinky (col 1)
+            layout.setKeyByIndex(22, 'a'); // Right home pinky (col 4)
+            
+            const aIndices = layout.findCharacterIndices('a');
+            output += `Character 'a' found at indices: ${aIndices.join(', ')}\n\n`;
+            
+            // Test key metadata
+            output += 'Key metadata examples:\n';
+            const testIndices = [0, 13, 14, 15, 16, 19, 20, 21, 22, 36, 39];
+            for (const idx of testIndices) {
+                const info = layout.getKeyInfo(idx);
+                output += `  Index ${idx}: ${info.hand} hand, ${info.row} row, ${info.finger} finger, col ${info.col !== undefined ? info.col : 'N/A'}`;
+                if (info.homePosition) output += ' [HOME POSITION]';
+                output += '\n';
+            }
+            
+            output += '\nHome position keys (where fingers rest):\n';
+            const homeKeys = KeyMetadata.filter(m => m.homePosition).map(m => m.index);
+            output += `Indices: ${homeKeys.join(', ')}\n`;
+            output += `Count: ${homeKeys.length} keys (4 per hand)\n`;
+            
+            output += '</pre>';
+            document.getElementById('test3-output').innerHTML = output;
+        }
+        
+        // Run tests
+        test1();
+        test2();
+        test3();
+        
+        console.log('All tests completed. Check the page for results.');
+        console.log('KeyIndex constants:', KeyIndex);
+        console.log('KeyMetadata sample:', KeyMetadata.slice(0, 5));
+    </script>
+</body>
+</html>
