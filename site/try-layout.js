@@ -25,6 +25,7 @@ let translatedText = '';  // The text translated to what keys to press on known 
 let currentPosition = 0;
 let errorCount = 0;
 let isComplete = false;
+let startTime = null;  // Track when typing started for WPM calculation
 
 /**
  * Initialize the try layout page
@@ -188,7 +189,34 @@ function setupEventListeners() {
         hiddenInput.focus();
     });
     
+    // Track if Tab was pressed for tab+enter restart combo
+    let tabPressed = false;
+    
     document.addEventListener('keydown', (e) => {
+        // Handle Tab key - prepare for restart
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            tabPressed = true;
+            // Visual feedback that tab was pressed
+            document.getElementById('tabKey')?.classList.add('active');
+            return;
+        }
+        
+        // Handle Enter key - restart if Tab was pressed first
+        if (e.key === 'Enter' && tabPressed) {
+            e.preventDefault();
+            tabPressed = false;
+            document.getElementById('tabKey')?.classList.remove('active');
+            resetTyping();
+            return;
+        }
+        
+        // Any other key resets the tab state
+        if (e.key !== 'Tab' && e.key !== 'Enter') {
+            tabPressed = false;
+            document.getElementById('tabKey')?.classList.remove('active');
+        }
+        
         // If not already focused and it's a printable key, focus the input
         if (document.activeElement !== hiddenInput && e.key.length === 1) {
             hiddenInput.focus();
@@ -339,6 +367,11 @@ function handleKeyInput(e) {
     
     e.preventDefault();
     
+    // Start timer on first keystroke
+    if (startTime === null) {
+        startTime = Date.now();
+    }
+    
     const pressedKey = e.key;
     const expectedChar = translatedText[currentPosition];
     
@@ -445,6 +478,17 @@ function updateStats() {
     const progress = Math.round((currentPosition / total) * 100);
     document.getElementById('progressStat').textContent = `${progress}%`;
     document.getElementById('errorsStat').textContent = errorCount;
+    
+    // Calculate WPM (words = characters / 5, standard typing test convention)
+    let wpm = 0;
+    if (startTime && currentPosition > 0) {
+        const elapsedMinutes = (Date.now() - startTime) / 60000;
+        if (elapsedMinutes > 0) {
+            const words = currentPosition / 5;
+            wpm = Math.round(words / elapsedMinutes);
+        }
+    }
+    document.getElementById('wpmStat').textContent = wpm;
 }
 
 /**
@@ -461,6 +505,7 @@ function resetTyping() {
     currentPosition = 0;
     errorCount = 0;
     isComplete = false;
+    startTime = null;
     
     document.getElementById('completeMessage').classList.remove('show');
     

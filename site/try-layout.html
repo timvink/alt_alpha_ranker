@@ -365,6 +365,47 @@
         .complete-button:active {
             transform: translateY(0);
         }
+
+        /* Keyboard shortcut styling */
+        kbd {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.5em;
+            padding: 0.15em 0.4em;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.85em;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-left: 0.3em;
+        }
+
+        .restart-hint {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .restart-hint kbd {
+            background: rgba(0, 0, 0, 0.06);
+            color: var(--text-secondary);
+            margin: 0 0.15em;
+            padding: 0.2em 0.5em;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .restart-hint kbd.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        body.dark-mode .restart-hint kbd {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark-mode .restart-hint kbd.active {
+            background: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -450,7 +491,7 @@
                     <h3>🎉 Complete!</h3>
                     <p>Great job! You've finished typing the text.</p>
                     <button class="complete-button" onclick="resetTyping()">
-                        Try Again
+                        Try Again <kbd>↵</kbd>
                     </button>
                 </div>
 
@@ -463,16 +504,16 @@
                         <span class="stat-value" id="errorsStat">0</span>
                         <span class="stat-label">errors</span>
                     </div>
-                    <div class="stats-spacer"></div>
-                    <button class="reset-button" onclick="resetTyping()">
-                        ↺ Reset
-                    </button>
+                    <div class="stat-item">
+                        <span class="stat-value" id="wpmStat">0</span>
+                        <span class="stat-label">wpm</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>Experience different keyboard layouts at <a href="https://cyanophage.github.io/" target="_blank">cyanophage.github.io</a>.</p>
+            <p class="restart-hint"><kbd id="tabKey">tab</kbd> + <kbd id="enterKey">enter</kbd> = restart test</p>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                 <span class="theme-toggle-light">☀</span>
                 <span class="theme-toggle-dark">☾</span>
