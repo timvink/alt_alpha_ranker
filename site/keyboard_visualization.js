@@ -215,3 +215,13 @@ function renderKeyboard(layout, svgElement) {
     const flatArray = layout.toFlatArray();
     updateKeyboardFromArray(flatArray, svgElement);
 }
+
+// Export to window for browser usage
+if (typeof window !== 'undefined') {
+    window.renderKeyboard = renderKeyboard;
+    window.drawKeyboard = drawKeyboard;
+    window.updateKeyboardFromArray = updateKeyboardFromArray;
+}
+
+// ES module exports
+export { renderKeyboard, drawKeyboard, updateKeyboardFromArray };

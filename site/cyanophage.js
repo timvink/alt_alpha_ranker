@@ -5,20 +5,76 @@
 
 import { KeyboardLayout } from './keyboard.js';
 
-// Cyanophage KEY_MAP: maps 34 string positions to 34 physical keyboard positions
-// Based on user-provided map (image_257205.jpg)
-const CYANOPHAGE_KEY_MAP = [
-    // User keys 1-11 (string pos 0-10)
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-    // User keys 12-22 (string pos 11-21)
-    13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-    // User keys 23-32 (string pos 22-31)
-    25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
-    // User key 33 (string pos 32)
-    24,
-    // User key 35 (string pos 34)
-    12
-];
+// Cyanophage layout string to our physical key index mapping
+// Based on rcdata from https://cyanophage.github.io/keyboard_svg.js
+// 
+// rcdata format: [char, row, col, freq, y, x, width, keyname]
+// Cyanophage uses columns 1-11 for the 32 main keys (col 0 is for special keys)
+// Columns 1-5 = left hand, columns 6-11 = right hand
+//
+// Our physical index layout:
+//   Left Hand (cols 0-5)          Right Hand (cols 0-5)
+//   [0] [1] [2] [3] [4] [5]      [6] [7] [8] [9][10][11]    Top Row
+//   [12][13][14][15][16][17]    [18][19][20][21][22][23]    Home Row  
+//   [24][25][26][27][28][29]    [30][31][32][33][34][35]    Bottom Row
+//
+// Cyanophage string positions map as:
+//   0-10:  row 0, cols 1-11 -> q,w,e,r,t,y,u,i,o,p,-
+//   11-21: row 1, cols 1-11 -> a,s,d,f,g,h,j,k,l,;,'
+//   22-31: row 2, cols 1-10 -> z,x,c,v,b,n,m,,,.,/
+//   32:    row 2, col 0     -> \ (left bottom outer pinky)
+//   33:    thumb key        -> ^
+//   34:    row 1, col 0     -> $ (left home outer pinky)
+
+function cyanophageColToPhysicalIndex(row, cyanophageCol) {
+    // Convert Cyanophage row/col to our physical key index
+    // Cyanophage col 1-5 = left hand, col 6-11 = right hand
+    if (cyanophageCol >= 1 && cyanophageCol <= 5) {
+        // Left hand: cyanophage col 1 -> our col 1, etc.
+        const ourCol = cyanophageCol;
+        if (row === 0) return ourCol;           // top row: 0-5
+        if (row === 1) return 12 + ourCol;      // home row: 12-17
+        if (row === 2) return 24 + ourCol;      // bottom row: 24-29
+    } else if (cyanophageCol >= 6 && cyanophageCol <= 11) {
+        // Right hand: cyanophage col 6 -> our col 0, col 7 -> our col 1, etc.
+        const ourCol = cyanophageCol - 6;
+        if (row === 0) return 6 + ourCol;       // top row: 6-11
+        if (row === 1) return 18 + ourCol;      // home row: 18-23
+        if (row === 2) return 30 + ourCol;      // bottom row: 30-35
+    } else if (cyanophageCol === 0) {
+        // Column 0 is the outer pinky stretch position (left hand only in Cyanophage)
+        if (row === 1) return 12;               // home row outer pinky: index 12
+        if (row === 2) return 24;               // bottom row outer pinky: index 24
+    }
+    return -1; // Invalid
+}
+
+// Build the mapping array from string position to physical index
+// String positions 0-31 are the 32 main keys
+const CYANOPHAGE_KEY_MAP = [];
+
+// Positions 0-10: row 0, cols 1-11 (q,w,e,r,t,y,u,i,o,p,-)
+for (let i = 0; i <= 10; i++) {
+    CYANOPHAGE_KEY_MAP[i] = cyanophageColToPhysicalIndex(0, i + 1);
+}
+
+// Positions 11-21: row 1, cols 1-11 (a,s,d,f,g,h,j,k,l,;,')
+for (let i = 0; i <= 10; i++) {
+    CYANOPHAGE_KEY_MAP[11 + i] = cyanophageColToPhysicalIndex(1, i + 1);
+}
+
+// Positions 22-31: row 2, cols 1-10 (z,x,c,v,b,n,m,,,.,/)
+for (let i = 0; i <= 9; i++) {
+    CYANOPHAGE_KEY_MAP[22 + i] = cyanophageColToPhysicalIndex(2, i + 1);
+}
+
+// Position 32: row 2, col 0 (\ - left bottom outer pinky)
+CYANOPHAGE_KEY_MAP[32] = cyanophageColToPhysicalIndex(2, 0);  // -> 24
+
+// Position 33 is the thumb key (handled separately)
+
+// Position 34: row 1, col 0 ($ - left home outer pinky)  
+CYANOPHAGE_KEY_MAP[33] = cyanophageColToPhysicalIndex(1, 0);  // -> 12 (stored at index 33 for the 34th position)
 
 // Physical key indices for thumbs (from keyboard.js)
 const THUMB_LEFT_INNER_KEY_INDEX = 36;
@@ -266,6 +322,14 @@ function flatArrayToKeyboard(flatArray) {
     layout.rightHand.thumbInner = thumbInnerRight === ' ' ? thumbInnerRight : thumbInnerRight.toLowerCase();
     
     return layout;
+}
+
+// Make available globally for browser scripts and export for ES modules
+if (typeof window !== 'undefined') {
+    window.cyanophageToKeyboard = cyanophageToKeyboard;
+    window.keyboardToCyanophage = keyboardToCyanophage;
+    window.parseCyanophageUrl = parseCyanophageUrl;
+    window.flatArrayToKeyboard = flatArrayToKeyboard;
 }
 
 export { cyanophageToKeyboard, keyboardToCyanophage, parseCyanophageUrl, flatArrayToKeyboard };

@@ -54,7 +54,7 @@ describe('QWERTY layout conversion', () => {
   qwerty_layout.setKeyByIndex(KeyIndex.R_BOTTOM_PINKY_OUTER, ' ');
 
   // The Cyanophage URL for QWERTY
-  const qwerty_url = 'https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5Eback&mode=ergo&lan=english';
+  const qwerty_url = 'https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5E&mode=ergo&lan=english';
 
   test('should convert Cyanophage QWERTY URL to KeyboardLayout', () => {
     const converted_layout = cyanophageToKeyboard(qwerty_url);

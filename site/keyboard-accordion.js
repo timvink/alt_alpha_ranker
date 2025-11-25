@@ -3,6 +3,9 @@
  * Manages collapsible keyboard preview rows in the layout table
  */
 
+import { cyanophageToKeyboard } from './cyanophage.js';
+import { renderKeyboard } from './keyboard_visualization.js';
+
 class KeyboardAccordion {
     constructor() {
         this.openRows = new Set();

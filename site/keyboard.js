@@ -387,4 +387,11 @@ class KeyboardLayout {
     }
 }
 
+// Make available globally for browser scripts and export for ES modules
+if (typeof window !== 'undefined') {
+    window.KeyboardLayout = KeyboardLayout;
+    window.KeyIndex = KeyIndex;
+    window.KeyMetadata = KeyMetadata;
+}
+
 export { KeyboardLayout, KeyIndex, KeyMetadata };

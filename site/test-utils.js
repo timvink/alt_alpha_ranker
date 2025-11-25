@@ -3,6 +3,9 @@
  * Run these tests in the browser console to verify conversions are working correctly
  */
 
+import { KeyboardLayout } from './keyboard.js';
+import { cyanophageToKeyboard, keyboardToCyanophage, parseCyanophageUrl } from './cyanophage.js';
+
 /**
  * Helper function to create a test layout manually
  */

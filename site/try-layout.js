@@ -12,6 +12,8 @@
  * - This simulates the finger movements of layout B using the user's layout A keyboard
  */
 
+import { cyanophageToKeyboard } from './cyanophage.js';
+
 // State
 let layoutsData = [];
 let allLanguages = [];

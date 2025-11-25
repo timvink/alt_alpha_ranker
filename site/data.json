@@ -12,7 +12,7 @@
   "layouts": [
     {
       "name": "qwerty",
-      "url": "https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5Eback&mode=ergo&lan=english",
+      "url": "https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5E&mode=ergo&lan=english",
       "thumb": false,
       "metrics": {
         "english": {
@@ -695,7 +695,7 @@
     },
     {
       "name": "gallium v2",
-      "url": "https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5Eback&mode=iso&lan=english&thumb=l",
+      "url": "https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5E&mode=iso&lan=english&thumb=l",
       "thumb": false,
       "metrics": {
         "english": {
@@ -809,7 +809,7 @@
     },
     {
       "name": "gallium colstag",
-      "url": "https://cyanophage.github.io/playground.html?layout=bldcvjyou%2C-nrtsgphaei%2Fxqmwzkf%27%3B.%5C%5Eback&mode=ergo&lan=english&thumb=l",
+      "url": "https://cyanophage.github.io/playground.html?layout=bldcvjyou%2C-nrtsgphaei%2Fxqmwzkf%27%3B.%5C%5E&mode=ergo&lan=english&thumb=l",
       "thumb": false,
       "metrics": {
         "english": {

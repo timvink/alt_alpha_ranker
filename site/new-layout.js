@@ -3,6 +3,10 @@
  * Uses modular keyboard functions from keyboard.js, cyanophage.js, and keyboard-visualization.js
  */
 
+import { KeyboardLayout } from './keyboard.js';
+import { keyboardToCyanophage } from './cyanophage.js';
+import { renderKeyboard } from './keyboard_visualization.js';
+
 /**
  * Parses the layout text input into a KeyboardLayout data structure.
  * 

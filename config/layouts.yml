@@ -3,7 +3,7 @@
 
 layouts:
 - name: qwerty
-  link: https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5Eback&mode=ergo&lan=english
+  link: https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5E&mode=ergo&lan=english&thumb=l
   thumb: false
   year: 1873
 - name: dvorak
@@ -32,12 +32,12 @@ layouts:
   year: 2023
   website: https://github.com/GalileoBlues/Gallium
 - name: gallium v2
-  link: https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5Eback&mode=iso&lan=english&thumb=l
+  link: https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5E&mode=iso&lan=english&thumb=l
   thumb: false
   year: 2024
   website: https://github.com/GalileoBlues/Gallium
 - name: gallium colstag
-  link: https://cyanophage.github.io/playground.html?layout=bldcvjyou%2C-nrtsgphaei%2Fxqmwzkf%27%3B.%5C%5Eback&mode=ergo&lan=english&thumb=l
+  link: https://cyanophage.github.io/playground.html?layout=bldcvjyou%2C-nrtsgphaei%2Fxqmwzkf%27%3B.%5C%5E&mode=ergo&lan=english&thumb=l
   thumb: false
   year: 2024
   website: https://github.com/GalileoBlues/Gallium
