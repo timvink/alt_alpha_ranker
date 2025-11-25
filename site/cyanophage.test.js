@@ -1,6 +1,23 @@
 import { KeyboardLayout, KeyIndex } from './keyboard.js';
 import { cyanophageToKeyboard } from './cyanophage.js';
 
+/**
+ * Helper function to compare layouts, ignoring positions that are blank in the expected layout.
+ * Cyanophage URLs have a fixed set of characters that get shuffled, so blank positions
+ * may be filled with placeholder characters like '*', '\', etc.
+ */
+function expectLayoutsEqual(converted, expected) {
+  const convertedFlat = converted.toFlatArray();
+  const expectedFlat = expected.toFlatArray();
+  
+  for (let i = 0; i < 40; i++) {
+    // Only compare positions where expected has a non-blank character
+    if (expectedFlat[i] !== ' ') {
+      expect(convertedFlat[i]).toBe(expectedFlat[i]);
+    }
+  }
+}
+
 describe('QWERTY layout conversion', () => {
   // Define the expected QWERTY layout using KeyboardLayout class
   const qwerty_layout = new KeyboardLayout();
@@ -59,5 +76,76 @@ describe('QWERTY layout conversion', () => {
   test('should convert Cyanophage QWERTY URL to KeyboardLayout', () => {
     const converted_layout = cyanophageToKeyboard(qwerty_url);
     expect(converted_layout.toFlatArray()).toEqual(qwerty_layout.toFlatArray());
+  });
+});
+
+describe('Enthium v11 layout conversion', () => {
+  // Define the expected Enthium v11 layout using KeyboardLayout class
+  // Layout:
+  //   z y o u = q l d p x
+  // w c i a e ; k h t n s f
+  //   ' - , . / j m g b v
+  //             r
+  
+  const enthium_v11_layout = new KeyboardLayout();
+  
+  // Left hand top row (no outer pinky key on top row)
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_TOP_PINKY_OUTER, ' ');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_TOP_PINKY, 'z');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_TOP_RING, 'y');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_TOP_MIDDLE, 'o');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_TOP_INDEX, 'u');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_TOP_INDEX_INNER, '=');
+  
+  // Right hand top row
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_TOP_INDEX_INNER, 'q');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_TOP_INDEX, 'l');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_TOP_MIDDLE, 'd');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_TOP_RING, 'p');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_TOP_PINKY, 'x');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_TOP_PINKY_OUTER, ' ');
+  
+  // Left hand home row (w is on outer pinky)
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_HOME_PINKY_OUTER, 'w');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_HOME_PINKY, 'c');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_HOME_RING, 'i');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_HOME_MIDDLE, 'a');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_HOME_INDEX, 'e');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_HOME_INDEX_INNER, ';');
+  
+  // Right hand home row
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_HOME_INDEX_INNER, 'k');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_HOME_INDEX, 'h');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_HOME_MIDDLE, 't');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_HOME_RING, 'n');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_HOME_PINKY, 's');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_HOME_PINKY_OUTER, 'f');
+  
+  // Left hand bottom row (no outer pinky key on bottom row)
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_BOTTOM_PINKY_OUTER, ' ');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_BOTTOM_PINKY, "'");
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_BOTTOM_RING, '-');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_BOTTOM_MIDDLE, ',');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_BOTTOM_INDEX, '.');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.L_BOTTOM_INDEX_INNER, '/');
+  
+  // Right hand bottom row
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_BOTTOM_INDEX_INNER, 'j');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_BOTTOM_INDEX, 'm');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_BOTTOM_MIDDLE, 'g');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_BOTTOM_RING, 'b');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_BOTTOM_PINKY, 'v');
+  enthium_v11_layout.setKeyByIndex(KeyIndex.R_BOTTOM_PINKY_OUTER, ' ');
+  
+  // Right thumb key
+  enthium_v11_layout.setKeyByIndex(KeyIndex.THUMB_RIGHT_INNER, 'r');
+
+  // The Cyanophage URL for Enthium v11
+  const enthium_v11_url = 'https://cyanophage.github.io/playground.html?layout=zyou%3Dqldpx%5Cciae%3Bkhtnsf%27-%2C.%2Fjmgbv*rw&mode=ergo&lan=english&thumb=r';
+
+  test('should convert Cyanophage Enthium v11 URL to KeyboardLayout', () => {
+    const converted_layout = cyanophageToKeyboard(enthium_v11_url);
+    // Use helper that ignores blank positions (Cyanophage fills blanks with placeholders)
+    expectLayoutsEqual(converted_layout, enthium_v11_layout);
   });
 });
