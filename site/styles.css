@@ -1,3 +1,24 @@
+:root {
+    /* Light mode colors */
+    --bg-primary: #f7fafc;
+    --bg-secondary: #ffffff;
+    --text-primary: #1a202c;
+    --text-secondary: #718096;
+    --text-tertiary: #a0aec0;
+    --accent-color: #667eea;
+    --accent-hover: #5a67d8;
+}
+
+body.dark-mode {
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --text-tertiary: #718096;
+    --accent-color: #9f7aea;
+    --accent-hover: #b794f4;
+}
+
 * {
     margin: 0;
     padding: 0;

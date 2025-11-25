@@ -1,0 +1,102 @@
+{
+  "texts": {
+    "english": [
+      {
+        "text": "The quick brown fox jumps over the lazy dog near the river bank.",
+        "preview": "The quick brown fox ..."
+      },
+      {
+        "text": "She sells seashells by the seashore while watching the sunset.",
+        "preview": "She sells seashells ..."
+      },
+      {
+        "text": "Pack my box with five dozen liquor jugs before the ship departs.",
+        "preview": "Pack my box with ..."
+      }
+    ],
+    "dutch": [
+      {
+        "text": "De snelle bruine vos springt over de luie hond bij het water.",
+        "preview": "De snelle bruine vos ..."
+      },
+      {
+        "text": "Zij schrijft graag brieven aan haar familie in het buitenland.",
+        "preview": "Zij schrijft graag ..."
+      },
+      {
+        "text": "Het weer is vandaag prachtig met zonneschijn en een zachte wind.",
+        "preview": "Het weer is vandaag ..."
+      }
+    ],
+    "french": [
+      {
+        "text": "Le renard brun rapide saute par dessus le chien paresseux endormi.",
+        "preview": "Le renard brun rapide ..."
+      },
+      {
+        "text": "Elle aime voyager dans les montagnes pendant les vacances.",
+        "preview": "Elle aime voyager ..."
+      },
+      {
+        "text": "La musique classique remplit la salle de concert ce soir.",
+        "preview": "La musique classique ..."
+      }
+    ],
+    "german": [
+      {
+        "text": "Der schnelle braune Fuchs springt einfach auf den faulen Hund.",
+        "preview": "Der schnelle braune ..."
+      },
+      {
+        "text": "Sie schreibt gerne Briefe an ihre Familie im ganzen Land.",
+        "preview": "Sie schreibt gerne ..."
+      },
+      {
+        "text": "Das Wetter ist heute wunderbar mit Sonnenschein und blauem Himmel.",
+        "preview": "Das Wetter ist heute ..."
+      }
+    ],
+    "spanish": [
+      {
+        "text": "El veloz zorro marron salta sobre el perro perezoso dormido.",
+        "preview": "El veloz zorro marron ..."
+      },
+      {
+        "text": "Ella viaja por las montanas durante sus vacaciones de verano.",
+        "preview": "Ella viaja por ..."
+      },
+      {
+        "text": "La musica clasica llena la sala de conciertos esta noche.",
+        "preview": "La musica clasica ..."
+      }
+    ],
+    "italian": [
+      {
+        "text": "La volpe marrone veloce salta sopra il cane pigro addormentato.",
+        "preview": "La volpe marrone veloce ..."
+      },
+      {
+        "text": "Lei ama viaggiare nelle montagne durante le sue vacanze.",
+        "preview": "Lei ama viaggiare ..."
+      },
+      {
+        "text": "La musica classica riempie la sala da concerto questa sera.",
+        "preview": "La musica classica ..."
+      }
+    ],
+    "portuguese": [
+      {
+        "text": "A raposa marrom rapida salta sobre o cachorro preguicoso dormindo.",
+        "preview": "A raposa marrom rapida ..."
+      },
+      {
+        "text": "Ela adora viajar pelas montanhas durante suas ferias de verao.",
+        "preview": "Ela adora viajar ..."
+      },
+      {
+        "text": "A musica classica preenche a sala de concertos esta noite.",
+        "preview": "A musica classica ..."
+      }
+    ]
+  }
+}
