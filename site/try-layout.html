@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="keyboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .layout-section {
             max-width: 900px;
@@ -85,7 +86,7 @@
         .typing-card {
             background: var(--bg-secondary);
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.5rem 2rem 2rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
@@ -406,6 +407,132 @@
         body.dark-mode .restart-hint kbd.active {
             background: var(--accent-color);
         }
+
+        /* Word set selector styles */
+        .word-set-card {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .word-set-selector {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .word-set-selector:hover .word-set-name {
+            color: var(--accent-color);
+        }
+
+        .word-set-selector:hover .word-set-icon {
+            color: var(--accent-color);
+        }
+
+        .word-set-icon {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            transition: color 0.15s;
+        }
+
+        .word-set-name {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-tertiary);
+            transition: color 0.15s;
+        }
+
+        .word-set-dropdown {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            background: var(--bg-secondary);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        body.dark-mode .word-set-dropdown {
+            border-color: #3d4a5c;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .word-set-dropdown.show {
+            display: block;
+        }
+
+        .word-set-search {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            background: transparent;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        body.dark-mode .word-set-search {
+            border-bottom-color: #3d4a5c;
+        }
+
+        .word-set-search::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .word-set-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .word-set-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .word-set-item:hover {
+            background: rgba(79, 70, 229, 0.08);
+        }
+
+        body.dark-mode .word-set-item:hover {
+            background: rgba(159, 122, 234, 0.12);
+        }
+
+        .word-set-item.selected {
+            background: rgba(79, 70, 229, 0.12);
+        }
+
+        body.dark-mode .word-set-item.selected {
+            background: rgba(159, 122, 234, 0.18);
+        }
+
+        .word-set-item-name {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .word-set-item-count {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
     </style>
 </head>
 <body>
@@ -443,17 +570,18 @@
                             <option value="gallium" selected>gallium</option>
                         </select>
                     </div>
-                    <div class="config-group">
-                        <label for="language">Language</label>
-                        <select id="language">
-                            <option value="english" selected>🇬🇧 English</option>
-                        </select>
-                    </div>
-                    <div class="config-group">
-                        <label for="textSelect">Practice text</label>
-                        <select id="textSelect">
-                            <option value="0">The quick brown fox ...</option>
-                        </select>
+                </div>
+            </div>
+
+            <div class="word-set-card">
+                <div class="word-set-selector" id="wordSetSelector">
+                    <i class="fas fa-globe-americas word-set-icon"></i>
+                    <span class="word-set-name" id="wordSetName">english 1k</span>
+                </div>
+                <div class="word-set-dropdown" id="wordSetDropdown">
+                    <input type="text" class="word-set-search" id="wordSetSearch" placeholder="Search word sets..." autocomplete="off">
+                    <div class="word-set-list" id="wordSetList">
+                        <!-- Word sets will be populated here -->
                     </div>
                 </div>
             </div>

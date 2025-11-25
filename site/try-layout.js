@@ -15,9 +15,10 @@
 // State
 let layoutsData = [];
 let allLanguages = [];
-let typingTexts = {};
-let knownLayout = null;   // KeyboardLayout object for the layout user knows
-let targetLayout = null;  // KeyboardLayout object for the layout user wants to try
+let wordSets = [];         // Available word sets from languages folder
+let currentWordSet = null; // Currently selected word set data
+let knownLayout = null;    // KeyboardLayout object for the layout user knows
+let targetLayout = null;   // KeyboardLayout object for the layout user wants to try
 
 // Typing state
 let currentText = '';
@@ -28,31 +29,99 @@ let isComplete = false;
 let startTime = null;  // Track when typing started for WPM calculation
 
 /**
+ * Get URL parameters
+ */
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        known: params.get('known'),
+        target: params.get('target'),
+        wordset: params.get('wordset')
+    };
+}
+
+/**
+ * Update URL parameters without reloading the page
+ */
+function updateUrlParams() {
+    const params = new URLSearchParams();
+    
+    const knownLayout = document.getElementById('knownLayout')?.value;
+    const targetLayout = document.getElementById('targetLayout')?.value;
+    const wordsetName = currentWordSet?.language;
+    
+    if (knownLayout && knownLayout !== 'qwerty') {
+        params.set('known', knownLayout);
+    }
+    if (targetLayout && targetLayout !== 'gallium') {
+        params.set('target', targetLayout);
+    }
+    if (wordsetName && wordsetName !== 'english') {
+        params.set('wordset', wordsetName);
+    }
+    
+    const newUrl = params.toString() 
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+    
+    window.history.replaceState({}, '', newUrl);
+}
+
+
+
+/**
  * Initialize the try layout page
  */
 async function initTryLayout() {
     try {
-        // Load layouts and texts in parallel
-        const [dataResponse, textsResponse] = await Promise.all([
-            fetch('data.json'),
-            fetch('typing_texts.json')
-        ]);
+        // Get URL parameters
+        const urlParams = getUrlParams();
         
+        // Load layouts data
+        const dataResponse = await fetch('data.json');
         const data = await dataResponse.json();
         layoutsData = data.layouts;
         allLanguages = data.languages || ['english'];
-        typingTexts = await textsResponse.json();
         
-        // Populate dropdowns
+        // Load available word sets
+        await loadWordSets();
+        
+        // Populate layout dropdowns
         populateLayoutDropdowns();
-        populateLanguageDropdown();
-        populateTextDropdown();
+        
+        // Apply URL parameters to dropdowns
+        if (urlParams.known) {
+            const knownSelect = document.getElementById('knownLayout');
+            if ([...knownSelect.options].some(o => o.value === urlParams.known)) {
+                knownSelect.value = urlParams.known;
+            }
+        }
+        if (urlParams.target) {
+            const targetSelect = document.getElementById('targetLayout');
+            if ([...targetSelect.options].some(o => o.value === urlParams.target)) {
+                targetSelect.value = urlParams.target;
+            }
+        }
         
         // Set up event listeners
         setupEventListeners();
+        setupWordSetSelector();
         
-        // Load initial layouts and start
+        // Load initial layouts
         await loadLayouts();
+        
+        // Find and select the word set from URL or default to english
+        let wordSetToSelect = wordSets[0]; // default to first (english)
+        if (urlParams.wordset) {
+            const matchingWordSet = wordSets.find(ws => ws.language === urlParams.wordset);
+            if (matchingWordSet) {
+                wordSetToSelect = matchingWordSet;
+            }
+        }
+        
+        if (wordSetToSelect) {
+            await selectWordSet(wordSetToSelect);
+        }
         
         // Focus the typing area immediately
         document.getElementById('hiddenInput').focus();
@@ -60,6 +129,197 @@ async function initTryLayout() {
     } catch (error) {
         console.error('Error initializing try layout:', error);
     }
+}
+
+/**
+ * Load available word sets from the languages folder
+ */
+async function loadWordSets() {
+    // List of available word set files (english first as default)
+    const wordSetFiles = [
+        'english_1k.json',
+        'dutch_1k.json',
+        'french_1k.json',
+        'german_1k.json',
+        'italian_1k.json',
+        'portuguese_1k.json',
+        'spanish_1k.json'
+    ];
+    
+    wordSets = [];
+    
+    for (const file of wordSetFiles) {
+        try {
+            const response = await fetch(`static/languages/${file}`);
+            if (response.ok) {
+                const data = await response.json();
+                const language = file.replace('_1k.json', '');
+                wordSets.push({
+                    file: file,
+                    name: data.name || file.replace('.json', ''),
+                    displayName: language + ' 1k',
+                    language: language,
+                    words: data.words || []
+                });
+            }
+        } catch (e) {
+            console.warn(`Could not load word set: ${file}`, e);
+        }
+    }
+    
+    // Populate the word set dropdown
+    populateWordSetDropdown();
+}
+
+/**
+ * Populate the word set dropdown with available sets
+ */
+function populateWordSetDropdown() {
+    const list = document.getElementById('wordSetList');
+    list.innerHTML = '';
+    
+    wordSets.forEach((ws, index) => {
+        const item = document.createElement('div');
+        item.className = 'word-set-item';
+        item.dataset.index = index;
+        item.innerHTML = `
+            <span class="word-set-item-name">${ws.displayName}</span>
+            <span class="word-set-item-count">${ws.words.length} words</span>
+        `;
+        item.addEventListener('click', () => selectWordSet(ws));
+        list.appendChild(item);
+    });
+}
+
+/**
+ * Select a word set and generate random words
+ */
+async function selectWordSet(ws) {
+    currentWordSet = ws;
+    
+    // Update the selector display
+    document.getElementById('wordSetName').textContent = ws.displayName;
+    
+    // Update selected state in dropdown
+    document.querySelectorAll('.word-set-item').forEach((item, idx) => {
+        item.classList.toggle('selected', wordSets[idx] === ws);
+    });
+    
+    // Close dropdown
+    closeWordSetDropdown();
+    
+    // Generate new text from random words
+    generateRandomText();
+    
+    // Update URL
+    updateUrlParams();
+    
+    // Focus typing area
+    document.getElementById('hiddenInput').focus();
+}
+
+/**
+ * Generate random text from current word set
+ */
+function generateRandomText() {
+    if (!currentWordSet || !currentWordSet.words.length) {
+        currentText = 'the quick brown fox jumps over the lazy dog';
+    } else {
+        const words = currentWordSet.words;
+        const selectedWords = [];
+        const numWords = 50;
+        
+        // Randomly select 50 words (with replacement)
+        for (let i = 0; i < numWords; i++) {
+            const randomIndex = Math.floor(Math.random() * words.length);
+            selectedWords.push(words[randomIndex].toLowerCase());
+        }
+        
+        currentText = selectedWords.join(' ');
+    }
+    
+    // Reset typing state without recursion
+    currentPosition = 0;
+    errorCount = 0;
+    isComplete = false;
+    startTime = null;
+    
+    document.getElementById('completeMessage')?.classList.remove('show');
+    
+    translateText();
+    renderTypingLine();
+    updateStats();
+    
+    // Focus the input
+    document.getElementById('hiddenInput')?.focus();
+}
+
+/**
+ * Close the word set dropdown
+ */
+function closeWordSetDropdown() {
+    document.getElementById('wordSetDropdown').classList.remove('show');
+    document.getElementById('wordSetSelector').classList.remove('active');
+}
+
+/**
+ * Check if word set dropdown is open
+ */
+function isWordSetDropdownOpen() {
+    return document.getElementById('wordSetDropdown').classList.contains('show');
+}
+
+/**
+ * Set up word set selector event listeners
+ */
+function setupWordSetSelector() {
+    const selector = document.getElementById('wordSetSelector');
+    const dropdown = document.getElementById('wordSetDropdown');
+    const search = document.getElementById('wordSetSearch');
+    
+    // Toggle dropdown on selector click
+    selector.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.contains('show');
+        dropdown.classList.toggle('show');
+        selector.classList.toggle('active');
+        
+        if (!isOpen) {
+            search.value = '';
+            filterWordSets('');
+            search.focus();
+        }
+    });
+    
+    // Filter word sets on search input
+    search.addEventListener('input', (e) => {
+        filterWordSets(e.target.value);
+    });
+    
+    // Prevent dropdown from closing when clicking inside
+    dropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+        closeWordSetDropdown();
+    });
+}
+
+/**
+ * Filter word sets based on search query
+ */
+function filterWordSets(query) {
+    const items = document.querySelectorAll('.word-set-item');
+    const lowerQuery = query.toLowerCase();
+    
+    items.forEach((item, index) => {
+        const ws = wordSets[index];
+        const matches = ws.displayName.toLowerCase().includes(lowerQuery) ||
+                        ws.language.toLowerCase().includes(lowerQuery);
+        item.style.display = matches ? 'flex' : 'none';
+    });
 }
 
 /**
@@ -90,61 +350,6 @@ function populateLayoutDropdowns() {
 }
 
 /**
- * Populate the language dropdown from data.json languages
- */
-function populateLanguageDropdown() {
-    const languageFlags = {
-        'dutch': '🇳🇱',
-        'english': '🇬🇧',
-        'french': '🇫🇷',
-        'german': '🇩🇪',
-        'spanish': '🇪🇸',
-        'italian': '🇮🇹',
-        'portuguese': '🇵🇹'
-    };
-    
-    const select = document.getElementById('language');
-    select.innerHTML = '';
-    
-    // Use languages from data.json (which comes from cyanophage.yml)
-    allLanguages.forEach(lang => {
-        // Only add if we have typing texts for this language
-        if (typingTexts.texts && typingTexts.texts[lang]) {
-            const option = document.createElement('option');
-            option.value = lang;
-            const flag = languageFlags[lang] || '🌐';
-            option.textContent = `${flag} ${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
-            if (lang === 'english') option.selected = true;
-            select.appendChild(option);
-        }
-    });
-}
-
-/**
- * Populate the text selection dropdown based on current language
- */
-function populateTextDropdown() {
-    const select = document.getElementById('textSelect');
-    const language = document.getElementById('language').value;
-    
-    select.innerHTML = '';
-    
-    const texts = typingTexts.texts?.[language] || [];
-    
-    texts.forEach((textObj, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = textObj.preview;
-        select.appendChild(option);
-    });
-    
-    // Update current text
-    if (texts.length > 0) {
-        setCurrentText(texts[0].text);
-    }
-}
-
-/**
  * Set the current text to type and translate it
  */
 function setCurrentText(text) {
@@ -159,25 +364,12 @@ function setupEventListeners() {
     // Layout changes
     document.getElementById('knownLayout').addEventListener('change', async () => {
         await loadLayouts();
+        updateUrlParams();
     });
     
     document.getElementById('targetLayout').addEventListener('change', async () => {
         await loadLayouts();
-    });
-    
-    // Language change - update text dropdown
-    document.getElementById('language').addEventListener('change', () => {
-        populateTextDropdown();
-    });
-    
-    // Text selection change
-    document.getElementById('textSelect').addEventListener('change', (e) => {
-        const language = document.getElementById('language').value;
-        const texts = typingTexts.texts?.[language] || [];
-        const index = parseInt(e.target.value, 10);
-        if (texts[index]) {
-            setCurrentText(texts[index].text);
-        }
+        updateUrlParams();
     });
     
     // Typing input
@@ -193,6 +385,17 @@ function setupEventListeners() {
     let tabPressed = false;
     
     document.addEventListener('keydown', (e) => {
+        // Don't capture keys when word set search is focused
+        const wordSetSearch = document.getElementById('wordSetSearch');
+        if (document.activeElement === wordSetSearch) {
+            // Allow Escape to close dropdown
+            if (e.key === 'Escape') {
+                closeWordSetDropdown();
+                hiddenInput.focus();
+            }
+            return;
+        }
+        
         // Handle Tab key - prepare for restart
         if (e.key === 'Tab') {
             e.preventDefault();
@@ -218,7 +421,8 @@ function setupEventListeners() {
         }
         
         // If not already focused and it's a printable key, focus the input
-        if (document.activeElement !== hiddenInput && e.key.length === 1) {
+        // But not if word set dropdown is open
+        if (document.activeElement !== hiddenInput && e.key.length === 1 && !isWordSetDropdownOpen()) {
             hiddenInput.focus();
         }
     });
@@ -499,7 +703,7 @@ function showComplete() {
 }
 
 /**
- * Reset typing to start fresh
+ * Reset typing to start fresh (generates new random words)
  */
 function resetTyping() {
     currentPosition = 0;
@@ -509,6 +713,21 @@ function resetTyping() {
     
     document.getElementById('completeMessage').classList.remove('show');
     
+    // Generate new random words on reset
+    if (currentWordSet && currentWordSet.words.length) {
+        const words = currentWordSet.words;
+        const selectedWords = [];
+        const numWords = 50;
+        
+        for (let i = 0; i < numWords; i++) {
+            const randomIndex = Math.floor(Math.random() * words.length);
+            selectedWords.push(words[randomIndex].toLowerCase());
+        }
+        
+        currentText = selectedWords.join(' ');
+    }
+    
+    translateText();
     renderTypingLine();
     updateStats();
     

@@ -111,6 +111,9 @@ function populateLanguageDropdown(languages) {
         currentLanguage = savedLanguage;
         select.value = savedLanguage;
     }
+    
+    // Update try-layout link with initial language
+    updateTryLayoutLink();
 }
 
 // Language filter functionality
@@ -119,11 +122,23 @@ function setupLanguageFilter() {
         currentLanguage = e.target.value;
         localStorage.setItem('selectedLanguage', currentLanguage);
         
+        // Update try-layout link with current language
+        updateTryLayoutLink();
+        
         // Re-render with new language and apply current sort
         const filtered = getFilteredData();
         const sorted = sortData(filtered);
         renderTable(sorted);
     });
+}
+
+// Update the try-layout link to include current language
+function updateTryLayoutLink() {
+    const link = document.getElementById('tryLayoutLink');
+    if (link) {
+        const params = currentLanguage !== 'english' ? `?wordset=${currentLanguage}` : '';
+        link.href = `try-layout.html${params}`;
+    }
 }
 
 // Get metrics for current language
