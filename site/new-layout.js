@@ -263,3 +263,9 @@ function copyToClipboard(type) {
         alert('Failed to copy to clipboard');
     });
 }
+
+// Export to window for browser usage (inline scripts)
+if (typeof window !== 'undefined') {
+    window.generateCyanophageUrl = generateCyanophageUrl;
+    window.copyToClipboard = copyToClipboard;
+}
