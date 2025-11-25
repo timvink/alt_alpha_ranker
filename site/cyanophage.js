@@ -3,6 +3,8 @@
  * Handles translation between Cyanophage URLs and KeyboardLayout data structures
  */
 
+import { KeyboardLayout } from './keyboard.js';
+
 // Cyanophage KEY_MAP: maps 34 string positions to 34 physical keyboard positions
 // Based on user-provided map (image_257205.jpg)
 const CYANOPHAGE_KEY_MAP = [
@@ -265,3 +267,5 @@ function flatArrayToKeyboard(flatArray) {
     
     return layout;
 }
+
+export { cyanophageToKeyboard, keyboardToCyanophage, parseCyanophageUrl, flatArrayToKeyboard };

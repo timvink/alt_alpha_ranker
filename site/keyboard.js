@@ -5,54 +5,56 @@
 
 // Key index constants for the 40-key layout
 // Each index corresponds to a physical key position on the split keyboard
+// Naming follows the finger that types each key (from KeyMetadata)
+// _OUTER suffix = outer stretch position, _INNER suffix = inner stretch position
 const KeyIndex = {
     // Left Hand - Top Row (0-5)
-    L_TOP_PINKY: 0,
-    L_TOP_RING: 1,
-    L_TOP_MIDDLE: 2,
-    L_TOP_INDEX_1: 3,
-    L_TOP_INDEX_2: 4,
-    L_TOP_INDEX_3: 5,
+    L_TOP_PINKY_OUTER: 0,  // col 0, outer stretch
+    L_TOP_PINKY: 1,        // col 1
+    L_TOP_RING: 2,         // col 2
+    L_TOP_MIDDLE: 3,       // col 3
+    L_TOP_INDEX: 4,        // col 4
+    L_TOP_INDEX_INNER: 5,  // col 5, inner stretch
     
     // Right Hand - Top Row (6-11)
-    R_TOP_INDEX_3: 6,
-    R_TOP_INDEX_2: 7,
-    R_TOP_INDEX_1: 8,
-    R_TOP_MIDDLE: 9,
-    R_TOP_RING: 10,
-    R_TOP_PINKY: 11,
+    R_TOP_INDEX_INNER: 6,  // col 0, inner stretch
+    R_TOP_INDEX: 7,        // col 1
+    R_TOP_MIDDLE: 8,       // col 2
+    R_TOP_RING: 9,         // col 3
+    R_TOP_PINKY: 10,       // col 4
+    R_TOP_PINKY_OUTER: 11, // col 5, outer stretch
     
     // Left Hand - Home Row (12-17)
-    L_HOME_PINKY: 12,
-    L_HOME_RING: 13,
-    L_HOME_MIDDLE: 14,
-    L_HOME_INDEX_1: 15,
-    L_HOME_INDEX_2: 16,
-    L_HOME_INDEX_3: 17,
+    L_HOME_PINKY_OUTER: 12, // col 0, outer stretch
+    L_HOME_PINKY: 13,       // col 1, home position
+    L_HOME_RING: 14,        // col 2, home position
+    L_HOME_MIDDLE: 15,      // col 3, home position
+    L_HOME_INDEX: 16,       // col 4, home position
+    L_HOME_INDEX_INNER: 17, // col 5, inner stretch
     
     // Right Hand - Home Row (18-23)
-    R_HOME_INDEX_3: 18,
-    R_HOME_INDEX_2: 19,
-    R_HOME_INDEX_1: 20,
-    R_HOME_MIDDLE: 21,
-    R_HOME_RING: 22,
-    R_HOME_PINKY: 23,
+    R_HOME_INDEX_INNER: 18, // col 0, inner stretch
+    R_HOME_INDEX: 19,       // col 1, home position
+    R_HOME_MIDDLE: 20,      // col 2, home position
+    R_HOME_RING: 21,        // col 3, home position
+    R_HOME_PINKY: 22,       // col 4, home position
+    R_HOME_PINKY_OUTER: 23, // col 5, outer stretch
     
     // Left Hand - Bottom Row (24-29)
-    L_BOTTOM_PINKY: 24,
-    L_BOTTOM_RING: 25,
-    L_BOTTOM_MIDDLE: 26,
-    L_BOTTOM_INDEX_1: 27,
-    L_BOTTOM_INDEX_2: 28,
-    L_BOTTOM_INDEX_3: 29,
+    L_BOTTOM_PINKY_OUTER: 24, // col 0, outer stretch
+    L_BOTTOM_PINKY: 25,       // col 1
+    L_BOTTOM_RING: 26,        // col 2
+    L_BOTTOM_MIDDLE: 27,      // col 3
+    L_BOTTOM_INDEX: 28,       // col 4
+    L_BOTTOM_INDEX_INNER: 29, // col 5, inner stretch
     
     // Right Hand - Bottom Row (30-35)
-    R_BOTTOM_INDEX_3: 30,
-    R_BOTTOM_INDEX_2: 31,
-    R_BOTTOM_INDEX_1: 32,
-    R_BOTTOM_MIDDLE: 33,
-    R_BOTTOM_RING: 34,
-    R_BOTTOM_PINKY: 35,
+    R_BOTTOM_INDEX_INNER: 30, // col 0, inner stretch
+    R_BOTTOM_INDEX: 31,       // col 1
+    R_BOTTOM_MIDDLE: 32,      // col 2
+    R_BOTTOM_RING: 33,        // col 3
+    R_BOTTOM_PINKY: 34,       // col 4
+    R_BOTTOM_PINKY_OUTER: 35, // col 5, outer stretch
     
     // Thumb Keys (36-39)
     L_THUMB_INNER: 36,
@@ -384,3 +386,5 @@ class KeyboardLayout {
         return lines.join('\n');
     }
 }
+
+export { KeyboardLayout, KeyIndex, KeyMetadata };
