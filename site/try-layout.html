@@ -538,18 +538,24 @@
 
         /* Typing test settings bar */
         .typing-settings-bar {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.75rem;
             background: rgba(0, 0, 0, 0.15);
-            border-radius: 12px;
-            margin-bottom: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
         }
 
         body.dark-mode .typing-settings-bar {
             background: rgba(0, 0, 0, 0.3);
+        }
+
+        .typing-settings-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .settings-group {
@@ -595,16 +601,6 @@
 
         .setting-btn.active {
             color: var(--accent-color);
-        }
-
-        .setting-btn.disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .setting-btn.disabled:hover {
-            background: transparent;
-            color: var(--text-tertiary);
         }
 
         .setting-btn i {
@@ -670,44 +666,46 @@
                 </div>
             </div>
 
-            <div class="word-set-card">
-                <div class="word-set-selector" id="wordSetSelector">
-                    <i class="fas fa-globe-americas word-set-icon"></i>
-                    <span class="word-set-name" id="wordSetName">english 1k</span>
-                </div>
-                <div class="word-set-dropdown" id="wordSetDropdown">
-                    <input type="text" class="word-set-search" id="wordSetSearch" placeholder="Search word sets..." autocomplete="off">
-                    <div class="word-set-list" id="wordSetList">
-                        <!-- Word sets will be populated here -->
+            <div class="typing-settings-container">
+                <div class="typing-settings-bar" id="typingSettingsBar">
+                    <div class="settings-group">
+                        <button class="setting-btn" id="punctuationBtn" title="Add punctuation">
+                            <i class="fas fa-at"></i>
+                            <span>punctuation</span>
+                        </button>
+                        <button class="setting-btn" id="numbersBtn" title="Add numbers">
+                            <i class="fas fa-hashtag"></i>
+                            <span>numbers</span>
+                        </button>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <div class="settings-group">
+                        <button class="setting-btn" id="timeModeBtn" title="Timed mode">
+                            <i class="fas fa-clock"></i>
+                            <span>time</span>
+                        </button>
+                        <button class="setting-btn active" id="wordsModeBtn" title="Word count mode">
+                            <i class="fas fa-font"></i>
+                            <span>words</span>
+                        </button>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <div class="settings-group" id="optionsGroup">
+                        <!-- Options will be populated by JS based on mode -->
                     </div>
                 </div>
-            </div>
 
-            <div class="typing-settings-bar" id="typingSettingsBar">
-                <div class="settings-group">
-                    <button class="setting-btn disabled" id="punctuationBtn" title="Punctuation (coming soon)">
-                        <i class="fas fa-at"></i>
-                        <span>punctuation</span>
-                    </button>
-                    <button class="setting-btn disabled" id="numbersBtn" title="Numbers (coming soon)">
-                        <i class="fas fa-hashtag"></i>
-                        <span>numbers</span>
-                    </button>
-                </div>
-                <div class="settings-divider"></div>
-                <div class="settings-group">
-                    <button class="setting-btn" id="timeModeBtn" title="Timed mode">
-                        <i class="fas fa-clock"></i>
-                        <span>time</span>
-                    </button>
-                    <button class="setting-btn active" id="wordsModeBtn" title="Word count mode">
-                        <i class="fas fa-font"></i>
-                        <span>words</span>
-                    </button>
-                </div>
-                <div class="settings-divider"></div>
-                <div class="settings-group" id="optionsGroup">
-                    <!-- Options will be populated by JS based on mode -->
+                <div class="word-set-card">
+                    <div class="word-set-selector" id="wordSetSelector">
+                        <i class="fas fa-globe-americas word-set-icon"></i>
+                        <span class="word-set-name" id="wordSetName">english 1k</span>
+                    </div>
+                    <div class="word-set-dropdown" id="wordSetDropdown">
+                        <input type="text" class="word-set-search" id="wordSetSearch" placeholder="Search word sets..." autocomplete="off">
+                        <div class="word-set-list" id="wordSetList">
+                            <!-- Word sets will be populated here -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -750,7 +748,7 @@
 
                 <div class="stats-row">
                     <div class="stat-item">
-                        <span class="stat-value" id="progressStat">0/50</span>
+                        <span class="stat-value" id="progressStat">0/25</span>
                         <span class="stat-label" id="progressLabel">words</span>
                     </div>
                     <div class="stat-item">

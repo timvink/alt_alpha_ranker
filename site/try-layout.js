@@ -32,10 +32,12 @@ let startTime = null;  // Track when typing started for WPM calculation
 
 // Typing test mode settings
 let testMode = 'words';  // 'time' or 'words'
-let wordCount = 50;      // Number of words for 'words' mode
+let wordCount = 25;      // Number of words for 'words' mode
 let timeLimit = 60;      // Seconds for 'time' mode
 let timerInterval = null;  // Timer interval for countdown
 let timeRemaining = 0;     // Remaining time in seconds
+let includePunctuation = false;  // Whether to add punctuation
+let includeNumbers = false;      // Whether to add numbers
 
 /**
  * Get URL parameters
@@ -244,12 +246,22 @@ function generateRandomText() {
         currentText = 'the quick brown fox jumps over the lazy dog';
     } else {
         const words = currentWordSet.words;
-        const selectedWords = [];
+        let selectedWords = [];
         
         // Randomly select words (with replacement)
         for (let i = 0; i < numWords; i++) {
             const randomIndex = Math.floor(Math.random() * words.length);
             selectedWords.push(words[randomIndex].toLowerCase());
+        }
+        
+        // Apply punctuation if enabled
+        if (includePunctuation) {
+            selectedWords = applyPunctuation(selectedWords);
+        }
+        
+        // Apply numbers if enabled
+        if (includeNumbers) {
+            selectedWords = applyNumbers(selectedWords);
         }
         
         currentText = selectedWords.join(' ');
@@ -269,6 +281,154 @@ function generateRandomText() {
     
     // Focus the input
     document.getElementById('hiddenInput')?.focus();
+}
+
+/**
+ * Apply punctuation to words array
+ * Adds periods, commas, semicolons, question marks, quoted phrases, parentheses, and hyphens
+ */
+function applyPunctuation(words) {
+    const result = [];
+    let wordsUntilSentenceEnd = randomInt(3, 10);
+    let wordsUntilComma = randomInt(4, 8);
+    let wordsUntilQuote = randomInt(8, 20);
+    let wordsUntilParens = randomInt(15, 30);
+    let wordsUntilHyphen = randomInt(10, 20);
+    let inQuote = false;
+    let quoteWordsRemaining = 0;
+    let inParens = false;
+    let parensWordsRemaining = 0;
+    let isStartOfSentence = true;
+    
+    for (let i = 0; i < words.length; i++) {
+        let word = words[i];
+        
+        // Capitalize first letter if start of sentence
+        if (isStartOfSentence) {
+            word = word.charAt(0).toUpperCase() + word.slice(1);
+            isStartOfSentence = false;
+        }
+        
+        // Handle quote start (not inside parens)
+        if (!inQuote && !inParens && wordsUntilQuote <= 0 && i < words.length - 2) {
+            word = '"' + word;
+            inQuote = true;
+            quoteWordsRemaining = randomInt(1, 5);
+            wordsUntilQuote = randomInt(12, 25);
+        }
+        
+        // Handle quote end
+        if (inQuote) {
+            quoteWordsRemaining--;
+            if (quoteWordsRemaining <= 0) {
+                word = word + '"';
+                inQuote = false;
+            }
+        }
+        
+        // Handle parentheses start (not inside quote)
+        if (!inParens && !inQuote && wordsUntilParens <= 0 && i < words.length - 2) {
+            word = '(' + word;
+            inParens = true;
+            parensWordsRemaining = randomInt(1, 3);
+            wordsUntilParens = randomInt(20, 40);
+        }
+        
+        // Handle parentheses end
+        if (inParens) {
+            parensWordsRemaining--;
+            if (parensWordsRemaining <= 0) {
+                word = word + ')';
+                inParens = false;
+            }
+        }
+        
+        // Decrement counters
+        wordsUntilSentenceEnd--;
+        wordsUntilComma--;
+        wordsUntilQuote--;
+        wordsUntilParens--;
+        wordsUntilHyphen--;
+        
+        // Add hyphen occasionally (combine with next word)
+        if (wordsUntilHyphen <= 0 && i < words.length - 1 && !inQuote && !inParens) {
+            word = word + '-' + words[i + 1];
+            i++; // Skip the next word since we combined it
+            wordsUntilHyphen = randomInt(12, 25);
+        }
+        
+        // Add sentence-ending punctuation
+        if (wordsUntilSentenceEnd <= 0 && !inQuote && !inParens) {
+            // Randomly choose sentence-ending punctuation
+            const rand = Math.random();
+            if (rand < 0.1) {
+                word = word + '?';
+            } else if (rand < 0.15) {
+                word = word + ';';
+            } else {
+                word = word + '.';
+            }
+            wordsUntilSentenceEnd = randomInt(3, 10);
+            wordsUntilComma = randomInt(4, 8); // Reset comma counter too
+            isStartOfSentence = true;
+        } else if (wordsUntilComma <= 0 && !inQuote && !inParens) {
+            // Add comma
+            word = word + ',';
+            wordsUntilComma = randomInt(4, 8);
+        }
+        
+        result.push(word);
+    }
+    
+    // Close any unclosed quote or parens
+    if (inQuote && result.length > 0) {
+        result[result.length - 1] = result[result.length - 1] + '"';
+    }
+    if (inParens && result.length > 0) {
+        result[result.length - 1] = result[result.length - 1] + ')';
+    }
+    
+    return result;
+}
+
+/**
+ * Apply numbers to words array
+ * Inserts 1-4 digit random numbers every 2-10 words
+ */
+function applyNumbers(words) {
+    const result = [];
+    let wordsUntilNumber = randomInt(2, 10);
+    
+    for (let i = 0; i < words.length; i++) {
+        result.push(words[i]);
+        wordsUntilNumber--;
+        
+        if (wordsUntilNumber <= 0) {
+            // Generate a random 1-4 digit number
+            const digits = randomInt(1, 4);
+            let num;
+            if (digits === 1) {
+                num = randomInt(0, 9);
+            } else if (digits === 2) {
+                num = randomInt(10, 99);
+            } else if (digits === 3) {
+                num = randomInt(100, 999);
+            } else {
+                num = randomInt(1000, 9999);
+            }
+            result.push(num.toString());
+            wordsUntilNumber = randomInt(2, 10);
+        }
+    }
+    
+    return result;
+}
+
+/**
+ * Generate a random integer between min and max (inclusive)
+ */
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /**
@@ -762,12 +922,22 @@ function resetTyping() {
     // Generate new random words on reset
     if (currentWordSet && currentWordSet.words.length) {
         const words = currentWordSet.words;
-        const selectedWords = [];
+        let selectedWords = [];
         const numWords = testMode === 'time' ? 400 : wordCount;
         
         for (let i = 0; i < numWords; i++) {
             const randomIndex = Math.floor(Math.random() * words.length);
             selectedWords.push(words[randomIndex].toLowerCase());
+        }
+        
+        // Apply punctuation if enabled
+        if (includePunctuation) {
+            selectedWords = applyPunctuation(selectedWords);
+        }
+        
+        // Apply numbers if enabled
+        if (includeNumbers) {
+            selectedWords = applyNumbers(selectedWords);
         }
         
         currentText = selectedWords.join(' ');
@@ -807,6 +977,22 @@ function startCountdown() {
 function setupTypingSettings() {
     const timeModeBtn = document.getElementById('timeModeBtn');
     const wordsModeBtn = document.getElementById('wordsModeBtn');
+    const punctuationBtn = document.getElementById('punctuationBtn');
+    const numbersBtn = document.getElementById('numbersBtn');
+    
+    // Punctuation toggle
+    punctuationBtn.addEventListener('click', () => {
+        includePunctuation = !includePunctuation;
+        punctuationBtn.classList.toggle('active', includePunctuation);
+        resetTyping();
+    });
+    
+    // Numbers toggle
+    numbersBtn.addEventListener('click', () => {
+        includeNumbers = !includeNumbers;
+        numbersBtn.classList.toggle('active', includeNumbers);
+        resetTyping();
+    });
     
     // Mode button click handlers
     timeModeBtn.addEventListener('click', () => {
