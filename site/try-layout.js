@@ -898,8 +898,9 @@ function highlightKey(char) {
     
     const knownFlat = knownLayout.toFlatArray();
     const charLower = char.toLowerCase();
+    const knownHasThumbs = knownLayout.hasThumbKeys();
     
-    // Find the position of this character in the known layout
+    // Find the position of this character in the known layout (check all 40 positions)
     let position = -1;
     for (let i = 0; i < 40; i++) {
         if (knownFlat[i] && knownFlat[i].toLowerCase() === charLower) {
@@ -908,12 +909,15 @@ function highlightKey(char) {
         }
     }
     
-    // Handle space - highlight thumb keys if they exist
-    if (char === ' ' && position === -1) {
-        // Highlight thumb keys (positions 36-39)
-        for (let i = 36; i < 40; i++) {
-            applyHighlight(i, charLower);
+    // Handle space key
+    if (char === ' ') {
+        if (knownHasThumbs) {
+            // If known layout has thumbs, highlight all thumb keys for space
+            for (let i = 36; i < 40; i++) {
+                applyHighlight(i, charLower);
+            }
         }
+        // If no thumbs, space is not on the keyboard visualization
         return;
     }
     
@@ -952,8 +956,9 @@ function unhighlightKey(char) {
     
     const knownFlat = knownLayout.toFlatArray();
     const charLower = char.toLowerCase();
+    const knownHasThumbs = knownLayout.hasThumbKeys();
     
-    // Find the position of this character in the known layout
+    // Find the position of this character in the known layout (check all 40 positions)
     let position = -1;
     for (let i = 0; i < 40; i++) {
         if (knownFlat[i] && knownFlat[i].toLowerCase() === charLower) {
@@ -962,10 +967,13 @@ function unhighlightKey(char) {
         }
     }
     
-    // Handle space - unhighlight thumb keys
-    if (char === ' ' && position === -1) {
-        for (let i = 36; i < 40; i++) {
-            scheduleUnhighlight(i, charLower);
+    // Handle space key
+    if (char === ' ') {
+        if (knownHasThumbs) {
+            // If known layout has thumbs, unhighlight all thumb keys
+            for (let i = 36; i < 40; i++) {
+                scheduleUnhighlight(i, charLower);
+            }
         }
         return;
     }

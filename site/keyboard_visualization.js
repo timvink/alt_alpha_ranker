@@ -262,8 +262,11 @@ function renderKeyboardWithMapping(targetLayout, knownLayout, svgElement) {
     const targetHasThumbs = targetLayout.hasThumbKeys();
     const knownHasThumbs = knownLayout.hasThumbKeys();
     
+    // Show thumb keys if either layout has them
+    const showThumbs = targetHasThumbs || knownHasThumbs;
+    
     // Draw keyboard with secondary legend support
-    drawKeyboard(svgElement, targetHasThumbs, { showSecondaryLegend: true });
+    drawKeyboard(svgElement, showThumbs, { showSecondaryLegend: true });
     
     const targetFlat = targetLayout.toFlatArray();
     const knownFlat = knownLayout.toFlatArray();
