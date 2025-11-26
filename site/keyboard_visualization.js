@@ -95,8 +95,11 @@ const ns = "http://www.w3.org/2000/svg";
  * @param {number} y - Y position
  * @param {boolean} isHome - Whether this is a home row key
  * @param {boolean} isThumb - Whether this is a thumb key
+ * @param {Object} options - Additional options
+ * @param {boolean} options.showSecondaryLegend - Whether to show secondary legend (top-right)
  */
-function createKey(id, x, y, isHome, isThumb) {
+function createKey(id, x, y, isHome, isThumb, options = {}) {
+    const { showSecondaryLegend = false } = options;
     const group = document.createElementNS(ns, 'g');
     group.setAttribute('id', `key-group-${id}`);
     
@@ -136,6 +139,7 @@ function createKey(id, x, y, isHome, isThumb) {
     rect.setAttribute('height', KEY_H);
     rect.setAttribute('class', 'key-rect');
     
+    // Main legend (center of key)
     const text = document.createElementNS(ns, 'text');
     text.setAttribute('id', `key-legend-${id}`);
     text.setAttribute('x', x + KEY_W / 2);
@@ -145,6 +149,18 @@ function createKey(id, x, y, isHome, isThumb) {
     
     group.appendChild(rect);
     group.appendChild(text);
+    
+    // Secondary legend (top-right corner) - for showing known layout key
+    if (showSecondaryLegend) {
+        const secondaryText = document.createElementNS(ns, 'text');
+        secondaryText.setAttribute('id', `key-legend-secondary-${id}`);
+        secondaryText.setAttribute('x', x + KEY_W - 8);
+        secondaryText.setAttribute('y', y + 14);
+        secondaryText.setAttribute('class', 'key-legend-secondary');
+        secondaryText.textContent = '';
+        group.appendChild(secondaryText);
+    }
+    
     return group;
 }
 
@@ -152,8 +168,11 @@ function createKey(id, x, y, isHome, isThumb) {
  * Draws the keyboard skeleton (empty keys)
  * @param {SVGElement} svgElement - The SVG element to draw in
  * @param {boolean} showThumbs - Whether to show thumb keys
+ * @param {Object} options - Additional drawing options
+ * @param {boolean} options.showSecondaryLegend - Whether to add secondary legend elements
  */
-function drawKeyboard(svgElement, showThumbs = true) {
+function drawKeyboard(svgElement, showThumbs = true, options = {}) {
+    const { showSecondaryLegend = false } = options;
     svgElement.innerHTML = '';
     
     // Adjust SVG viewBox height based on whether thumbs are shown
@@ -172,7 +191,7 @@ function drawKeyboard(svgElement, showThumbs = true) {
         // Skip thumb keys if not showing thumbs
         if (isThumb && !showThumbs) return;
         
-        const key = createKey(i, pos.x, pos.y, isHome, isThumb);
+        const key = createKey(i, pos.x, pos.y, isHome, isThumb, { showSecondaryLegend });
         svgElement.appendChild(key);
     });
 }
@@ -204,6 +223,22 @@ function updateKeyboardFromArray(layoutArray, svgElement) {
 }
 
 /**
+ * Updates secondary key legends (top-right corner)
+ * @param {Array} layoutArray - 40-element array of key characters for secondary legends
+ * @param {SVGElement} svgElement - The SVG element containing the keyboard
+ */
+function updateSecondaryLegends(layoutArray, svgElement) {
+    for (let i = 0; i < 40; i++) {
+        const textElement = svgElement.querySelector(`#key-legend-secondary-${i}`);
+        
+        if (textElement) {
+            const char = layoutArray[i] || '';
+            textElement.textContent = char;
+        }
+    }
+}
+
+/**
  * Renders a KeyboardLayout object to an SVG element
  * @param {KeyboardLayout} layout - The keyboard layout object
  * @param {SVGElement} svgElement - The SVG element to render to
@@ -216,12 +251,54 @@ function renderKeyboard(layout, svgElement) {
     updateKeyboardFromArray(flatArray, svgElement);
 }
 
+/**
+ * Renders a keyboard with both target layout (main) and known layout (secondary) legends
+ * Used for the try-layout page to show what keys to press
+ * @param {KeyboardLayout} targetLayout - The layout being tried (shown as main legend)
+ * @param {KeyboardLayout} knownLayout - The user's known layout (shown in top-right)
+ * @param {SVGElement} svgElement - The SVG element to render to
+ */
+function renderKeyboardWithMapping(targetLayout, knownLayout, svgElement) {
+    const targetHasThumbs = targetLayout.hasThumbKeys();
+    const knownHasThumbs = knownLayout.hasThumbKeys();
+    
+    // Draw keyboard with secondary legend support
+    drawKeyboard(svgElement, targetHasThumbs, { showSecondaryLegend: true });
+    
+    const targetFlat = targetLayout.toFlatArray();
+    const knownFlat = knownLayout.toFlatArray();
+    
+    // Build mapping array for secondary legends
+    // For each position, show what key the user needs to press on their known layout
+    const secondaryArray = [];
+    
+    for (let i = 0; i < 40; i++) {
+        const targetChar = targetFlat[i];
+        
+        // If target has a thumb key but known layout doesn't have thumb keys,
+        // the user will press space for that position
+        if (i >= 36 && targetChar && targetChar !== ' ' && !knownHasThumbs) {
+            secondaryArray[i] = '␣'; // Space symbol
+        } else {
+            secondaryArray[i] = knownFlat[i] || '';
+        }
+    }
+    
+    // Update primary legends with target layout
+    updateKeyboardFromArray(targetFlat, svgElement);
+    
+    // Update secondary legends with known layout mapping
+    updateSecondaryLegends(secondaryArray, svgElement);
+}
+
 // Export to window for browser usage
 if (typeof window !== 'undefined') {
     window.renderKeyboard = renderKeyboard;
+    window.renderKeyboardWithMapping = renderKeyboardWithMapping;
     window.drawKeyboard = drawKeyboard;
     window.updateKeyboardFromArray = updateKeyboardFromArray;
+    window.updateSecondaryLegends = updateSecondaryLegends;
 }
 
 // ES module exports
-export { renderKeyboard, drawKeyboard, updateKeyboardFromArray };
+export { renderKeyboard, renderKeyboardWithMapping, drawKeyboard, updateKeyboardFromArray, updateSecondaryLegends };

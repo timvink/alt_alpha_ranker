@@ -58,8 +58,12 @@ class KeyboardAccordion {
         // Add to open rows set
         this.openRows.add(rowElement);
         
-        // Add click handler to accordion content to close when clicked
+        // Add click handler to accordion content to close when clicked (but not on buttons/links)
         content.addEventListener('click', (e) => {
+            // Don't close if clicking on the try layout button
+            if (e.target.closest('.try-layout-btn')) {
+                return;
+            }
             e.stopPropagation();
             this.close(rowElement);
         });
@@ -103,11 +107,20 @@ class KeyboardAccordion {
         const table = document.getElementById('layoutTable');
         const columnCount = table.querySelector('thead tr').children.length;
         
+        // Create the try layout URL with the target parameter
+        const tryLayoutUrl = `try-layout.html?target=${encodeURIComponent(layoutName)}`;
+        
         tr.innerHTML = `
             <td colspan="${columnCount}">
                 <div class="accordion-content">
                     <div class="keyboard-container">
                         <svg id="keyboard-svg" width="800" height="280" viewBox="0 0 800 280"></svg>
+                    </div>
+                    <div class="accordion-actions">
+                        <a href="${tryLayoutUrl}" class="try-layout-btn">
+                            <i class="fas fa-keyboard"></i>
+                            Try how this layout feels
+                        </a>
                     </div>
                 </div>
             </td>

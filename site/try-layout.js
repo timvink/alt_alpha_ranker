@@ -13,6 +13,7 @@
  */
 
 import { cyanophageToKeyboard } from './cyanophage.js';
+import { renderKeyboardWithMapping } from './keyboard_visualization.js';
 
 // State
 let layoutsData = [];
@@ -655,6 +656,12 @@ async function loadLayouts() {
     knownLayout = cyanophageToKeyboard(knownLayoutData.url);
     targetLayout = cyanophageToKeyboard(targetLayoutData.url);
     
+    // Render keyboard visualization with target layout and known layout mapping
+    const keyboardSvg = document.getElementById('layoutKeyboardSvg');
+    if (keyboardSvg) {
+        renderKeyboardWithMapping(targetLayout, knownLayout, keyboardSvg);
+    }
+    
     // Translate the text and reset
     translateAndReset();
 }
@@ -680,6 +687,7 @@ function translateText() {
     
     const knownFlat = knownLayout.toFlatArray();
     const targetFlat = targetLayout.toFlatArray();
+    const knownHasThumbs = knownLayout.hasThumbKeys();
     
     // Build a map: character in target layout -> physical position
     const targetCharToPosition = {};
@@ -713,6 +721,10 @@ function translateText() {
             if (knownChar) {
                 // Preserve case
                 result += char === char.toUpperCase() ? knownChar.toUpperCase() : knownChar;
+            } else if (position >= 36 && !knownHasThumbs) {
+                // Target layout has a thumb key, but known layout doesn't have thumb keys
+                // User should press space for this character
+                result += ' ';
             } else {
                 // Position exists but no key in known layout (shouldn't happen often)
                 result += char;

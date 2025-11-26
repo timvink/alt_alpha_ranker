@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="keyboard.css">
+    <link rel="stylesheet" href="keyboard-accordion.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .layout-section {
@@ -635,6 +636,19 @@
             color: var(--accent-color);
         }
 
+        /* Keyboard preview styles */
+        .keyboard-preview {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            padding: 1rem 0;
+        }
+
+        .keyboard-preview svg {
+            max-width: 100%;
+            height: auto;
+        }
+
         /* Focus mode - hide elements when user is typing */
         body.focus-mode .intro-section,
         body.focus-mode .config-card,
@@ -642,7 +656,8 @@
         body.focus-mode .typing-settings-container,
         body.focus-mode .stat-item:not(.focus-visible),
         body.focus-mode .complete-message,
-        body.focus-mode .theme-toggle {
+        body.focus-mode .theme-toggle,
+        body.focus-mode .keyboard-preview {
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -786,6 +801,10 @@
                         <span class="stat-value" id="wpmStat">0</span>
                         <span class="stat-label">wpm</span>
                     </div>
+                </div>
+
+                <div class="keyboard-preview" id="keyboardPreview">
+                    <svg id="layoutKeyboardSvg" width="800" height="280" viewBox="0 0 800 280"></svg>
                 </div>
             </div>
         </div>

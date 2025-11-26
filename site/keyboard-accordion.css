@@ -40,6 +40,22 @@
     user-select: none;
 }
 
+/* Secondary legend (top-right corner) for showing known layout key */
+.key-legend-secondary {
+    font-size: 10px;
+    font-weight: 500;
+    fill: #6366f1;
+    text-anchor: end;
+    dominant-baseline: hanging;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.8;
+}
+
+body.dark-mode .key-legend-secondary {
+    fill: #a78bfa;
+}
+
 .key-rect {
     fill: #f3f4f6;
     stroke: #9ca3af;
@@ -84,6 +100,42 @@ body.dark-mode .home-position-key .key-rect {
         max-width: 100%;
         height: auto;
     }
+}
+
+/* Accordion actions */
+.accordion-actions {
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem 0 0.5rem 0;
+}
+
+.try-layout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.try-layout-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.try-layout-btn:active {
+    transform: translateY(0);
+}
+
+.try-layout-btn i {
+    font-size: 0.85rem;
 }
 
 /* Make table rows clickable */
