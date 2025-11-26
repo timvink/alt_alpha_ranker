@@ -10,3 +10,6 @@ wheels/
 .venv
 
 TODO.md
+
+
+node_modules/
