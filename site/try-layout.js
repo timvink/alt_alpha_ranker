@@ -134,40 +134,27 @@ async function initTryLayout() {
 }
 
 /**
- * Load available word sets from the languages folder
+ * Load available word sets metadata (does not fetch the actual word data)
  */
 async function loadWordSets() {
-    // List of available word set files (english first as default)
-    const wordSetFiles = [
-        'english_1k.json',
-        'dutch_1k.json',
-        'french_1k.json',
-        'german_1k.json',
-        'italian_1k.json',
-        'portuguese_1k.json',
-        'spanish_1k.json'
+    // Define word sets with metadata only - actual words are loaded lazily
+    const languages = [
+        'english',
+        'dutch',
+        'french',
+        'german',
+        'italian',
+        'portuguese',
+        'spanish'
     ];
     
-    wordSets = [];
-    
-    for (const file of wordSetFiles) {
-        try {
-            const response = await fetch(`static/languages/${file}`);
-            if (response.ok) {
-                const data = await response.json();
-                const language = file.replace('_1k.json', '');
-                wordSets.push({
-                    file: file,
-                    name: data.name || file.replace('.json', ''),
-                    displayName: language + ' 1k',
-                    language: language,
-                    words: data.words || []
-                });
-            }
-        } catch (e) {
-            console.warn(`Could not load word set: ${file}`, e);
-        }
-    }
+    wordSets = languages.map(language => ({
+        file: `${language}_1k.json`,
+        name: `${language}_1k`,
+        displayName: `${language} 1k`,
+        language: language,
+        words: null  // Words are loaded lazily when selected
+    }));
     
     // Populate the word set dropdown
     populateWordSetDropdown();
@@ -186,7 +173,7 @@ function populateWordSetDropdown() {
         item.dataset.index = index;
         item.innerHTML = `
             <span class="word-set-item-name">${ws.displayName}</span>
-            <span class="word-set-item-count">${ws.words.length} words</span>
+            <span class="word-set-item-count">1k words</span>
         `;
         item.addEventListener('click', () => selectWordSet(ws));
         list.appendChild(item);
@@ -197,6 +184,23 @@ function populateWordSetDropdown() {
  * Select a word set and generate random words
  */
 async function selectWordSet(ws) {
+    // Lazily load words if not already loaded
+    if (!ws.words) {
+        try {
+            const response = await fetch(`static/languages/${ws.file}`);
+            if (response.ok) {
+                const data = await response.json();
+                ws.words = data.words || [];
+            } else {
+                console.warn(`Could not load word set: ${ws.file}`);
+                ws.words = [];
+            }
+        } catch (e) {
+            console.warn(`Could not load word set: ${ws.file}`, e);
+            ws.words = [];
+        }
+    }
+    
     currentWordSet = ws;
     
     // Update the selector display
