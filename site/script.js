@@ -83,14 +83,6 @@ themeToggle.addEventListener('click', () => {
 
 // Populate language dropdown
 function populateLanguageDropdown(languages) {
-    const languageFlags = {
-        'dutch': '🇳🇱',
-        'english': '🇬🇧',
-        'french': '🇫🇷',
-        'german': '🇩🇪',
-        'spanish': '🇪🇸'
-    };
-    
     // Sort languages with English first
     const sortedLanguages = [...languages].sort((a, b) => {
         if (a === 'english') return -1;
@@ -100,9 +92,8 @@ function populateLanguageDropdown(languages) {
     
     const select = document.getElementById('languageSelect');
     select.innerHTML = sortedLanguages.map(lang => {
-        const flag = languageFlags[lang] || '🌐';
         const displayName = lang.charAt(0).toUpperCase() + lang.slice(1);
-        return `<option value="${lang}">${flag} ${displayName}</option>`;
+        return `<option value="${lang}">${displayName}</option>`;
     }).join('');
     
     // Set saved language or default to english

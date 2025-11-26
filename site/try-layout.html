@@ -886,23 +886,32 @@
 </head>
 <body>
     <div class="container">
-        <pre class="ascii-title">
- █████╗ ██╗  ████████╗     █████╗ ██╗     ██████╗ ██╗  ██╗ █████╗     ██████╗  █████╗ ███╗   ██╗██╗  ██╗███████╗██████╗ 
-██╔══██╗██║  ╚══██╔══╝    ██╔══██╗██║     ██╔══██╗██║  ██║██╔══██╗    ██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝██╔══██╗
-███████║██║     ██║       ███████║██║     ██████╔╝███████║███████║    ██████╔╝███████║██╔██╗ ██║█████╔╝ █████╗  ██████╔╝
-██╔══██║██║     ██║       ██╔══██║██║     ██╔═══╝ ██╔══██║██╔══██║    ██╔══██╗██╔══██║██║╚██╗██║██╔═██╗ ██╔══╝  ██╔══██╗
-██║  ██║███████╗██║       ██║  ██║███████╗██║     ██║  ██║██║  ██║    ██║  ██║██║  ██║██║ ╚████║██║  ██╗███████╗██║  ██║
-╚═╝  ╚═╝╚══════╝╚═╝       ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝</pre>
+        <header class="site-header">
+            <a href="index.html" class="logo-link">
+                <pre class="ascii-title">
+ █████╗ ██╗  ████████╗     █████╗ ██╗     ██████╗ ██╗  ██╗ █████╗ 
+██╔══██╗██║  ╚══██╔══╝    ██╔══██╗██║     ██╔══██╗██║  ██║██╔══██╗
+███████║██║     ██║       ███████║██║     ██████╔╝███████║███████║
+██╔══██║██║     ██║       ██╔══██║██║     ██╔═══╝ ██╔══██║██╔══██║
+██║  ██║███████╗██║       ██║  ██║███████╗██║     ██║  ██║██║  ██║
+╚═╝  ╚═╝╚══════╝╚═╝       ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝</pre>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-btn">
+                    <i class="fa-solid fa-ranking-star"></i>
+                    <span>Rankings</span>
+                </a>
+                <a href="try-layout.html" class="nav-btn active">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <span>Try a Layout</span>
+                </a>
+                <a href="new_layout.html" class="nav-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add New Layout</span>
+                </a>
+            </nav>
+        </header>
         
-        <div class="intro-section">
-            <div class="intro-text">
-                <p><strong>Try Out a Layout</strong> — Experience what typing on a different keyboard layout feels like.</p>
-            </div>
-            <div class="usage-text">
-                <p><a href="index.html">← Back to layout rankings</a></p>
-            </div>
-        </div>
-
         <div class="layout-section">
             <!-- Hidden selects for data storage -->
             <select id="knownLayout" style="display: none;">
