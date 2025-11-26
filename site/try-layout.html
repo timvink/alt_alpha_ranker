@@ -535,6 +535,101 @@
             font-size: 0.75rem;
             color: var(--text-tertiary);
         }
+
+        /* Typing test settings bar */
+        .typing-settings-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        body.dark-mode .typing-settings-bar {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .settings-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .settings-divider {
+            width: 1px;
+            height: 1.25rem;
+            background: #e2e8f0;
+            margin: 0 0.25rem;
+        }
+
+        body.dark-mode .settings-divider {
+            background: #3d4a5c;
+        }
+
+        .setting-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.6rem;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .setting-btn:hover {
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        body.dark-mode .setting-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .setting-btn.active {
+            color: var(--accent-color);
+        }
+
+        .setting-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .setting-btn.disabled:hover {
+            background: transparent;
+            color: var(--text-tertiary);
+        }
+
+        .setting-btn i {
+            font-size: 0.8rem;
+        }
+
+        .option-btn {
+            padding: 0.35rem 0.55rem;
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .option-btn:hover {
+            color: var(--text-secondary);
+        }
+
+        .option-btn.active {
+            color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -588,6 +683,34 @@
                 </div>
             </div>
 
+            <div class="typing-settings-bar" id="typingSettingsBar">
+                <div class="settings-group">
+                    <button class="setting-btn disabled" id="punctuationBtn" title="Punctuation (coming soon)">
+                        <i class="fas fa-at"></i>
+                        <span>punctuation</span>
+                    </button>
+                    <button class="setting-btn disabled" id="numbersBtn" title="Numbers (coming soon)">
+                        <i class="fas fa-hashtag"></i>
+                        <span>numbers</span>
+                    </button>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-group">
+                    <button class="setting-btn" id="timeModeBtn" title="Timed mode">
+                        <i class="fas fa-clock"></i>
+                        <span>time</span>
+                    </button>
+                    <button class="setting-btn active" id="wordsModeBtn" title="Word count mode">
+                        <i class="fas fa-font"></i>
+                        <span>words</span>
+                    </button>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-group" id="optionsGroup">
+                    <!-- Options will be populated by JS based on mode -->
+                </div>
+            </div>
+
             <div class="typing-card">
                 <div class="keyboard-hint">
                     <strong>Just start typing!</strong> The top row shows which keys to press on your <span id="knownLayoutName">QWERTY</span> keyboard. 
@@ -627,8 +750,8 @@
 
                 <div class="stats-row">
                     <div class="stat-item">
-                        <span class="stat-value" id="progressStat">0%</span>
-                        <span class="stat-label">progress</span>
+                        <span class="stat-value" id="progressStat">0/50</span>
+                        <span class="stat-label" id="progressLabel">words</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-value" id="errorsStat">0</span>

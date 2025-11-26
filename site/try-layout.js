@@ -30,6 +30,13 @@ let typedChars = [];      // Array of {char, isCorrect} for each typed position
 let isComplete = false;
 let startTime = null;  // Track when typing started for WPM calculation
 
+// Typing test mode settings
+let testMode = 'words';  // 'time' or 'words'
+let wordCount = 50;      // Number of words for 'words' mode
+let timeLimit = 60;      // Seconds for 'time' mode
+let timerInterval = null;  // Timer interval for countdown
+let timeRemaining = 0;     // Remaining time in seconds
+
 /**
  * Get URL parameters
  */
@@ -108,6 +115,7 @@ async function initTryLayout() {
         // Set up event listeners
         setupEventListeners();
         setupWordSetSelector();
+        setupTypingSettings();
         
         // Load initial layouts
         await loadLayouts();
@@ -228,14 +236,17 @@ async function selectWordSet(ws) {
  * Generate random text from current word set
  */
 function generateRandomText() {
+    // For time mode, generate more words than needed (user might type fast)
+    // 200 wpm * 2 minutes = 400 words max needed
+    const numWords = testMode === 'time' ? 400 : wordCount;
+    
     if (!currentWordSet || !currentWordSet.words.length) {
         currentText = 'the quick brown fox jumps over the lazy dog';
     } else {
         const words = currentWordSet.words;
         const selectedWords = [];
-        const numWords = 50;
         
-        // Randomly select 50 words (with replacement)
+        // Randomly select words (with replacement)
         for (let i = 0; i < numWords; i++) {
             const randomIndex = Math.floor(Math.random() * words.length);
             selectedWords.push(words[randomIndex].toLowerCase());
@@ -581,6 +592,9 @@ function handleKeyInput(e) {
     // Start timer on first keystroke
     if (startTime === null) {
         startTime = Date.now();
+        if (testMode === 'time') {
+            startCountdown();
+        }
     }
     
     const pressedKey = e.key;
@@ -684,9 +698,28 @@ function getErrorCount() {
  * Update statistics display
  */
 function updateStats() {
-    const total = translatedText.length || 1;
-    const progress = Math.round((currentPosition / total) * 100);
-    document.getElementById('progressStat').textContent = `${progress}%`;
+    // Update progress based on mode
+    if (testMode === 'time') {
+        // For time mode, show countdown
+        if (startTime === null) {
+            document.getElementById('progressStat').textContent = `${timeLimit}s`;
+        } else {
+            document.getElementById('progressStat').textContent = `${timeRemaining}s`;
+        }
+    } else {
+        // For words mode, show x / y words typed
+        const wordsTyped = currentPosition === 0 ? 0 : 
+            currentText.slice(0, currentPosition).split(' ').filter(w => w).length + 
+            (currentText[currentPosition - 1] === ' ' ? 0 : 0);
+        // Count completed words (space-separated)
+        const typedText = currentText.slice(0, currentPosition);
+        const completedWords = typedText.split(' ').filter((w, i, arr) => {
+            // Only count if followed by a space (fully typed) or at the end
+            return w && (i < arr.length - 1 || currentPosition >= currentText.length);
+        }).length;
+        document.getElementById('progressStat').textContent = `${completedWords}/${wordCount}`;
+    }
+    
     document.getElementById('errorsStat').textContent = getErrorCount();
     
     // Calculate WPM (words = characters / 5, standard typing test convention)
@@ -712,10 +745,17 @@ function showComplete() {
  * Reset typing to start fresh (generates new random words)
  */
 function resetTyping() {
+    // Stop any running timer
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    
     currentPosition = 0;
     typedChars = [];
     isComplete = false;
     startTime = null;
+    timeRemaining = timeLimit;
     
     document.getElementById('completeMessage').classList.remove('show');
     
@@ -723,7 +763,7 @@ function resetTyping() {
     if (currentWordSet && currentWordSet.words.length) {
         const words = currentWordSet.words;
         const selectedWords = [];
-        const numWords = 50;
+        const numWords = testMode === 'time' ? 400 : wordCount;
         
         for (let i = 0; i < numWords; i++) {
             const randomIndex = Math.floor(Math.random() * words.length);
@@ -739,6 +779,98 @@ function resetTyping() {
     
     // Focus the input
     document.getElementById('hiddenInput').focus();
+}
+
+/**
+ * Start the countdown timer for time mode
+ */
+function startCountdown() {
+    timeRemaining = timeLimit;
+    updateStats();
+    
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateStats();
+        
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            isComplete = true;
+            showComplete();
+        }
+    }, 1000);
+}
+
+/**
+ * Set up the typing settings bar
+ */
+function setupTypingSettings() {
+    const timeModeBtn = document.getElementById('timeModeBtn');
+    const wordsModeBtn = document.getElementById('wordsModeBtn');
+    
+    // Mode button click handlers
+    timeModeBtn.addEventListener('click', () => {
+        if (testMode === 'time') return;
+        testMode = 'time';
+        timeModeBtn.classList.add('active');
+        wordsModeBtn.classList.remove('active');
+        updateOptionsDisplay();
+        resetTyping();
+    });
+    
+    wordsModeBtn.addEventListener('click', () => {
+        if (testMode === 'words') return;
+        testMode = 'words';
+        wordsModeBtn.classList.add('active');
+        timeModeBtn.classList.remove('active');
+        updateOptionsDisplay();
+        resetTyping();
+    });
+    
+    // Initialize options display
+    updateOptionsDisplay();
+}
+
+/**
+ * Update the options buttons based on current mode
+ */
+function updateOptionsDisplay() {
+    const optionsGroup = document.getElementById('optionsGroup');
+    const progressLabel = document.getElementById('progressLabel');
+    optionsGroup.innerHTML = '';
+    
+    if (testMode === 'time') {
+        progressLabel.textContent = 'time';
+        const timeOptions = [15, 30, 60, 120];
+        timeOptions.forEach(seconds => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (seconds === timeLimit ? ' active' : '');
+            btn.textContent = seconds;
+            btn.addEventListener('click', () => {
+                timeLimit = seconds;
+                timeRemaining = seconds;
+                document.querySelectorAll('#optionsGroup .option-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                resetTyping();
+            });
+            optionsGroup.appendChild(btn);
+        });
+    } else {
+        progressLabel.textContent = 'words';
+        const wordOptions = [10, 25, 50, 100];
+        wordOptions.forEach(count => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (count === wordCount ? ' active' : '');
+            btn.textContent = count;
+            btn.addEventListener('click', () => {
+                wordCount = count;
+                document.querySelectorAll('#optionsGroup .option-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                resetTyping();
+            });
+            optionsGroup.appendChild(btn);
+        });
+    }
 }
 
 // Export for global access
