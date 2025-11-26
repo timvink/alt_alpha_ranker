@@ -90,6 +90,143 @@
             margin-bottom: 1.5rem;
         }
 
+        /* Layout selector header */
+        .layout-selector-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 2;
+        }
+
+        .layout-intro {
+            white-space: nowrap;
+        }
+
+        .layout-select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .layout-select-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .layout-select-trigger:hover {
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        body.dark-mode .layout-select-trigger:hover {
+            background: rgba(159, 122, 234, 0.15);
+        }
+
+        .layout-select-trigger .layout-name {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        }
+
+        .layout-select-trigger i {
+            font-size: 0.85rem;
+            transition: transform 0.2s;
+        }
+
+        .layout-select-wrapper.open .layout-select-trigger i {
+            transform: rotate(180deg);
+        }
+
+        .layout-dropdown {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            background: var(--bg-secondary);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        body.dark-mode .layout-dropdown {
+            border-color: #3d4a5c;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .layout-dropdown.show {
+            display: block;
+        }
+
+        .layout-search {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            background: transparent;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        body.dark-mode .layout-search {
+            border-bottom-color: #3d4a5c;
+        }
+
+        .layout-search::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .layout-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .layout-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .layout-item:hover {
+            background: rgba(79, 70, 229, 0.08);
+        }
+
+        body.dark-mode .layout-item:hover {
+            background: rgba(159, 122, 234, 0.12);
+        }
+
+        .layout-item.selected {
+            background: rgba(79, 70, 229, 0.12);
+        }
+
+        body.dark-mode .layout-item.selected {
+            background: rgba(159, 122, 234, 0.18);
+        }
+
+        .layout-item-name {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
         .keyboard-hint {
             background: rgba(79, 70, 229, 0.06);
             border-radius: 8px;
@@ -401,7 +538,7 @@
         .restart-hint kbd {
             background: rgba(0, 0, 0, 0.06);
             color: var(--text-secondary);
-            margin: 0 0.15em;
+            margin: 0 0.25em;
             padding: 0.2em 0.5em;
             transition: background 0.15s ease, color 0.15s ease;
         }
@@ -640,13 +777,68 @@
         .keyboard-preview {
             display: flex;
             justify-content: center;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
             padding: 1rem 0;
         }
 
         .keyboard-preview svg {
             max-width: 100%;
             height: auto;
+        }
+
+        /* Key highlight when pressed - make the entire key light up */
+        /* Use high specificity selectors to override all other styles */
+        .keyboard-preview .key.pressed .key-rect,
+        .keyboard-preview .key.pressed.home-position-key .key-rect,
+        body.dark-mode .keyboard-preview .key.pressed .key-rect,
+        body.dark-mode .keyboard-preview .key.pressed.home-position-key .key-rect {
+            fill: #6366f1 !important;
+            fill-opacity: 1 !important;
+            stroke: #4f46e5 !important;
+            filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.6)) !important;
+        }
+
+        .keyboard-preview .key.pressed .key-legend,
+        .keyboard-preview .key.pressed.home-position-key .key-legend,
+        body.dark-mode .keyboard-preview .key.pressed .key-legend,
+        body.dark-mode .keyboard-preview .key.pressed.home-position-key .key-legend {
+            fill: white !important;
+        }
+
+        .keyboard-preview .key.pressed .key-legend-secondary,
+        .keyboard-preview .key.pressed.home-position-key .key-legend-secondary,
+        body.dark-mode .keyboard-preview .key.pressed .key-legend-secondary,
+        body.dark-mode .keyboard-preview .key.pressed.home-position-key .key-legend-secondary {
+            fill: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        /* Blinking cursor - vertical line before the character */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .typing-char.cursor::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: var(--accent-color);
+            animation: blink 1s infinite;
+            border-radius: 1px;
+        }
+
+        .typing-char.cursor {
+            position: relative;
+            /* Remove highlight background when showing cursor */
+            background: transparent !important;
+            color: #718096 !important;
+        }
+
+        body.dark-mode .typing-char.cursor {
+            color: #5a6578 !important;
         }
 
         /* Focus mode - hide elements when user is typing */
@@ -657,9 +849,15 @@
         body.focus-mode .stat-item:not(.focus-visible),
         body.focus-mode .complete-message,
         body.focus-mode .theme-toggle,
-        body.focus-mode .keyboard-preview {
+        body.focus-mode .layout-selector-header {
             opacity: 0;
             pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Keep keyboard preview visible in focus mode */
+        body.focus-mode .keyboard-preview {
+            opacity: 1;
             transition: opacity 0.3s ease;
         }
 
@@ -706,26 +904,46 @@
         </div>
 
         <div class="layout-section">
-            <div class="config-card">
-                <div class="config-row">
-                    <div class="config-group">
-                        <label for="knownLayout">Your keyboard layout</label>
-                        <select id="knownLayout">
-                            <option value="qwerty" selected>qwerty</option>
-                        </select>
+            <!-- Hidden selects for data storage -->
+            <select id="knownLayout" style="display: none;">
+                <option value="qwerty" selected>qwerty</option>
+            </select>
+            <select id="targetLayout" style="display: none;">
+                <option value="gallium" selected>gallium</option>
+            </select>
+
+            <!-- Layout selector text with dropdowns -->
+            <div class="layout-selector-header">
+                <span class="layout-intro">You can touch type</span>
+                
+                <div class="layout-select-wrapper" id="knownLayoutWrapper">
+                    <button class="layout-select-trigger" id="knownLayoutTrigger">
+                        <span class="layout-name" id="knownLayoutName">qwerty</span>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+                    <div class="layout-dropdown" id="knownLayoutDropdown">
+                        <input type="text" class="layout-search" id="knownLayoutSearch" placeholder="Search layouts..." autocomplete="off">
+                        <div class="layout-list" id="knownLayoutList"></div>
                     </div>
-                    <div class="config-group">
-                        <label for="targetLayout">Layout to try</label>
-                        <select id="targetLayout">
-                            <option value="gallium" selected>gallium</option>
-                        </select>
+                </div>
+                
+                <span class="layout-intro">and want to experience typing in</span>
+                
+                <div class="layout-select-wrapper" id="targetLayoutWrapper">
+                    <button class="layout-select-trigger" id="targetLayoutTrigger">
+                        <span class="layout-name" id="targetLayoutName">gallium</span>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+                    <div class="layout-dropdown" id="targetLayoutDropdown">
+                        <input type="text" class="layout-search" id="targetLayoutSearch" placeholder="Search layouts..." autocomplete="off">
+                        <div class="layout-list" id="targetLayoutList"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="keyboard-hint" id="keyboardHint">
-                <strong>Just start typing!</strong> The top row shows which keys to press on your <code id="knownLayoutName">QWERTY</code> keyboard. 
-                The bottom row shows the actual text you're typing in <code id="targetLayoutName">Gallium</code>.
+            <!-- Keyboard visualization at the top -->
+            <div class="keyboard-preview" id="keyboardPreview">
+                <svg id="layoutKeyboardSvg" width="800" height="280" viewBox="0 0 800 280"></svg>
             </div>
 
             <div class="typing-settings-container" id="typingSettingsContainer">
@@ -803,9 +1021,6 @@
                     </div>
                 </div>
 
-                <div class="keyboard-preview" id="keyboardPreview">
-                    <svg id="layoutKeyboardSvg" width="800" height="280" viewBox="0 0 800 280"></svg>
-                </div>
             </div>
         </div>
 

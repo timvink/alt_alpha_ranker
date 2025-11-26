@@ -525,6 +525,110 @@ function populateLayoutDropdowns() {
         if (layout.name === 'gallium') targetOption.selected = true;
         targetSelect.appendChild(targetOption);
     });
+    
+    // Set up the searchable dropdowns
+    setupLayoutDropdown('known');
+    setupLayoutDropdown('target');
+}
+
+/**
+ * Set up a searchable layout dropdown
+ */
+function setupLayoutDropdown(type) {
+    const wrapper = document.getElementById(`${type}LayoutWrapper`);
+    const trigger = document.getElementById(`${type}LayoutTrigger`);
+    const dropdown = document.getElementById(`${type}LayoutDropdown`);
+    const search = document.getElementById(`${type}LayoutSearch`);
+    const list = document.getElementById(`${type}LayoutList`);
+    const select = document.getElementById(`${type}Layout`);
+    const nameSpan = document.getElementById(`${type}LayoutName`);
+    
+    // Populate the list
+    function populateList(filter = '') {
+        list.innerHTML = '';
+        const filterLower = filter.toLowerCase();
+        
+        layoutsData
+            .filter(layout => layout.name.toLowerCase().includes(filterLower))
+            .forEach(layout => {
+                const item = document.createElement('div');
+                item.className = 'layout-item';
+                if (layout.name === select.value) {
+                    item.classList.add('selected');
+                }
+                item.innerHTML = `<span class="layout-item-name">${layout.name}</span>`;
+                item.addEventListener('click', () => selectLayout(type, layout.name));
+                list.appendChild(item);
+            });
+    }
+    
+    // Select a layout
+    function selectLayout(type, name) {
+        select.value = name;
+        nameSpan.textContent = name;
+        closeDropdown();
+        
+        // Trigger change event
+        select.dispatchEvent(new Event('change'));
+    }
+    
+    // Open dropdown
+    function openDropdown() {
+        wrapper.classList.add('open');
+        dropdown.classList.add('show');
+        search.value = '';
+        populateList();
+        search.focus();
+    }
+    
+    // Close dropdown
+    function closeDropdown() {
+        wrapper.classList.remove('open');
+        dropdown.classList.remove('show');
+    }
+    
+    // Toggle dropdown
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (dropdown.classList.contains('show')) {
+            closeDropdown();
+        } else {
+            // Close other dropdowns first
+            document.querySelectorAll('.layout-dropdown.show').forEach(d => {
+                d.classList.remove('show');
+                d.closest('.layout-select-wrapper')?.classList.remove('open');
+            });
+            openDropdown();
+        }
+    });
+    
+    // Filter on search
+    search.addEventListener('input', () => {
+        populateList(search.value);
+    });
+    
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) {
+            closeDropdown();
+        }
+    });
+    
+    // Handle keyboard navigation
+    search.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeDropdown();
+            document.getElementById('hiddenInput').focus();
+        } else if (e.key === 'Enter') {
+            const firstItem = list.querySelector('.layout-item');
+            if (firstItem) {
+                firstItem.click();
+            }
+        }
+    });
+    
+    // Initial population
+    populateList();
 }
 
 /**
@@ -563,12 +667,25 @@ function setupEventListeners() {
     let tabPressed = false;
     
     document.addEventListener('keydown', (e) => {
-        // Don't capture keys when word set search is focused
+        // Always handle key highlighting for visual feedback (do this first)
+        if (e.key.length === 1) {
+            highlightKey(e.key);
+        }
+        
+        // Don't capture keys when word set search or layout search is focused
         const wordSetSearch = document.getElementById('wordSetSearch');
-        if (document.activeElement === wordSetSearch) {
+        const knownLayoutSearch = document.getElementById('knownLayoutSearch');
+        const targetLayoutSearch = document.getElementById('targetLayoutSearch');
+        if (document.activeElement === wordSetSearch || 
+            document.activeElement === knownLayoutSearch || 
+            document.activeElement === targetLayoutSearch) {
             // Allow Escape to close dropdown
             if (e.key === 'Escape') {
                 closeWordSetDropdown();
+                document.querySelectorAll('.layout-dropdown.show').forEach(d => {
+                    d.classList.remove('show');
+                    d.closest('.layout-select-wrapper')?.classList.remove('open');
+                });
                 hiddenInput.focus();
             }
             return;
@@ -608,9 +725,26 @@ function setupEventListeners() {
         }
         
         // If not already focused and it's a printable key, focus the input
-        // But not if word set dropdown is open
-        if (document.activeElement !== hiddenInput && e.key.length === 1 && !isWordSetDropdownOpen()) {
+        // But not if word set dropdown is open or layout dropdown is open
+        const layoutDropdownOpen = document.querySelector('.layout-dropdown.show');
+        if (document.activeElement !== hiddenInput && e.key.length === 1 && !isWordSetDropdownOpen() && !layoutDropdownOpen) {
             hiddenInput.focus();
+        }
+    });
+    
+    // Handle keyup for unhighlighting
+    document.addEventListener('keyup', (e) => {
+        if (e.key.length === 1) {
+            unhighlightKey(e.key);
+        }
+    });
+    
+    // Also listen for actual character input (handles home row mods where char is sent on release)
+    // This uses beforeinput to catch the character being typed
+    hiddenInput.addEventListener('beforeinput', (e) => {
+        if (e.data && e.data.length === 1) {
+            // Trigger highlight for the actual character being input
+            highlightKey(e.data);
         }
     });
     
@@ -625,8 +759,12 @@ function setupEventListeners() {
     // Handle keyboard input directly
     hiddenInput.addEventListener('keydown', handleKeyInput);
     
-    // Prevent the input from accumulating text
-    hiddenInput.addEventListener('input', () => {
+    // Prevent the input from accumulating text and trigger highlight on input
+    hiddenInput.addEventListener('input', (e) => {
+        // Also highlight on input event as backup (some browsers may not support beforeinput)
+        if (e.data && e.data.length === 1) {
+            highlightKey(e.data);
+        }
         hiddenInput.value = '';
     });
 }
@@ -638,9 +776,9 @@ async function loadLayouts() {
     const knownLayoutName = document.getElementById('knownLayout').value;
     const targetLayoutName = document.getElementById('targetLayout').value;
     
-    // Update hint text
-    document.getElementById('knownLayoutName').textContent = knownLayoutName.toUpperCase();
-    document.getElementById('targetLayoutName').textContent = targetLayoutName.charAt(0).toUpperCase() + targetLayoutName.slice(1);
+    // Update display names in header
+    document.getElementById('knownLayoutName').textContent = knownLayoutName;
+    document.getElementById('targetLayoutName').textContent = targetLayoutName;
     
     // Find layout data
     const knownLayoutData = layoutsData.find(l => l.name === knownLayoutName);
@@ -745,6 +883,130 @@ function translateText() {
 function translateAndReset() {
     translateText();
     resetTyping();
+}
+
+// Track highlight timeouts to ensure minimum display duration
+const highlightTimeouts = new Map();
+const MIN_HIGHLIGHT_DURATION = 75 ; // milliseconds
+
+/**
+ * Highlight a key on the keyboard visualization
+ * @param {string} char - The character to highlight (on the known layout)
+ */
+function highlightKey(char) {
+    if (!knownLayout) return;
+    
+    const knownFlat = knownLayout.toFlatArray();
+    const charLower = char.toLowerCase();
+    
+    // Find the position of this character in the known layout
+    let position = -1;
+    for (let i = 0; i < 40; i++) {
+        if (knownFlat[i] && knownFlat[i].toLowerCase() === charLower) {
+            position = i;
+            break;
+        }
+    }
+    
+    // Handle space - highlight thumb keys if they exist
+    if (char === ' ' && position === -1) {
+        // Highlight thumb keys (positions 36-39)
+        for (let i = 36; i < 40; i++) {
+            applyHighlight(i, charLower);
+        }
+        return;
+    }
+    
+    if (position >= 0) {
+        applyHighlight(position, charLower);
+    }
+}
+
+/**
+ * Apply highlight to a specific key position
+ */
+function applyHighlight(position, charKey) {
+    const keyGroup = document.querySelector(`#key-group-${position}`);
+    if (!keyGroup) return;
+    
+    // Clear any existing timeout for this key
+    const timeoutKey = `${position}-${charKey}`;
+    if (highlightTimeouts.has(timeoutKey)) {
+        clearTimeout(highlightTimeouts.get(timeoutKey));
+        highlightTimeouts.delete(timeoutKey);
+    }
+    
+    // Add pressed class
+    keyGroup.classList.add('pressed');
+    
+    // Track when this highlight was applied
+    keyGroup.dataset.highlightTime = Date.now();
+}
+
+/**
+ * Remove highlight from a key on the keyboard visualization
+ * @param {string} char - The character to unhighlight (on the known layout)
+ */
+function unhighlightKey(char) {
+    if (!knownLayout) return;
+    
+    const knownFlat = knownLayout.toFlatArray();
+    const charLower = char.toLowerCase();
+    
+    // Find the position of this character in the known layout
+    let position = -1;
+    for (let i = 0; i < 40; i++) {
+        if (knownFlat[i] && knownFlat[i].toLowerCase() === charLower) {
+            position = i;
+            break;
+        }
+    }
+    
+    // Handle space - unhighlight thumb keys
+    if (char === ' ' && position === -1) {
+        for (let i = 36; i < 40; i++) {
+            scheduleUnhighlight(i, charLower);
+        }
+        return;
+    }
+    
+    if (position >= 0) {
+        scheduleUnhighlight(position, charLower);
+    }
+}
+
+/**
+ * Schedule unhighlight with minimum duration
+ */
+function scheduleUnhighlight(position, charKey) {
+    const keyGroup = document.querySelector(`#key-group-${position}`);
+    if (!keyGroup) return;
+    
+    const highlightTime = parseInt(keyGroup.dataset.highlightTime || '0');
+    const elapsed = Date.now() - highlightTime;
+    const remaining = Math.max(0, MIN_HIGHLIGHT_DURATION - elapsed);
+    
+    const timeoutKey = `${position}-${charKey}`;
+    
+    // Clear any existing timeout
+    if (highlightTimeouts.has(timeoutKey)) {
+        clearTimeout(highlightTimeouts.get(timeoutKey));
+    }
+    
+    // Schedule the unhighlight
+    const timeout = setTimeout(() => {
+        keyGroup.classList.remove('pressed');
+        highlightTimeouts.delete(timeoutKey);
+    }, remaining);
+    
+    highlightTimeouts.set(timeoutKey, timeout);
+}
+
+/**
+ * Remove all key highlights
+ */
+function clearAllHighlights() {
+    document.querySelectorAll('.key.pressed').forEach(el => el.classList.remove('pressed'));
 }
 
 /**
@@ -899,7 +1161,13 @@ function renderTypingLine() {
                         typeSpan.classList.add('typed');
                     }
                 } else if (globalIdx === currentPosition) {
-                    typeSpan.classList.add('current');
+                    // Add blinking cursor when typing hasn't started, otherwise show highlight
+                    if (startTime === null) {
+                        typeSpan.classList.add('cursor');
+                        typeSpan.classList.add('pending');
+                    } else {
+                        typeSpan.classList.add('current');
+                    }
                 } else {
                     typeSpan.classList.add('pending');
                 }
