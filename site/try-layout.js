@@ -1194,7 +1194,12 @@ function renderTypingLine() {
                         outputSpan.classList.add('typed');
                     }
                 } else if (globalIdx === currentPosition) {
-                    outputSpan.classList.add('current');
+                    // Only highlight current when typing has started
+                    if (startTime === null) {
+                        outputSpan.classList.add('pending');
+                    } else {
+                        outputSpan.classList.add('current');
+                    }
                 } else {
                     outputSpan.classList.add('pending');
                 }
