@@ -573,6 +573,13 @@ function setupEventListeners() {
             return;
         }
         
+        // Handle Escape key - exit focus mode without resetting
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            exitFocusMode();
+            return;
+        }
+        
         // Handle Tab key - prepare for restart
         if (e.key === 'Tab') {
             e.preventDefault();
@@ -582,13 +589,15 @@ function setupEventListeners() {
             return;
         }
         
-        // Handle Enter key - restart if Tab was pressed first
-        if (e.key === 'Enter' && tabPressed) {
-            e.preventDefault();
-            tabPressed = false;
-            document.getElementById('tabKey')?.classList.remove('active');
-            resetTyping();
-            return;
+        // Handle Enter key - restart if Tab was pressed first, or if test is complete
+        if (e.key === 'Enter') {
+            if (tabPressed || isComplete) {
+                e.preventDefault();
+                tabPressed = false;
+                document.getElementById('tabKey')?.classList.remove('active');
+                resetTyping();
+                return;
+            }
         }
         
         // Any other key resets the tab state
@@ -749,9 +758,10 @@ function handleKeyInput(e) {
     
     e.preventDefault();
     
-    // Start timer on first keystroke
+    // Start timer on first keystroke and enter focus mode
     if (startTime === null) {
         startTime = Date.now();
+        enterFocusMode();
         if (testMode === 'time') {
             startCountdown();
         }
@@ -784,67 +794,190 @@ function handleKeyInput(e) {
  * Also renders the original text below for reference
  */
 function renderTypingLine() {
-    const typingContainer = document.getElementById('typingLine');
-    const originalContainer = document.getElementById('originalLine');
+    const display = document.getElementById('typingDisplay');
+    display.innerHTML = '';
     
-    typingContainer.innerHTML = '';
-    originalContainer.innerHTML = '';
+    // Split text into words (keeping spaces with the preceding word)
+    const words = splitIntoWords(translatedText);
+    const originalWords = splitIntoWords(currentText);
     
-    // Render the translated text (what keys to press)
-    for (let i = 0; i < translatedText.length; i++) {
-        const span = document.createElement('span');
-        span.className = 'typing-char';
-        span.textContent = translatedText[i];
+    // Calculate how many characters fit per line (approximate)
+    const containerWidth = display.offsetWidth || 800;
+    const charWidth = 0.6 * 1.35 * 16; // Approximate char width in pixels
+    const charsPerLine = Math.floor((containerWidth - 20) / charWidth);
+    
+    // Group words into lines
+    const lines = groupWordsIntoLines(words, charsPerLine);
+    const originalLines = groupWordsIntoLines(originalWords, charsPerLine);
+    
+    // Determine which line has the current position
+    let charsSoFar = 0;
+    let currentLineIndex = 0;
+    for (let i = 0; i < lines.length; i++) {
+        const lineLength = lines[i].reduce((sum, w) => sum + w.length, 0);
+        if (charsSoFar + lineLength > currentPosition) {
+            currentLineIndex = i;
+            break;
+        }
+        charsSoFar += lineLength;
+        if (i === lines.length - 1) currentLineIndex = i;
+    }
+    
+    // Show 3 lines starting from the current line (or earlier)
+    const startLine = Math.max(0, currentLineIndex);
+    const endLine = Math.min(lines.length, startLine + 3);
+    
+    let globalCharIndex = 0;
+    // Skip chars before startLine
+    for (let i = 0; i < startLine; i++) {
+        globalCharIndex += lines[i].reduce((sum, w) => sum + w.length, 0);
+    }
+    
+    // Render 3 row pairs
+    for (let lineIdx = startLine; lineIdx < endLine; lineIdx++) {
+        const rowPair = document.createElement('div');
+        rowPair.className = 'typing-row-pair';
         
-        if (i < currentPosition) {
-            // Check if this position was typed correctly
-            if (typedChars[i] && !typedChars[i].isCorrect) {
-                span.classList.add('typed-error');
-            } else {
-                span.classList.add('typed');
+        // Type row
+        const typeRow = document.createElement('div');
+        typeRow.className = 'typing-row type-row';
+        const typeContainer = document.createElement('div');
+        typeContainer.className = 'typing-line-container';
+        const typeLine = document.createElement('div');
+        typeLine.className = 'typing-line';
+        
+        // Output row
+        const outputRow = document.createElement('div');
+        outputRow.className = 'typing-row output-row';
+        const outputContainer = document.createElement('div');
+        outputContainer.className = 'typing-line-container';
+        const outputLine = document.createElement('div');
+        outputLine.className = 'original-line';
+        
+        // Render words for this line
+        const lineWords = lines[lineIdx] || [];
+        const origLineWords = originalLines[lineIdx] || [];
+        
+        let lineCharIndex = globalCharIndex;
+        
+        for (let wordIdx = 0; wordIdx < lineWords.length; wordIdx++) {
+            const word = lineWords[wordIdx];
+            const origWord = origLineWords[wordIdx] || word;
+            
+            // Create word group for type line
+            const typeWordGroup = document.createElement('span');
+            typeWordGroup.className = 'word-group';
+            
+            // Create word group for output line
+            const outputWordGroup = document.createElement('span');
+            outputWordGroup.className = 'word-group';
+            
+            for (let charIdx = 0; charIdx < word.length; charIdx++) {
+                const globalIdx = lineCharIndex + charIdx;
+                
+                // Type char
+                const typeSpan = document.createElement('span');
+                typeSpan.className = 'typing-char';
+                typeSpan.textContent = word[charIdx];
+                
+                if (globalIdx < currentPosition) {
+                    if (typedChars[globalIdx] && !typedChars[globalIdx].isCorrect) {
+                        typeSpan.classList.add('typed-error');
+                    } else {
+                        typeSpan.classList.add('typed');
+                    }
+                } else if (globalIdx === currentPosition) {
+                    typeSpan.classList.add('current');
+                } else {
+                    typeSpan.classList.add('pending');
+                }
+                
+                typeWordGroup.appendChild(typeSpan);
+                
+                // Output char
+                const outputSpan = document.createElement('span');
+                outputSpan.className = 'original-char';
+                outputSpan.textContent = origWord[charIdx] || '';
+                
+                if (globalIdx < currentPosition) {
+                    if (typedChars[globalIdx] && !typedChars[globalIdx].isCorrect) {
+                        outputSpan.classList.add('typed-error');
+                    } else {
+                        outputSpan.classList.add('typed');
+                    }
+                } else if (globalIdx === currentPosition) {
+                    outputSpan.classList.add('current');
+                } else {
+                    outputSpan.classList.add('pending');
+                }
+                
+                outputWordGroup.appendChild(outputSpan);
             }
-        } else if (i === currentPosition) {
-            span.classList.add('current');
-        } else {
-            span.classList.add('pending');
+            
+            typeLine.appendChild(typeWordGroup);
+            outputLine.appendChild(outputWordGroup);
+            
+            lineCharIndex += word.length;
         }
         
-        typingContainer.appendChild(span);
-    }
-    
-    // Render the original text (what you're actually typing)
-    for (let i = 0; i < currentText.length; i++) {
-        const span = document.createElement('span');
-        span.className = 'original-char';
-        span.textContent = currentText[i];
+        globalCharIndex = lineCharIndex;
         
-        if (i < currentPosition) {
-            // Check if this position was typed correctly
-            if (typedChars[i] && !typedChars[i].isCorrect) {
-                span.classList.add('typed-error');
-            } else {
-                span.classList.add('typed');
-            }
-        } else if (i === currentPosition) {
-            span.classList.add('current');
-        } else {
-            span.classList.add('pending');
+        typeContainer.appendChild(typeLine);
+        typeRow.appendChild(typeContainer);
+        outputContainer.appendChild(outputLine);
+        outputRow.appendChild(outputContainer);
+        
+        rowPair.appendChild(typeRow);
+        rowPair.appendChild(outputRow);
+        display.appendChild(rowPair);
+    }
+}
+
+/**
+ * Split text into words (space is attached to preceding word)
+ */
+function splitIntoWords(text) {
+    const words = [];
+    let currentWord = '';
+    
+    for (let i = 0; i < text.length; i++) {
+        currentWord += text[i];
+        if (text[i] === ' ') {
+            words.push(currentWord);
+            currentWord = '';
         }
-        
-        originalContainer.appendChild(span);
     }
     
-    // Scroll both lines to keep current character visible
-    const currentChar = typingContainer.querySelector('.current');
-    if (currentChar) {
-        const containerWidth = typingContainer.parentElement.offsetWidth;
-        const charOffset = currentChar.offsetLeft;
-        
-        // Keep the current character roughly in the center-left
-        const targetOffset = Math.max(0, charOffset - containerWidth * 0.3);
-        typingContainer.style.transform = `translateX(-${targetOffset}px)`;
-        originalContainer.style.transform = `translateX(-${targetOffset}px)`;
+    if (currentWord) {
+        words.push(currentWord);
     }
+    
+    return words;
+}
+
+/**
+ * Group words into lines based on approximate character width
+ */
+function groupWordsIntoLines(words, charsPerLine) {
+    const lines = [];
+    let currentLine = [];
+    let currentLineLength = 0;
+    
+    for (const word of words) {
+        if (currentLineLength + word.length > charsPerLine && currentLine.length > 0) {
+            lines.push(currentLine);
+            currentLine = [];
+            currentLineLength = 0;
+        }
+        currentLine.push(word);
+        currentLineLength += word.length;
+    }
+    
+    if (currentLine.length > 0) {
+        lines.push(currentLine);
+    }
+    
+    return lines;
 }
 
 /**
@@ -899,6 +1032,21 @@ function updateStats() {
  */
 function showComplete() {
     document.getElementById('completeMessage').classList.add('show');
+    exitFocusMode();
+}
+
+/**
+ * Enter focus mode - hide distracting elements
+ */
+function enterFocusMode() {
+    document.body.classList.add('focus-mode');
+}
+
+/**
+ * Exit focus mode - show all elements
+ */
+function exitFocusMode() {
+    document.body.classList.remove('focus-mode');
 }
 
 /**
@@ -910,6 +1058,9 @@ function resetTyping() {
         clearInterval(timerInterval);
         timerInterval = null;
     }
+    
+    // Exit focus mode
+    exitFocusMode();
     
     currentPosition = 0;
     typedChars = [];

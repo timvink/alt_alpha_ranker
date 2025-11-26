@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .layout-section {
-            max-width: 900px;
+            max-width: 100%;
             margin: 1.5rem auto;
-            padding: 0;
+            padding: 0 1rem;
         }
 
         .config-card {
@@ -84,26 +84,23 @@
         }
 
         .typing-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 1.5rem 2rem 2rem;
+            background: transparent;
+            padding: 0;
             margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark-mode .typing-card {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .keyboard-hint {
             background: rgba(79, 70, 229, 0.06);
-            border-left: 3px solid var(--accent-color);
-            border-radius: 0 8px 8px 0;
-            padding: 0.875rem 1rem;
-            margin-bottom: 1.75rem;
+            border-radius: 8px;
+            padding: 0.875rem 1.25rem;
+            margin-bottom: 1.25rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
             line-height: 1.5;
+            text-align: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         body.dark-mode .keyboard-hint {
@@ -112,6 +109,16 @@
 
         .keyboard-hint strong {
             color: var(--text-primary);
+        }
+
+        .keyboard-hint code {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            font-weight: 500;
         }
 
         .typing-area {
@@ -130,60 +137,62 @@
             overflow: hidden;
         }
 
+        .typing-row-pair {
+            margin-bottom: 0.5rem;
+        }
+
+        .typing-row-pair:last-child {
+            margin-bottom: 0;
+        }
+
         .typing-row {
             position: relative;
             overflow: hidden;
-            padding: 0.75rem 0;
+            padding: 0.25rem 0;
         }
 
-        .typing-row:first-child {
+        .typing-row.type-row {
             background: rgba(79, 70, 229, 0.04);
             border-radius: 8px 8px 0 0;
+            padding: 0.5rem 0;
         }
 
-        body.dark-mode .typing-row:first-child {
+        body.dark-mode .typing-row.type-row {
             background: rgba(159, 122, 234, 0.06);
         }
 
-        .typing-row:last-child {
+        .typing-row.output-row {
             border-top: 1px dashed #e2e8f0;
             background: transparent;
             border-radius: 0 0 8px 8px;
+            padding: 0.5rem 0;
         }
 
-        body.dark-mode .typing-row:last-child {
+        body.dark-mode .typing-row.output-row {
             border-top-color: #3d4a5c;
         }
 
         .row-label {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--accent-color);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            opacity: 0.8;
-        }
-
-        .typing-row:last-child .row-label {
-            color: var(--text-tertiary);
+            display: none; /* Hide labels for cleaner look */
         }
 
         .typing-line-container {
-            margin-left: 4.5rem;
+            margin-left: 0.75rem;
+            margin-right: 0.75rem;
             overflow: hidden;
         }
 
         .typing-line {
             display: flex;
-            white-space: nowrap;
-            transition: transform 0.1s ease-out;
+            flex-wrap: wrap;
             font-size: 1.35rem;
             line-height: 1.8;
+        }
+
+        /* Word grouping - keep words together */
+        .word-group {
+            display: inline-flex;
+            flex-wrap: nowrap;
         }
 
         .typing-char {
@@ -224,8 +233,7 @@
         /* Original text row styling */
         .original-line {
             display: flex;
-            white-space: nowrap;
-            transition: transform 0.1s ease-out;
+            flex-wrap: wrap;
             font-size: 1.35rem;
             line-height: 1.8;
         }
@@ -267,10 +275,10 @@
         .stats-row {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 2rem;
             margin-top: 1.75rem;
             padding-top: 1.25rem;
-            border-top: 1px solid #e2e8f0;
         }
 
         body.dark-mode .stats-row {
@@ -626,6 +634,41 @@
         .option-btn.active {
             color: var(--accent-color);
         }
+
+        /* Focus mode - hide elements when user is typing */
+        body.focus-mode .intro-section,
+        body.focus-mode .config-card,
+        body.focus-mode .keyboard-hint,
+        body.focus-mode .typing-settings-container,
+        body.focus-mode .stat-item:not(.focus-visible),
+        body.focus-mode .complete-message,
+        body.focus-mode .theme-toggle {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        body:not(.focus-mode) .intro-section,
+        body:not(.focus-mode) .config-card,
+        body:not(.focus-mode) .keyboard-hint,
+        body:not(.focus-mode) .typing-settings-container,
+        body:not(.focus-mode) .stat-item,
+        body:not(.focus-mode) .complete-message,
+        body:not(.focus-mode) .theme-toggle {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Stats row in focus mode - only show progress */
+        body.focus-mode .stats-row {
+            justify-content: center;
+            border-top: none;
+            padding-top: 0.5rem;
+        }
+
+        body.focus-mode .stat-item.focus-visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -649,7 +692,6 @@
 
         <div class="layout-section">
             <div class="config-card">
-                <h2>Configuration</h2>
                 <div class="config-row">
                     <div class="config-group">
                         <label for="knownLayout">Your keyboard layout</label>
@@ -666,7 +708,12 @@
                 </div>
             </div>
 
-            <div class="typing-settings-container">
+            <div class="keyboard-hint" id="keyboardHint">
+                <strong>Just start typing!</strong> The top row shows which keys to press on your <code id="knownLayoutName">QWERTY</code> keyboard. 
+                The bottom row shows the actual text you're typing in <code id="targetLayoutName">Gallium</code>.
+            </div>
+
+            <div class="typing-settings-container" id="typingSettingsContainer">
                 <div class="typing-settings-bar" id="typingSettingsBar">
                     <div class="settings-group">
                         <button class="setting-btn" id="punctuationBtn" title="Add punctuation">
@@ -710,31 +757,11 @@
             </div>
 
             <div class="typing-card">
-                <div class="keyboard-hint">
-                    <strong>Just start typing!</strong> The top row shows which keys to press on your <span id="knownLayoutName">QWERTY</span> keyboard. 
-                    The bottom row shows the actual text you're typing in <span id="targetLayoutName">Gallium</span>.
-                </div>
-
                 <div class="typing-area" id="typingArea">
                     <input type="text" class="hidden-input" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus>
 
-                    <div class="typing-display">
-                        <div class="typing-row">
-                            <span class="row-label">Type</span>
-                            <div class="typing-line-container">
-                                <div class="typing-line" id="typingLine">
-                                    <!-- Translated characters will be rendered here -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="typing-row">
-                            <span class="row-label">Output</span>
-                            <div class="typing-line-container">
-                                <div class="original-line" id="originalLine">
-                                    <!-- Original characters will be rendered here -->
-                                </div>
-                            </div>
-                        </div>
+                    <div class="typing-display" id="typingDisplay">
+                        <!-- Rows will be dynamically generated by JS -->
                     </div>
                 </div>
 
@@ -747,7 +774,7 @@
                 </div>
 
                 <div class="stats-row">
-                    <div class="stat-item">
+                    <div class="stat-item focus-visible">
                         <span class="stat-value" id="progressStat">0/25</span>
                         <span class="stat-label" id="progressLabel">words</span>
                     </div>
@@ -765,6 +792,7 @@
 
         <div class="footer">
             <p class="restart-hint"><kbd id="tabKey">tab</kbd> + <kbd id="enterKey">enter</kbd> = restart test</p>
+            <p class="restart-hint"><kbd>esc</kbd> = stop test</p>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                 <span class="theme-toggle-light">☀</span>
                 <span class="theme-toggle-dark">☾</span>
