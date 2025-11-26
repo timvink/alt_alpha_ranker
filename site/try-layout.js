@@ -26,7 +26,7 @@ let targetLayout = null;   // KeyboardLayout object for the layout user wants to
 let currentText = '';
 let translatedText = '';  // The text translated to what keys to press on known layout
 let currentPosition = 0;
-let errorCount = 0;
+let typedChars = [];      // Array of {char, isCorrect} for each typed position
 let isComplete = false;
 let startTime = null;  // Track when typing started for WPM calculation
 
@@ -246,7 +246,7 @@ function generateRandomText() {
     
     // Reset typing state without recursion
     currentPosition = 0;
-    errorCount = 0;
+    typedChars = [];
     isComplete = false;
     startTime = null;
     
@@ -566,6 +566,7 @@ function handleKeyInput(e) {
         e.preventDefault();
         if (currentPosition > 0) {
             currentPosition--;
+            typedChars.pop();  // Remove the last typed character
             renderTypingLine();
             updateStats();
         }
@@ -590,22 +591,17 @@ function handleKeyInput(e) {
     // Check if the pressed key matches (case-insensitive for letters)
     const isCorrect = pressedKey.toLowerCase() === expectedChar.toLowerCase();
     
-    if (isCorrect) {
-        currentPosition++;
-        
-        if (currentPosition >= translatedText.length) {
-            isComplete = true;
-            showComplete();
-        }
-        
-        renderTypingLine();
-        updateStats();
-    } else {
-        // Show error feedback
-        errorCount++;
-        showError();
-        updateStats();
+    // Store what was typed and whether it was correct
+    typedChars.push({ char: pressedKey, isCorrect });
+    currentPosition++;
+    
+    if (currentPosition >= translatedText.length) {
+        isComplete = true;
+        showComplete();
     }
+    
+    renderTypingLine();
+    updateStats();
 }
 
 /**
@@ -627,7 +623,12 @@ function renderTypingLine() {
         span.textContent = translatedText[i];
         
         if (i < currentPosition) {
-            span.classList.add('typed');
+            // Check if this position was typed correctly
+            if (typedChars[i] && !typedChars[i].isCorrect) {
+                span.classList.add('typed-error');
+            } else {
+                span.classList.add('typed');
+            }
         } else if (i === currentPosition) {
             span.classList.add('current');
         } else {
@@ -644,7 +645,12 @@ function renderTypingLine() {
         span.textContent = currentText[i];
         
         if (i < currentPosition) {
-            span.classList.add('typed');
+            // Check if this position was typed correctly
+            if (typedChars[i] && !typedChars[i].isCorrect) {
+                span.classList.add('typed-error');
+            } else {
+                span.classList.add('typed');
+            }
         } else if (i === currentPosition) {
             span.classList.add('current');
         } else {
@@ -668,16 +674,10 @@ function renderTypingLine() {
 }
 
 /**
- * Show error feedback
+ * Get the current error count (number of incorrectly typed characters)
  */
-function showError() {
-    const currentCharEl = document.querySelector('.typing-char.current');
-    if (currentCharEl) {
-        currentCharEl.classList.add('error');
-        setTimeout(() => {
-            currentCharEl.classList.remove('error');
-        }, 200);
-    }
+function getErrorCount() {
+    return typedChars.filter(tc => !tc.isCorrect).length;
 }
 
 /**
@@ -687,7 +687,7 @@ function updateStats() {
     const total = translatedText.length || 1;
     const progress = Math.round((currentPosition / total) * 100);
     document.getElementById('progressStat').textContent = `${progress}%`;
-    document.getElementById('errorsStat').textContent = errorCount;
+    document.getElementById('errorsStat').textContent = getErrorCount();
     
     // Calculate WPM (words = characters / 5, standard typing test convention)
     let wpm = 0;
@@ -713,7 +713,7 @@ function showComplete() {
  */
 function resetTyping() {
     currentPosition = 0;
-    errorCount = 0;
+    typedChars = [];
     isComplete = false;
     startTime = null;
     
