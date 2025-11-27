@@ -33,7 +33,7 @@ from pydantic_ai import Agent
 load_dotenv()
 
 # Constants
-SUBREDDIT_JSON_URL = "https://www.reddit.com/r/KeyboardLayouts.json"
+SUBREDDIT_JSON_URL = "https://old.reddit.com/r/KeyboardLayouts.json"
 HOURS_TO_LOOK_BACK = 48
 CYANOPHAGE_URL_PATTERN = r"https://cyanophage\.github\.io/playground\.html\?layout=[^\s\)\]\>\"']+"
 LAYOUTS_YML_PATH = "config/layouts.yml"
@@ -41,10 +41,13 @@ GITHUB_REPO_OWNER = "timvink"
 GITHUB_REPO_NAME = "alt_alpha_ranker"
 
 # Reddit API requires a proper User-Agent to avoid 403 errors
-# See: https://www.reddit.com/wiki/api/
+# Using browser-like headers to avoid being blocked by Reddit's bot detection
 REDDIT_HEADERS = {
-    "User-Agent": "python:alt_alpha_ranker:v1.0 (https://github.com/timvink/alt_alpha_ranker)",
-    "Accept": "application/json",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
 }
 
 
@@ -80,8 +83,8 @@ def fetch_post_comments(permalink: str) -> list[RedditComment]:
     comments = []
 
     try:
-        # Reddit JSON endpoint for post with comments
-        url = f"https://www.reddit.com{permalink}.json"
+        # Reddit JSON endpoint for post with comments (using old.reddit.com to avoid blocking)
+        url = f"https://old.reddit.com{permalink}.json"
         response = requests.get(url, headers=REDDIT_HEADERS)
         response.raise_for_status()
         data = response.json()
