@@ -34,7 +34,8 @@ from pydantic_ai import Agent
 load_dotenv()
 
 # Constants
-SUBREDDIT_JSON_URL = "https://www.reddit.com/r/KeyboardLayouts.json"
+SUBREDDIT = "KeyboardLayouts"
+SUBREDDIT_JSON_URL = f"https://www.reddit.com/r/{SUBREDDIT}.json"
 HOURS_TO_LOOK_BACK = 48
 CYANOPHAGE_URL_PATTERN = r"https://cyanophage\.github\.io/playground\.html\?layout=[^\s\)\]\>\"']+"
 LAYOUTS_YML_PATH = "config/layouts.yml"
@@ -50,6 +51,85 @@ REDDIT_HEADERS = {
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
 }
+
+
+def fetch_reddit_json(url: str) -> dict:
+    """
+    Fetch Reddit JSON with fallback strategies.
+    
+    Tries direct request first, then falls back to alternative methods if blocked (403).
+    """
+    # Try direct request first
+    try:
+        response = requests.get(url, headers=REDDIT_HEADERS, timeout=30)
+        if response.status_code == 403:
+            print("  Direct request blocked (403), trying alternative method...")
+        else:
+            response.raise_for_status()
+            return response.json()
+    except requests.exceptions.HTTPError as e:
+        if "403" not in str(e):
+            raise
+        print("  Direct request blocked (403), trying alternative method...")
+    
+    # Fallback: Use pullpush.io Reddit API (a public Reddit archive/mirror)
+    # This service mirrors Reddit data and is often accessible from CI environments
+    if "/r/" in url and ".json" in url:
+        # Extract subreddit from URL like https://www.reddit.com/r/KeyboardLayouts.json
+        # Try the Pullpush API for subreddit listings
+        print("  Trying pullpush.io API...")
+        pullpush_url = f"https://api.pullpush.io/reddit/search/submission/?subreddit={SUBREDDIT}&sort=desc&sort_type=created_utc&size=100"
+        try:
+            response = requests.get(pullpush_url, timeout=30)
+            response.raise_for_status()
+            pullpush_data = response.json()
+            
+            # Convert pullpush format to Reddit format
+            children = []
+            for post in pullpush_data.get("data", []):
+                children.append({
+                    "kind": "t3",
+                    "data": post
+                })
+            
+            return {
+                "data": {
+                    "children": children
+                }
+            }
+        except Exception as e:
+            print(f"  Pullpush.io failed: {e}")
+    
+    # If it's a post comments URL, try pullpush for comments
+    if "/comments/" in url:
+        print("  Trying pullpush.io for comments...")
+        # Extract post ID from URL like /r/KeyboardLayouts/comments/abc123/...
+        match = re.search(r"/comments/([a-z0-9]+)", url)
+        if match:
+            post_id = match.group(1)
+            pullpush_url = f"https://api.pullpush.io/reddit/search/comment/?link_id=t3_{post_id}&size=100"
+            try:
+                response = requests.get(pullpush_url, timeout=30)
+                response.raise_for_status()
+                pullpush_data = response.json()
+                
+                # Convert to Reddit format (list with post data and comments)
+                comments_children = []
+                for comment in pullpush_data.get("data", []):
+                    comments_children.append({
+                        "kind": "t1",
+                        "data": comment
+                    })
+                
+                return [
+                    {"data": {}},  # Post data (empty, we don't need it)
+                    {"data": {"children": comments_children}}
+                ]
+            except Exception as e:
+                print(f"  Pullpush.io comments failed: {e}")
+    
+    # All methods failed
+    raise requests.exceptions.HTTPError(f"All fetch methods failed for {url}")
 
 
 @dataclass
@@ -86,24 +166,7 @@ def fetch_post_comments(permalink: str) -> list[RedditComment]:
     try:
         # Reddit JSON endpoint for post with comments
         url = f"https://www.reddit.com{permalink}.json"
-        
-        # Retry logic for comment fetching
-        max_retries = 2
-        data = None
-        for attempt in range(max_retries):
-            try:
-                response = requests.get(url, headers=REDDIT_HEADERS, timeout=30)
-                response.raise_for_status()
-                data = response.json()
-                break
-            except requests.exceptions.RequestException:
-                if attempt < max_retries - 1:
-                    time.sleep(2)
-                else:
-                    raise
-        
-        if data is None:
-            return comments
+        data = fetch_reddit_json(url)
 
         # Comments are in the second element of the response array
         if len(data) > 1:
@@ -132,28 +195,8 @@ def scrape_recent_posts(hours: int = HOURS_TO_LOOK_BACK) -> list[RedditPost]:
 
     print("Fetching posts from r/KeyboardLayouts JSON endpoint...")
 
-    # Fetch the JSON data (contains ~14 days of posts) with retry logic
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = requests.get(SUBREDDIT_JSON_URL, headers=REDDIT_HEADERS, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            break
-        except requests.exceptions.HTTPError as e:
-            if attempt < max_retries - 1:
-                wait_time = (attempt + 1) * 5  # 5, 10, 15 seconds
-                print(f"  Request failed ({e}), retrying in {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                raise
-        except requests.exceptions.RequestException as e:
-            if attempt < max_retries - 1:
-                wait_time = (attempt + 1) * 5
-                print(f"  Request failed ({e}), retrying in {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                raise
+    # Fetch the JSON data (contains ~14 days of posts)
+    data = fetch_reddit_json(SUBREDDIT_JSON_URL)
 
     for child in data.get("data", {}).get("children", []):
         post_data = child.get("data", {})
