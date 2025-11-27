@@ -43,13 +43,10 @@ GITHUB_REPO_OWNER = "timvink"
 GITHUB_REPO_NAME = "alt_alpha_ranker"
 
 # Reddit API requires a proper User-Agent to avoid 403 errors
-# Using browser-like headers to avoid being blocked by Reddit's bot detection
+# Using a proper bot-style User-Agent as recommended by Reddit API guidelines
+# Browser-like user agents get blocked from data center IPs
 REDDIT_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7",
-    "Accept-Language": "en-US,en;q=0.5",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
+    "User-Agent": "python:alt_alpha_ranker:v1.0 (by /u/timvink)",
 }
 
 
