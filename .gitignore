@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# Environment variables (secrets)
+.env
+
 TODO.md
 
 
