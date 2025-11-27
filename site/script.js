@@ -227,7 +227,7 @@ function renderTable(data) {
     tbody.innerHTML = data.map(layout => {
         const metrics = getMetrics(layout);
         const yearSuffix = layout.year ? ` (${layout.year})` : '';
-        const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i></span>' : '';
+        const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i><i class="fa-regular fa-thumbs-up" style="transform: scaleX(-1);"></i></span>' : '';
         
         const isPinned = pinnedLayouts.has(layout.name);
         const pinClass = isPinned ? 'pinned' : '';
