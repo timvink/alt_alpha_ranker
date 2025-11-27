@@ -40,6 +40,13 @@ LAYOUTS_YML_PATH = "config/layouts.yml"
 GITHUB_REPO_OWNER = "timvink"
 GITHUB_REPO_NAME = "alt_alpha_ranker"
 
+# Reddit API requires a proper User-Agent to avoid 403 errors
+# See: https://www.reddit.com/wiki/api/
+REDDIT_HEADERS = {
+    "User-Agent": "python:alt_alpha_ranker:v1.0 (https://github.com/timvink/alt_alpha_ranker)",
+    "Accept": "application/json",
+}
+
 
 @dataclass
 class RedditComment:
@@ -71,12 +78,11 @@ class LayoutAnnouncementResult(BaseModel):
 def fetch_post_comments(permalink: str) -> list[RedditComment]:
     """Fetch comments for a specific post."""
     comments = []
-    headers = {"User-Agent": "alt_alpha_ranker/1.0"}
 
     try:
         # Reddit JSON endpoint for post with comments
         url = f"https://www.reddit.com{permalink}.json"
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=REDDIT_HEADERS)
         response.raise_for_status()
         data = response.json()
 
@@ -108,8 +114,7 @@ def scrape_recent_posts(hours: int = HOURS_TO_LOOK_BACK) -> list[RedditPost]:
     print("Fetching posts from r/KeyboardLayouts JSON endpoint...")
 
     # Fetch the JSON data (contains ~14 days of posts)
-    headers = {"User-Agent": "alt_alpha_ranker/1.0"}
-    response = requests.get(SUBREDDIT_JSON_URL, headers=headers)
+    response = requests.get(SUBREDDIT_JSON_URL, headers=REDDIT_HEADERS)
     response.raise_for_status()
     data = response.json()
 
