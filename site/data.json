@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2025-11-27T11:00:43.595850",
+  "scraped_at": "2025-11-27T11:18:41.154669",
   "languages": [
     "english",
     "dutch",
@@ -5567,6 +5567,120 @@
       },
       "website": "https://github.com/GalileoBlues",
       "year": 2024
+    },
+    {
+      "name": "bunya",
+      "url": "https://cyanophage.github.io/playground.html?layout=blmczxfou%2C-nrtdpyhaei-%3Bjqgwkv'%2F.%5Cs%5E&mode=ergo&thumb=l",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "pinky_off": "1.83%",
+          "bigram_roll_in": "21.59%",
+          "bigram_roll_out": "24.52%",
+          "roll_in": "0.51%",
+          "roll_out": "1.27%",
+          "redirect": "2.57%",
+          "weak_redirect": "0.42%",
+          "total_word_effort": "874.6",
+          "effort": "526.17",
+          "same_finger_bigrams": "0.40%",
+          "skip_bigrams": "0.10%",
+          "lat_stretch_bigrams": "1.03%",
+          "scissors": "0.20%"
+        },
+        "dutch": {
+          "pinky_off": "1.83%",
+          "bigram_roll_in": "21.59%",
+          "bigram_roll_out": "24.52%",
+          "roll_in": "0.51%",
+          "roll_out": "1.27%",
+          "redirect": "2.57%",
+          "weak_redirect": "0.42%",
+          "total_word_effort": "874.6",
+          "effort": "526.17",
+          "same_finger_bigrams": "0.40%",
+          "skip_bigrams": "0.10%",
+          "lat_stretch_bigrams": "1.03%",
+          "scissors": "0.20%"
+        },
+        "french": {
+          "pinky_off": "1.83%",
+          "bigram_roll_in": "21.59%",
+          "bigram_roll_out": "24.52%",
+          "roll_in": "0.51%",
+          "roll_out": "1.27%",
+          "redirect": "2.57%",
+          "weak_redirect": "0.42%",
+          "total_word_effort": "874.6",
+          "effort": "526.17",
+          "same_finger_bigrams": "0.40%",
+          "skip_bigrams": "0.10%",
+          "lat_stretch_bigrams": "1.03%",
+          "scissors": "0.20%"
+        },
+        "german": {
+          "pinky_off": "1.83%",
+          "bigram_roll_in": "21.59%",
+          "bigram_roll_out": "24.52%",
+          "roll_in": "0.51%",
+          "roll_out": "1.27%",
+          "redirect": "2.57%",
+          "weak_redirect": "0.42%",
+          "total_word_effort": "874.6",
+          "effort": "526.17",
+          "same_finger_bigrams": "0.40%",
+          "skip_bigrams": "0.10%",
+          "lat_stretch_bigrams": "1.03%",
+          "scissors": "0.20%"
+        },
+        "italian": {
+          "pinky_off": "1.83%",
+          "bigram_roll_in": "21.59%",
+          "bigram_roll_out": "24.52%",
+          "roll_in": "0.51%",
+          "roll_out": "1.27%",
+          "redirect": "2.57%",
+          "weak_redirect": "0.42%",
+          "total_word_effort": "874.6",
+          "effort": "526.17",
+          "same_finger_bigrams": "0.40%",
+          "skip_bigrams": "0.10%",
+          "lat_stretch_bigrams": "1.03%",
+          "scissors": "0.20%"
+        },
+        "portuguese": {
+          "pinky_off": "1.83%",
+          "bigram_roll_in": "21.59%",
+          "bigram_roll_out": "24.52%",
+          "roll_in": "0.51%",
+          "roll_out": "1.27%",
+          "redirect": "2.57%",
+          "weak_redirect": "0.42%",
+          "total_word_effort": "874.6",
+          "effort": "526.17",
+          "same_finger_bigrams": "0.40%",
+          "skip_bigrams": "0.10%",
+          "lat_stretch_bigrams": "1.03%",
+          "scissors": "0.20%"
+        },
+        "spanish": {
+          "pinky_off": "1.83%",
+          "bigram_roll_in": "21.59%",
+          "bigram_roll_out": "24.52%",
+          "roll_in": "0.51%",
+          "roll_out": "1.27%",
+          "redirect": "2.57%",
+          "weak_redirect": "0.42%",
+          "total_word_effort": "874.6",
+          "effort": "526.17",
+          "same_finger_bigrams": "0.40%",
+          "skip_bigrams": "0.10%",
+          "lat_stretch_bigrams": "1.03%",
+          "scissors": "0.20%"
+        }
+      },
+      "website": "https://discord.com/channels/807843650717483049/1063291226243207268/1112009138021613568",
+      "year": 2023
     }
   ]
 }
