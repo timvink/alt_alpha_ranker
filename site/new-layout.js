@@ -4,8 +4,13 @@
  */
 
 import { KeyboardLayout } from './keyboard.js';
-import { keyboardToCyanophage } from './cyanophage.js';
+import { keyboardToCyanophage, cyanophageToKeyboard } from './cyanophage.js';
 import { renderKeyboard } from './keyboard_visualization.js';
+
+// Store current state
+let currentLayout = null;
+let currentUrl = '';
+let hasThumb = false;
 
 /**
  * Parses the layout text input into a KeyboardLayout data structure.
@@ -182,52 +187,220 @@ function parseLayoutInput(inputText) {
 }
 
 /**
- * Main function to generate the Cyanophage URL from user input.
+ * Switch between text input and URL input tabs
  */
-function generateCyanophageUrl() {
+function switchInputTab(tab) {
+    const textTab = document.getElementById('textTab');
+    const urlTab = document.getElementById('urlTab');
+    const textPanel = document.getElementById('textPanel');
+    const urlPanel = document.getElementById('urlPanel');
+    
+    if (tab === 'text') {
+        textTab.classList.add('active');
+        urlTab.classList.remove('active');
+        textPanel.classList.add('active');
+        urlPanel.classList.remove('active');
+    } else {
+        textTab.classList.remove('active');
+        urlTab.classList.add('active');
+        textPanel.classList.remove('active');
+        urlPanel.classList.add('active');
+    }
+}
+
+/**
+ * Show or hide a step card
+ */
+function showStep(stepId, show = true) {
+    const step = document.getElementById(stepId);
+    if (step) {
+        if (show) {
+            step.classList.remove('hidden');
+        } else {
+            step.classList.add('hidden');
+        }
+    }
+}
+
+/**
+ * Process text layout input and update the UI
+ */
+function processLayoutText() {
     const inputText = document.getElementById('layoutInput').value;
     const errorDiv = document.getElementById('errorMessage');
-    const resultSection = document.getElementById('resultSection');
-    const resultUrlDiv = document.getElementById('resultUrl');
-    const resultYamlDiv = document.getElementById('resultYaml');
     
     // Hide previous errors
     errorDiv.classList.remove('show');
     
-    // STEP 1: Parse text input into KeyboardLayout data structure
+    if (!inputText.trim()) {
+        // Hide steps 2-4 if no input
+        showStep('step2', false);
+        showStep('step3', false);
+        showStep('step4', false);
+        currentLayout = null;
+        currentUrl = '';
+        return;
+    }
+    
+    // Parse the layout
     const { layout, error } = parseLayoutInput(inputText);
     
     if (error) {
         errorDiv.textContent = error;
         errorDiv.classList.add('show');
-        resultSection.classList.remove('show');
+        showStep('step2', false);
+        showStep('step3', false);
+        showStep('step4', false);
+        currentLayout = null;
+        currentUrl = '';
         return;
     }
     
-    // STEP 2: Show preview using the KeyboardLayout data structure
+    // Store current layout
+    currentLayout = layout;
+    
+    // Generate URL
+    currentUrl = keyboardToCyanophage(layout);
+    
+    // Also fill in the URL input field
+    document.getElementById('cyanophageUrlInput').value = currentUrl;
+    
+    // Update display
+    updateLayoutDisplay();
+}
+
+/**
+ * Process direct URL input and update the UI
+ */
+function processUrlInput() {
+    const urlInput = document.getElementById('cyanophageUrlInput').value.trim();
+    const errorDiv = document.getElementById('errorMessage');
+    
+    // Hide previous errors
+    errorDiv.classList.remove('show');
+    
+    if (!urlInput) {
+        // Hide steps 2-4 if no input
+        showStep('step2', false);
+        showStep('step3', false);
+        showStep('step4', false);
+        currentLayout = null;
+        currentUrl = '';
+        return;
+    }
+    
+    // Validate it's a cyanophage URL
+    if (!urlInput.includes('cyanophage.github.io')) {
+        errorDiv.textContent = 'Please enter a valid Cyanophage URL (e.g., https://cyanophage.github.io/playground.html?layout=...)';
+        errorDiv.classList.add('show');
+        showStep('step2', false);
+        showStep('step3', false);
+        showStep('step4', false);
+        return;
+    }
+    
+    try {
+        // Parse the URL to extract the layout
+        const layout = cyanophageToKeyboard(urlInput);
+        
+        if (!layout) {
+            throw new Error('Could not parse layout from URL');
+        }
+        
+        currentLayout = layout;
+        currentUrl = urlInput;
+        
+        // Update display
+        updateLayoutDisplay();
+    } catch (err) {
+        errorDiv.textContent = 'Could not parse the Cyanophage URL. Please check the URL format.';
+        errorDiv.classList.add('show');
+        showStep('step2', false);
+        showStep('step3', false);
+        showStep('step4', false);
+        currentLayout = null;
+        currentUrl = '';
+    }
+}
+
+/**
+ * Update the layout display (keyboard preview, URL, validation status)
+ */
+function updateLayoutDisplay() {
+    if (!currentLayout || !currentUrl) {
+        return;
+    }
+    
+    // Show step 2
+    showStep('step2', true);
+    
+    // Render keyboard preview
     const svg = document.getElementById('keyboard-preview-svg');
-    const hasLeftThumb = layout.leftHand.thumbOuter && layout.leftHand.thumbOuter !== ' ';
-    const hasRightThumb = layout.rightHand.thumbOuter && layout.rightHand.thumbOuter !== ' ';
-    const hasThumbs = hasLeftThumb || hasRightThumb;
+    renderKeyboard(currentLayout, svg);
     
-    renderKeyboard(layout, svg);
+    // Update URL display
+    const resultUrlDiv = document.getElementById('resultUrl');
+    resultUrlDiv.innerHTML = `<a href="${currentUrl}" target="_blank">${currentUrl}</a>`;
     
-    // STEP 3: Convert KeyboardLayout to Cyanophage URL
-    const url = keyboardToCyanophage(layout);
+    // Check for thumb keys
+    const hasLeftThumb = currentLayout.leftHand.thumbOuter && currentLayout.leftHand.thumbOuter !== ' ';
+    const hasRightThumb = currentLayout.rightHand.thumbOuter && currentLayout.rightHand.thumbOuter !== ' ';
+    hasThumb = hasLeftThumb || hasRightThumb;
     
-    // STEP 4: Generate YAML configuration
-    const hasThumb = hasLeftThumb || hasRightThumb;
+    // Update validation status
+    const validationStatus = document.getElementById('validationStatus');
+    validationStatus.className = 'validation-status valid';
+    validationStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i><span>Layout parsed successfully</span>';
     
-    const yaml = `- name: name_of_layout
-  link: ${url}
-  thumb: ${hasThumb}
-  website: https://relevantwebsite
-  year: year_made`;
+    // Show steps 3 and 4
+    showStep('step3', true);
+    showStep('step4', true);
     
-    // Display the URL and YAML
-    resultUrlDiv.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+    // Update YAML preview
+    updateYamlPreview();
+}
+
+/**
+ * Update the YAML configuration preview
+ */
+function updateYamlPreview() {
+    if (!currentUrl) {
+        return;
+    }
+    
+    const layoutName = document.getElementById('layoutName').value.trim() || 'my_layout';
+    const layoutYear = document.getElementById('layoutYear').value.trim();
+    const layoutWebsite = document.getElementById('layoutWebsite').value.trim();
+    
+    let yaml = `- name: ${layoutName.toLowerCase().replace(/\s+/g, '_')}
+  link: ${currentUrl}
+  thumb: ${hasThumb}`;
+    
+    if (layoutYear) {
+        yaml += `\n  year: ${layoutYear}`;
+    }
+    
+    if (layoutWebsite) {
+        yaml += `\n  website: ${layoutWebsite}`;
+    }
+    
+    const resultYamlDiv = document.getElementById('resultYaml');
     resultYamlDiv.textContent = yaml;
-    resultSection.classList.add('show');
+    
+    // Update the GitHub issue button
+    updateIssueButton(layoutName, yaml);
+}
+
+/**
+ * Update the GitHub issue button with the correct URL
+ */
+function updateIssueButton(layoutName, yaml) {
+    const btn = document.getElementById('submitIssueBtn');
+    
+    const title = encodeURIComponent(`Add new layout: ${layoutName || 'new layout'}`);
+    const body = encodeURIComponent(`Please add this layout to the rankings:\n\n\`\`\`yaml\n${yaml}\n\`\`\``);
+    
+    btn.href = `https://github.com/timvink/alt_alpha_ranker/issues/new?title=${title}&body=${body}`;
 }
 
 /**
@@ -264,8 +437,36 @@ function copyToClipboard(type) {
     });
 }
 
+/**
+ * Initialize all event handlers for the page
+ */
+function initEventHandlers() {
+    // Tab switching
+    document.getElementById('textTab').addEventListener('click', () => switchInputTab('text'));
+    document.getElementById('urlTab').addEventListener('click', () => switchInputTab('url'));
+    
+    // Layout input handlers
+    document.getElementById('layoutInput').addEventListener('input', processLayoutText);
+    document.getElementById('cyanophageUrlInput').addEventListener('input', processUrlInput);
+    
+    // Context form handlers
+    document.getElementById('layoutName').addEventListener('input', updateYamlPreview);
+    document.getElementById('layoutYear').addEventListener('input', updateYamlPreview);
+    document.getElementById('layoutWebsite').addEventListener('input', updateYamlPreview);
+    
+    // Copy buttons
+    document.getElementById('copyUrlBtn').addEventListener('click', () => copyToClipboard('url'));
+    document.getElementById('copyYamlBtn').addEventListener('click', () => copyToClipboard('yaml'));
+}
+
+// Export for ES module usage
+export { initEventHandlers };
+
 // Export to window for browser usage (inline scripts)
 if (typeof window !== 'undefined') {
-    window.generateCyanophageUrl = generateCyanophageUrl;
+    window.switchInputTab = switchInputTab;
+    window.processLayoutText = processLayoutText;
+    window.processUrlInput = processUrlInput;
+    window.updateYamlPreview = updateYamlPreview;
     window.copyToClipboard = copyToClipboard;
 }
