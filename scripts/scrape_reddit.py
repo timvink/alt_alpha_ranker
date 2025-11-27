@@ -20,6 +20,7 @@ For local testing, create a .env file with these variables.
 import os
 import re
 import time
+import xml.etree.ElementTree as ET
 import yaml
 from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, field
@@ -50,83 +51,79 @@ REDDIT_HEADERS = {
 }
 
 
-def fetch_reddit_json(url: str) -> dict:
+def fetch_reddit_json(url: str) -> dict | None:
     """
-    Fetch Reddit JSON with fallback strategies.
+    Fetch Reddit JSON data with RSS fallback.
     
-    Tries direct request first, then falls back to alternative methods if blocked (403).
+    Tries JSON endpoint first, falls back to RSS feed if blocked (403).
+    Returns None if all methods fail.
     """
-    # Try direct request first
+    # Try JSON endpoint first
     try:
         response = requests.get(url, headers=REDDIT_HEADERS, timeout=30)
-        if response.status_code == 403:
-            print("  Direct request blocked (403), trying alternative method...")
-        else:
+        if response.status_code != 403:
             response.raise_for_status()
             return response.json()
-    except requests.exceptions.HTTPError as e:
-        if "403" not in str(e):
-            raise
-        print("  Direct request blocked (403), trying alternative method...")
+        print("  Reddit JSON blocked (403), trying RSS feed...")
+    except requests.exceptions.RequestException as e:
+        print(f"  JSON request failed: {e}, trying RSS feed...")
     
-    # Fallback: Use pullpush.io Reddit API (a public Reddit archive/mirror)
-    # This service mirrors Reddit data and is often accessible from CI environments
-    if "/r/" in url and ".json" in url:
-        # Extract subreddit from URL like https://www.reddit.com/r/KeyboardLayouts.json
-        # Try the Pullpush API for subreddit listings
-        print("  Trying pullpush.io API...")
-        pullpush_url = f"https://api.pullpush.io/reddit/search/submission/?subreddit={SUBREDDIT}&sort=desc&sort_type=created_utc&size=100"
+    # Fallback to RSS feed (often works when JSON is blocked)
+    # Only works for subreddit listing URLs, not comment URLs
+    if "/r/" in url and url.endswith(".json") and "/comments/" not in url:
+        rss_url = url.replace(".json", "/new.rss")
         try:
-            response = requests.get(pullpush_url, timeout=30)
+            response = requests.get(rss_url, headers=REDDIT_HEADERS, timeout=30)
             response.raise_for_status()
-            pullpush_data = response.json()
             
-            # Convert pullpush format to Reddit format
+            # Parse RSS/Atom feed
+            root = ET.fromstring(response.content)
+            ns = {"atom": "http://www.w3.org/2005/Atom"}
+            
             children = []
-            for post in pullpush_data.get("data", []):
+            for entry in root.findall("atom:entry", ns):
+                # Extract data from RSS entry
+                title = entry.find("atom:title", ns)
+                link = entry.find("atom:link", ns)
+                updated = entry.find("atom:updated", ns)
+                content = entry.find("atom:content", ns)
+                author = entry.find("atom:author/atom:name", ns)
+                
+                # Parse the updated timestamp (ISO format)
+                created_utc = 0
+                if updated is not None and updated.text:
+                    try:
+                        dt = datetime.fromisoformat(updated.text.replace("Z", "+00:00"))
+                        created_utc = dt.timestamp()
+                    except ValueError:
+                        pass
+                
+                # Extract permalink from link
+                permalink = ""
+                if link is not None:
+                    href = link.get("href", "")
+                    if "/r/" in href:
+                        permalink = "/" + href.split("/r/", 1)[1]
+                
                 children.append({
                     "kind": "t3",
-                    "data": post
+                    "data": {
+                        "title": title.text if title is not None else "",
+                        "selftext": content.text if content is not None else "",
+                        "permalink": permalink,
+                        "created_utc": created_utc,
+                        "author": author.text if author is not None else "[deleted]",
+                    }
                 })
             
-            return {
-                "data": {
-                    "children": children
-                }
-            }
+            print(f"  RSS feed returned {len(children)} posts")
+            return {"data": {"children": children}}
+            
         except Exception as e:
-            print(f"  Pullpush.io failed: {e}")
+            print(f"  RSS fallback failed: {e}")
     
-    # If it's a post comments URL, try pullpush for comments
-    if "/comments/" in url:
-        print("  Trying pullpush.io for comments...")
-        # Extract post ID from URL like /r/KeyboardLayouts/comments/abc123/...
-        match = re.search(r"/comments/([a-z0-9]+)", url)
-        if match:
-            post_id = match.group(1)
-            pullpush_url = f"https://api.pullpush.io/reddit/search/comment/?link_id=t3_{post_id}&size=100"
-            try:
-                response = requests.get(pullpush_url, timeout=30)
-                response.raise_for_status()
-                pullpush_data = response.json()
-                
-                # Convert to Reddit format (list with post data and comments)
-                comments_children = []
-                for comment in pullpush_data.get("data", []):
-                    comments_children.append({
-                        "kind": "t1",
-                        "data": comment
-                    })
-                
-                return [
-                    {"data": {}},  # Post data (empty, we don't need it)
-                    {"data": {"children": comments_children}}
-                ]
-            except Exception as e:
-                print(f"  Pullpush.io comments failed: {e}")
-    
-    # All methods failed
-    raise requests.exceptions.HTTPError(f"All fetch methods failed for {url}")
+    return None
+
 
 
 @dataclass
@@ -164,6 +161,9 @@ def fetch_post_comments(permalink: str) -> list[RedditComment]:
         # Reddit JSON endpoint for post with comments
         url = f"https://www.reddit.com{permalink}.json"
         data = fetch_reddit_json(url)
+        
+        if data is None:
+            return comments
 
         # Comments are in the second element of the response array
         if len(data) > 1:
@@ -194,6 +194,10 @@ def scrape_recent_posts(hours: int = HOURS_TO_LOOK_BACK) -> list[RedditPost]:
 
     # Fetch the JSON data (contains ~14 days of posts)
     data = fetch_reddit_json(SUBREDDIT_JSON_URL)
+    
+    if data is None:
+        print("Could not fetch Reddit data. Skipping Reddit scraping.")
+        return posts
 
     for child in data.get("data", {}).get("children", []):
         post_data = child.get("data", {})
