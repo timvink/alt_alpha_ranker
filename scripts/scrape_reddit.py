@@ -103,7 +103,7 @@ def fetch_reddit_json(url: str) -> dict | None:
                 if link is not None:
                     href = link.get("href", "")
                     if "/r/" in href:
-                        permalink = "/" + href.split("/r/", 1)[1]
+                        permalink = "/r/" + href.split("/r/", 1)[1]
                 
                 children.append({
                     "kind": "t3",
