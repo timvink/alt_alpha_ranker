@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   scrape-reddit:
+    environment:
+      name: reddit-scraper
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
