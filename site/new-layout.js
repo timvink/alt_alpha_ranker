@@ -11,6 +11,53 @@ import { renderKeyboard } from './keyboard_visualization.js';
 let currentLayout = null;
 let currentUrl = '';
 let hasThumb = false;
+let existingLayouts = []; // Loaded from data.json
+
+/**
+ * Load existing layouts from data.json
+ */
+async function loadExistingLayouts() {
+    try {
+        const response = await fetch('data.json');
+        const data = await response.json();
+        existingLayouts = data.layouts || [];
+        console.log(`Loaded ${existingLayouts.length} existing layouts`);
+    } catch (err) {
+        console.warn('Could not load existing layouts:', err);
+        existingLayouts = [];
+    }
+}
+
+/**
+ * Extract the layout parameter from a Cyanophage URL
+ */
+function extractLayoutParam(url) {
+    try {
+        const urlObj = new URL(url);
+        return urlObj.searchParams.get('layout');
+    } catch {
+        // Try regex for partial URLs
+        const match = url.match(/[?&]layout=([^&]+)/);
+        return match ? match[1] : null;
+    }
+}
+
+/**
+ * Check if a layout URL already exists in the database
+ * @returns {Object|null} - The existing layout if found, null otherwise
+ */
+function findExistingLayout(url) {
+    const layoutParam = extractLayoutParam(url);
+    if (!layoutParam) return null;
+    
+    for (const layout of existingLayouts) {
+        const existingParam = extractLayoutParam(layout.url);
+        if (existingParam === layoutParam) {
+            return layout;
+        }
+    }
+    return null;
+}
 
 /**
  * Parses the layout text input into a KeyboardLayout data structure.
@@ -347,17 +394,46 @@ function updateLayoutDisplay() {
     const hasRightThumb = currentLayout.rightHand.thumbOuter && currentLayout.rightHand.thumbOuter !== ' ';
     hasThumb = hasLeftThumb || hasRightThumb;
     
-    // Update validation status
+    // Check if this layout already exists
+    const existingLayout = findExistingLayout(currentUrl);
     const validationStatus = document.getElementById('validationStatus');
-    validationStatus.className = 'validation-status valid';
-    validationStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i><span>Layout parsed successfully</span>';
     
-    // Show steps 3 and 4
-    showStep('step3', true);
-    showStep('step4', true);
-    
-    // Update YAML preview
-    updateYamlPreview();
+    if (existingLayout) {
+        // Layout already exists - show warning and hide steps 3 & 4
+        validationStatus.className = 'validation-status duplicate';
+        validationStatus.innerHTML = `
+            <i class="fa-solid fa-circle-info"></i>
+            <span>This layout already exists as "<strong>${existingLayout.name}</strong>"</span>
+        `;
+        
+        // Show duplicate notice with link to open issue
+        const duplicateNotice = document.getElementById('duplicateNotice');
+        if (duplicateNotice) {
+            duplicateNotice.classList.add('show');
+            duplicateNotice.querySelector('.existing-layout-name').textContent = existingLayout.name;
+        }
+        
+        // Hide steps 3 and 4 since layout already exists
+        showStep('step3', false);
+        showStep('step4', false);
+    } else {
+        // New layout - show success
+        validationStatus.className = 'validation-status valid';
+        validationStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i><span>Layout parsed successfully</span>';
+        
+        // Hide duplicate notice
+        const duplicateNotice = document.getElementById('duplicateNotice');
+        if (duplicateNotice) {
+            duplicateNotice.classList.remove('show');
+        }
+        
+        // Show steps 3 and 4
+        showStep('step3', true);
+        showStep('step4', true);
+        
+        // Update YAML preview
+        updateYamlPreview();
+    }
 }
 
 /**
@@ -440,7 +516,10 @@ function copyToClipboard(type) {
 /**
  * Initialize all event handlers for the page
  */
-function initEventHandlers() {
+async function initEventHandlers() {
+    // Load existing layouts first
+    await loadExistingLayouts();
+    
     // Tab switching
     document.getElementById('textTab').addEventListener('click', () => switchInputTab('text'));
     document.getElementById('urlTab').addEventListener('click', () => switchInputTab('url'));

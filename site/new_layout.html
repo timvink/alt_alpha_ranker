@@ -452,8 +452,60 @@
             color: #f87171;
         }
 
+        .validation-status.duplicate {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            margin-bottom: 0;
+        }
+
+        body.dark-mode .validation-status.duplicate {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
         .validation-status i {
             font-size: 1rem;
+        }
+
+        /* Duplicate notice */
+        .duplicate-notice {
+            display: none;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .duplicate-notice.show {
+            display: block;
+        }
+
+        body.dark-mode .duplicate-notice {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .duplicate-notice p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+        }
+
+        .duplicate-notice .update-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .duplicate-notice .update-link:hover {
+            text-decoration: underline;
         }
 
         /* Issue report link */
@@ -666,6 +718,14 @@
                     <div class="validation-status valid" id="validationStatus">
                         <i class="fa-solid fa-circle-check"></i>
                         <span>Layout parsed successfully</span>
+                    </div>
+                    
+                    <div class="duplicate-notice" id="duplicateNotice">
+                        <p>This layout is already in our database as "<strong class="existing-layout-name"></strong>". If you'd like to update its information (name, year, or website), please open an issue.</p>
+                        <a href="https://github.com/timvink/alt_alpha_ranker/issues/new?title=Update%20layout%20info&body=Please%20update%20the%20following%20layout%20information%3A%0A%0ALayout%20name%3A%20%0ANew%20info%3A%20" target="_blank" class="update-link">
+                            <i class="fa-brands fa-github"></i>
+                            Open an issue to request an update
+                        </a>
                     </div>
                     
                     <div class="url-container">

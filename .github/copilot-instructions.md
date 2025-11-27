@@ -1,3 +1,6 @@
+When creating a new PR to add a new keyboard layout:
+- Just update the `config/layouts.yml` file with the new layout information. There is no ordering, just add it to the end of the file.
+- No need to update any other files, the stats will be auto-scraped using the scripts in the `scripts/` folder.
 
 Using python:
 - python scripts should live in `scripts/`. 
