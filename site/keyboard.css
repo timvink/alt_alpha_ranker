@@ -74,3 +74,60 @@ svg {
     max-width: 100%;
     height: auto;
 }
+
+/* Keyboard View Switcher */
+.keyboard-view-switcher {
+    cursor: default;
+}
+
+.view-switch-btn {
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.view-switch-btn:hover {
+    opacity: 0.85;
+}
+
+.view-switch-rect {
+    stroke: var(--border-color, #d1d5db);
+    stroke-width: 1;
+    transition: stroke 0.15s, stroke-width 0.15s;
+}
+
+body.dark-mode .view-switch-rect {
+    stroke: var(--border-color, #4a5568);
+}
+
+.view-switch-btn.active .view-switch-rect {
+    stroke: var(--accent-color, #4f46e5);
+    stroke-width: 2;
+}
+
+body.dark-mode .view-switch-btn.active .view-switch-rect {
+    stroke: var(--accent-color, #9f7aea);
+    stroke-width: 2;
+}
+
+.view-switch-text {
+    fill: var(--text-secondary, #4a5568);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+    user-select: none;
+}
+
+body.dark-mode .view-switch-text {
+    fill: var(--text-secondary, #a0aec0);
+}
+
+.view-switch-btn.active .view-switch-text {
+    fill: var(--accent-color, #4f46e5);
+}
+
+body.dark-mode .view-switch-btn.active .view-switch-text {
+    fill: var(--accent-color, #9f7aea);
+}

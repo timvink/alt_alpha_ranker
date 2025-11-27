@@ -4,12 +4,18 @@
  */
 
 import { cyanophageToKeyboard } from './cyanophage.js';
-import { renderKeyboard } from './keyboard_visualization.js';
+import { renderKeyboard, getKeyboardViewPreference } from './keyboard_visualization.js';
 
 class KeyboardAccordion {
     constructor() {
         this.openRows = new Set();
         this.isInitialized = false;
+        this.layoutCache = new Map(); // Cache of layoutName -> { layout, rowElement }
+        
+        // Listen for keyboard view changes
+        window.addEventListener('keyboardViewChanged', (e) => {
+            this.refreshAllOpen();
+        });
     }
 
     initialize() {
@@ -55,13 +61,16 @@ class KeyboardAccordion {
         const layout = cyanophageToKeyboard(layoutUrl);
         renderKeyboard(layout, svg);
         
+        // Cache the layout for refresh
+        this.layoutCache.set(rowElement, { layout, svg, layoutName });
+        
         // Add to open rows set
         this.openRows.add(rowElement);
         
         // Add click handler to accordion content to close when clicked (but not on buttons/links)
         content.addEventListener('click', (e) => {
-            // Don't close if clicking on the try layout button
-            if (e.target.closest('.try-layout-btn')) {
+            // Don't close if clicking on the try layout button or view switcher
+            if (e.target.closest('.try-layout-btn') || e.target.closest('.keyboard-view-switcher')) {
                 return;
             }
             e.stopPropagation();
@@ -92,8 +101,20 @@ class KeyboardAccordion {
             }, 300);
         }
 
-        // Remove from open rows set
+        // Remove from open rows set and cache
         this.openRows.delete(rowElement);
+        this.layoutCache.delete(rowElement);
+    }
+    
+    /**
+     * Refresh all open accordions (re-render with current view preference)
+     */
+    refreshAllOpen() {
+        for (const [rowElement, data] of this.layoutCache.entries()) {
+            if (this.openRows.has(rowElement)) {
+                renderKeyboard(data.layout, data.svg);
+            }
+        }
     }
 
     /**
