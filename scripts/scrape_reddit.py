@@ -302,7 +302,7 @@ Does this {content_type} announce a NEW keyboard layout?"""
     return result.output
 
 
-def create_github_issue(title: str, body: str, labels: list[str] | None = None) -> bool:
+def create_github_issue(title: str, body: str) -> None:
     """Create a GitHub issue using the GitHub API or gh CLI."""
     import subprocess
 
@@ -311,40 +311,29 @@ def create_github_issue(title: str, body: str, labels: list[str] | None = None) 
 
     if github_token:
         # Use the GitHub API via curl or the gh CLI
-        try:
-            # Try using gh CLI first (available in GitHub Actions)
-            cmd = [
-                "gh",
-                "issue",
-                "create",
-                "--repo",
-                f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}",
-                "--title",
-                title,
-                "--body",
-                body,
-                "--assignee",
-                "timvink",
-            ]
-            if labels:
-                for label in labels:
-                    cmd.extend(["--label", label])
+        # Try using gh CLI first (available in GitHub Actions)
+        cmd = [
+            "gh",
+            "issue",
+            "create",
+            "--repo",
+            f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}",
+            "--title",
+            title,
+            "--body",
+            body,
+            "--assignee",
+            "timvink",
+        ]
 
-            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            print(f"Created issue: {result.stdout.strip()}")
-            return True
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to create issue with gh CLI: {e.stderr}")
-            return False
-        except FileNotFoundError:
-            print("gh CLI not found, skipping issue creation")
-            return False
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        if result.returncode != 0:
+            raise RuntimeError(f"Failed to create issue with gh CLI: {result.stderr}")
+        print(f"Created issue: {result.stdout.strip()}")
     else:
         # Local development - just print what would be created
         print("\n[DRY RUN] Would create GitHub issue:")
         print(f"  Title: {title}")
-        print(f"  Labels: {labels}")
-        return True
 
 
 @dataclass
@@ -446,7 +435,7 @@ Please review this post and comment to determine if the layout should be added t
 Please review this post to determine if the layout should be added to the ranker.
 """
 
-    create_github_issue(title, body, labels=["new-layout", "review-needed"])
+    create_github_issue(title, body)
 
 
 def check_for_missing_cyanophage_urls(posts: list[RedditPost]) -> list[tuple[str, RedditPost, RedditComment | None]]:
@@ -533,7 +522,6 @@ Please review this layout and add it to `config/layouts.yml` if appropriate.
         create_github_issue(
             title="Review missing cyanophage layout from Reddit",
             body=body,
-            labels=["missing-layout", "review-needed"],
         )
 
 
