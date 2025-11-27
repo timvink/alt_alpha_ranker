@@ -19,6 +19,7 @@ For local testing, create a .env file with these variables.
 
 import os
 import re
+import time
 import yaml
 from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, field
@@ -33,7 +34,7 @@ from pydantic_ai import Agent
 load_dotenv()
 
 # Constants
-SUBREDDIT_JSON_URL = "https://old.reddit.com/r/KeyboardLayouts.json"
+SUBREDDIT_JSON_URL = "https://www.reddit.com/r/KeyboardLayouts.json"
 HOURS_TO_LOOK_BACK = 48
 CYANOPHAGE_URL_PATTERN = r"https://cyanophage\.github\.io/playground\.html\?layout=[^\s\)\]\>\"']+"
 LAYOUTS_YML_PATH = "config/layouts.yml"
@@ -83,11 +84,26 @@ def fetch_post_comments(permalink: str) -> list[RedditComment]:
     comments = []
 
     try:
-        # Reddit JSON endpoint for post with comments (using old.reddit.com to avoid blocking)
-        url = f"https://old.reddit.com{permalink}.json"
-        response = requests.get(url, headers=REDDIT_HEADERS)
-        response.raise_for_status()
-        data = response.json()
+        # Reddit JSON endpoint for post with comments
+        url = f"https://www.reddit.com{permalink}.json"
+        
+        # Retry logic for comment fetching
+        max_retries = 2
+        data = None
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(url, headers=REDDIT_HEADERS, timeout=30)
+                response.raise_for_status()
+                data = response.json()
+                break
+            except requests.exceptions.RequestException:
+                if attempt < max_retries - 1:
+                    time.sleep(2)
+                else:
+                    raise
+        
+        if data is None:
+            return comments
 
         # Comments are in the second element of the response array
         if len(data) > 1:
@@ -116,10 +132,28 @@ def scrape_recent_posts(hours: int = HOURS_TO_LOOK_BACK) -> list[RedditPost]:
 
     print("Fetching posts from r/KeyboardLayouts JSON endpoint...")
 
-    # Fetch the JSON data (contains ~14 days of posts)
-    response = requests.get(SUBREDDIT_JSON_URL, headers=REDDIT_HEADERS)
-    response.raise_for_status()
-    data = response.json()
+    # Fetch the JSON data (contains ~14 days of posts) with retry logic
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(SUBREDDIT_JSON_URL, headers=REDDIT_HEADERS, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            break
+        except requests.exceptions.HTTPError as e:
+            if attempt < max_retries - 1:
+                wait_time = (attempt + 1) * 5  # 5, 10, 15 seconds
+                print(f"  Request failed ({e}), retrying in {wait_time}s...")
+                time.sleep(wait_time)
+            else:
+                raise
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait_time = (attempt + 1) * 5
+                print(f"  Request failed ({e}), retrying in {wait_time}s...")
+                time.sleep(wait_time)
+            else:
+                raise
 
     for child in data.get("data", {}).get("children", []):
         post_data = child.get("data", {})
@@ -140,6 +174,7 @@ def scrape_recent_posts(hours: int = HOURS_TO_LOOK_BACK) -> list[RedditPost]:
         # Fetch comments for this post
         print(f"  Fetching comments for: {post.title[:50]}...")
         post.comments = fetch_post_comments(permalink)
+        time.sleep(1)  # Small delay to avoid rate limiting
 
         posts.append(post)
 
