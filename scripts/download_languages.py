@@ -6,8 +6,8 @@ from pathlib import Path
 
 import yaml
 
-# Path to cyanophage config
-CONFIG_PATH = Path(__file__).parent.parent / "config" / "cyanophage.yml"
+# Path to languages config
+CONFIG_PATH = Path(__file__).parent.parent / "config" / "languages.yml"
 
 # URL template for MonkeyType language files
 URL_TEMPLATE = "https://raw.githubusercontent.com/monkeytypegame/monkeytype/master/frontend/static/languages/{lang}_1k.json"

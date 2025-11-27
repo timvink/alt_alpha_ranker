@@ -1,7 +1,7 @@
 """
 Script to scrape keyboard layout statistics from cyanophage.github.io playground.
 
-Reads layouts from config/layouts.yml and languages from config/cyanophage.yml
+Reads layouts from config/layouts.yml and languages from config/languages.yml
 Scrapes statistics for each layout in each language.
 
 Outputs results to data.json for use by static site generator.
@@ -30,7 +30,7 @@ def load_layouts(yml_path: str = "config/layouts.yml") -> list[dict]:
     return data.get('layouts', [])
 
 
-def load_languages(yml_path: str = "config/cyanophage.yml") -> list[str]:
+def load_languages(yml_path: str = "config/languages.yml") -> list[str]:
     """Load languages from YAML file."""
     with open(yml_path) as f:
         data = yaml.safe_load(f)

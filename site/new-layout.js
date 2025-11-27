@@ -400,7 +400,7 @@ function updateIssueButton(layoutName, yaml) {
     const title = encodeURIComponent(`Add new layout: ${layoutName || 'new layout'}`);
     const body = encodeURIComponent(`Please add this layout to the rankings:\n\n\`\`\`yaml\n${yaml}\n\`\`\``);
     
-    btn.href = `https://github.com/timvink/alt_alpha_ranker/issues/new?title=${title}&body=${body}`;
+    btn.href = `https://github.com/timvink/alt_alpha_ranker/issues/new?title=${title}&body=${body}&assignees=copilot`;
 }
 
 /**
