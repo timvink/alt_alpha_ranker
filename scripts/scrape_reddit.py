@@ -363,8 +363,7 @@ async def process_posts_for_new_layouts(posts: list[RedditPost]) -> list[NewLayo
 
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        print("Warning: GEMINI_API_KEY not set, skipping LLM analysis")
-        return []
+        raise RuntimeError("GEMINI_API_KEY environment variable is not set. Please set it to use this script.")
 
     # Set the API key for google-generativeai
     os.environ["GOOGLE_API_KEY"] = api_key
