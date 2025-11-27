@@ -565,6 +565,111 @@ body.dark-mode .footer a:hover {
     color: #b794f4;
 }
 
+/* Keycap styling for name in footer */
+.keycap-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    vertical-align: middle;
+}
+
+.keycap-name .space {
+    width: 6px;
+}
+
+.keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(145deg, #f0f0f0 0%, #e0e0e0 50%, #d5d5d5 100%);
+    border-radius: 3px;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+    position: relative;
+    box-shadow: 
+        0 1px 0 0px #c0c0c0,
+        0 2px 0 0px #b5b5b5,
+        0 2px 2px 0px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: all 0.1s ease;
+    transform: translateY(0);
+}
+
+.keycap::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    bottom: 2px;
+    background: linear-gradient(145deg, #fafafa 0%, #f0f0f0 30%, #eaeaea 100%);
+    border-radius: 2px;
+    z-index: -1;
+}
+
+.keycap:hover {
+    transform: translateY(1px);
+    box-shadow: 
+        0 0px 0 0px #c0c0c0,
+        0 1px 0 0px #b5b5b5,
+        0 1px 1px 0px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+a.keycap-link {
+    text-decoration: none;
+}
+
+a.keycap-link:hover {
+    text-decoration: none;
+}
+
+a.keycap-link .keycap:hover {
+    background: linear-gradient(145deg, #e8e8ff 0%, #d8d8f0 50%, #d0d0e8 100%);
+}
+
+a.keycap-link .keycap:hover::before {
+    background: linear-gradient(145deg, #f0f0ff 0%, #e8e8f8 30%, #e4e4f4 100%);
+}
+
+/* Dark mode keycaps */
+body.dark-mode .keycap {
+    background: linear-gradient(145deg, #4a4a5a 0%, #3a3a4a 50%, #2a2a3a 100%);
+    color: #e0e0e0;
+    box-shadow: 
+        0 1px 0 0px #2a2a3a,
+        0 2px 0 0px #1a1a2a,
+        0 2px 2px 0px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .keycap::before {
+    background: linear-gradient(145deg, #5a5a6a 0%, #4a4a5a 30%, #404050 100%);
+}
+
+body.dark-mode .keycap:hover {
+    box-shadow: 
+        0 0px 0 0px #2a2a3a,
+        0 1px 0 0px #1a1a2a,
+        0 1px 1px 0px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode a.keycap-link .keycap:hover {
+    background: linear-gradient(145deg, #5a5a7a 0%, #4a4a6a 50%, #3a3a5a 100%);
+}
+
+body.dark-mode a.keycap-link .keycap:hover::before {
+    background: linear-gradient(145deg, #6a6a8a 0%, #5a5a7a 30%, #4a4a6a 100%);
+}
+
 .loading {
     text-align: center;
     padding: 3rem;
