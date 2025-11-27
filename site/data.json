@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2025-11-10T23:05:24.096964",
+  "scraped_at": "2025-11-27T11:00:43.595850",
   "languages": [
     "english",
     "dutch",
@@ -12,7 +12,7 @@
   "layouts": [
     {
       "name": "qwerty",
-      "url": "https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5E&mode=ergo&lan=english",
+      "url": "https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5E&mode=ergo&lan=english&thumb=l",
       "thumb": false,
       "metrics": {
         "english": {
@@ -4772,7 +4772,7 @@
     },
     {
       "name": "enthium_v9",
-      "url": "https://cyanophage.github.io/playground.html?layout=zwdlx%2Fouyq%5Csnthk%2Caeicbfpgmj%3B.%3D-%27vr&mode=ergo&lan=english&thumb=l",
+      "url": "https://cyanophage.github.io/playground.html?layout=qyuo%2Fxldwz*ciea%2Ckhtnsv%27-%3D.%3Bjmgpf%5Crb&thumb=r&mode=ergo&lan=english",
       "thumb": true,
       "metrics": {
         "english": {
@@ -5451,7 +5451,122 @@
           "scissors": "0.37%"
         }
       },
-      "website": "https://layouts.wiki/guides/start/recommendations/#birdie"
+      "website": "https://layouts.wiki/guides/start/recommendations/#birdie",
+      "year": 2025
+    },
+    {
+      "name": "racket",
+      "url": "https://cyanophage.github.io/playground.html?layout=fdlwj%3Bbou%2C-sthcyqnaei-xkmgvzp'%2F.%5Cr%5E&mode=ergo&thumb=l",
+      "thumb": true,
+      "metrics": {
+        "english": {
+          "pinky_off": "1.93%",
+          "bigram_roll_in": "27.95%",
+          "bigram_roll_out": "18.54%",
+          "roll_in": "1.49%",
+          "roll_out": "0.92%",
+          "redirect": "2.98%",
+          "weak_redirect": "0.29%",
+          "total_word_effort": "815.2",
+          "effort": "457.33",
+          "same_finger_bigrams": "0.35%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.46%"
+        },
+        "dutch": {
+          "pinky_off": "1.93%",
+          "bigram_roll_in": "27.95%",
+          "bigram_roll_out": "18.54%",
+          "roll_in": "1.49%",
+          "roll_out": "0.92%",
+          "redirect": "2.98%",
+          "weak_redirect": "0.29%",
+          "total_word_effort": "815.2",
+          "effort": "457.33",
+          "same_finger_bigrams": "0.35%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.46%"
+        },
+        "french": {
+          "pinky_off": "1.93%",
+          "bigram_roll_in": "27.95%",
+          "bigram_roll_out": "18.54%",
+          "roll_in": "1.49%",
+          "roll_out": "0.92%",
+          "redirect": "2.98%",
+          "weak_redirect": "0.29%",
+          "total_word_effort": "815.2",
+          "effort": "457.33",
+          "same_finger_bigrams": "0.35%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.46%"
+        },
+        "german": {
+          "pinky_off": "1.93%",
+          "bigram_roll_in": "27.95%",
+          "bigram_roll_out": "18.54%",
+          "roll_in": "1.49%",
+          "roll_out": "0.92%",
+          "redirect": "2.98%",
+          "weak_redirect": "0.29%",
+          "total_word_effort": "815.2",
+          "effort": "457.33",
+          "same_finger_bigrams": "0.35%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.46%"
+        },
+        "italian": {
+          "pinky_off": "1.93%",
+          "bigram_roll_in": "27.95%",
+          "bigram_roll_out": "18.54%",
+          "roll_in": "1.49%",
+          "roll_out": "0.92%",
+          "redirect": "2.98%",
+          "weak_redirect": "0.29%",
+          "total_word_effort": "815.2",
+          "effort": "457.33",
+          "same_finger_bigrams": "0.35%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.46%"
+        },
+        "portuguese": {
+          "pinky_off": "1.93%",
+          "bigram_roll_in": "27.95%",
+          "bigram_roll_out": "18.54%",
+          "roll_in": "1.49%",
+          "roll_out": "0.92%",
+          "redirect": "2.98%",
+          "weak_redirect": "0.29%",
+          "total_word_effort": "815.2",
+          "effort": "457.33",
+          "same_finger_bigrams": "0.35%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.46%"
+        },
+        "spanish": {
+          "pinky_off": "1.93%",
+          "bigram_roll_in": "27.95%",
+          "bigram_roll_out": "18.54%",
+          "roll_in": "1.49%",
+          "roll_out": "0.92%",
+          "redirect": "2.98%",
+          "weak_redirect": "0.29%",
+          "total_word_effort": "815.2",
+          "effort": "457.33",
+          "same_finger_bigrams": "0.35%",
+          "skip_bigrams": "0.31%",
+          "lat_stretch_bigrams": "0.45%",
+          "scissors": "0.46%"
+        }
+      },
+      "website": "https://github.com/GalileoBlues",
+      "year": 2024
     }
   ]
 }
