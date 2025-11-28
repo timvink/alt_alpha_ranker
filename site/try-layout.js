@@ -1081,7 +1081,6 @@ function renderTypingLine() {
     
     // Split text into words (keeping spaces with the preceding word)
     const words = splitIntoWords(translatedText);
-    const originalWords = splitIntoWords(currentText);
     
     // Calculate how many characters fit per line (approximate)
     const containerWidth = display.offsetWidth || 800;
@@ -1090,7 +1089,6 @@ function renderTypingLine() {
     
     // Group words into lines
     const lines = groupWordsIntoLines(words, charsPerLine);
-    const originalLines = groupWordsIntoLines(originalWords, charsPerLine);
     
     // Determine which line has the current position
     let charsSoFar = 0;
@@ -1138,13 +1136,11 @@ function renderTypingLine() {
         
         // Render words for this line
         const lineWords = lines[lineIdx] || [];
-        const origLineWords = originalLines[lineIdx] || [];
         
         let lineCharIndex = globalCharIndex;
         
         for (let wordIdx = 0; wordIdx < lineWords.length; wordIdx++) {
             const word = lineWords[wordIdx];
-            const origWord = origLineWords[wordIdx] || word;
             
             // Create word group for type line
             const typeWordGroup = document.createElement('span');
@@ -1182,10 +1178,10 @@ function renderTypingLine() {
                 
                 typeWordGroup.appendChild(typeSpan);
                 
-                // Output char
+                // Output char - use globalIdx to get character from original text directly
                 const outputSpan = document.createElement('span');
                 outputSpan.className = 'original-char';
-                outputSpan.textContent = origWord[charIdx] || '';
+                outputSpan.textContent = currentText[globalIdx] || '';
                 
                 if (globalIdx < currentPosition) {
                     if (typedChars[globalIdx] && !typedChars[globalIdx].isCorrect) {
