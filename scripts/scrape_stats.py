@@ -10,8 +10,10 @@ By default, only re-scrapes entries with missing/invalid data.
 Use --full-refresh to re-scrape all layouts.
 
 Usage: 
-    uv run scripts/scrape_stats.py              # Update missing/invalid entries only
-    uv run scripts/scrape_stats.py --full-refresh  # Refresh all layouts
+    # Update missing/invalid layouts only
+    uv run scripts/scrape_stats.py              
+    # Refresh all layouts
+    uv run scripts/scrape_stats.py --full-refresh  
 """
 
 import json
