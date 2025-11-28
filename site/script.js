@@ -132,6 +132,26 @@ function updateTryLayoutLink() {
     }
 }
 
+// Update cyanophage URL to use current language
+function updateCyanophageUrl(url) {
+    if (!url) return url;
+    try {
+        const urlObj = new URL(url);
+        urlObj.searchParams.set('lan', currentLanguage);
+        const result = urlObj.toString();
+        return result;
+    } catch (e) {
+        console.error('Error updating cyanophage URL:', e);
+        // If URL parsing fails, try simple string replacement
+        if (url.includes('&lan=')) {
+            return url.replace(/&lan=[^&]+/, `&lan=${currentLanguage}`);
+        } else if (url.includes('?')) {
+            return url + `&lan=${currentLanguage}`;
+        }
+        return url;
+    }
+}
+
 // Get metrics for current language
 function getMetrics(layout) {
     return layout.metrics?.[currentLanguage] || {};
@@ -262,7 +282,7 @@ function renderTable(data) {
                         ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}${yearSuffix}</a>`
                         : `${layout.name}${yearSuffix}`
                     }
-                    <a href="${layout.url}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="Analyze in playground"><i class="fa-solid fa-square-poll-vertical"></i></a>
+                    <a href="${updateCyanophageUrl(layout.url)}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="Analyze in playground"><i class="fa-solid fa-square-poll-vertical"></i></a>
                     ${thumbIcon}
                 </td>
                 <td class="stat-value">${metrics.total_word_effort || 'N/A'}</td>
