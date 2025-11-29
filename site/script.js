@@ -219,8 +219,8 @@ async function loadData() {
         // Update search placeholder
         updateSearchPlaceholder();
         
-        // Set default sort to effort ascending
-        currentSort = { column: 'effort', direction: 'asc' };
+        // Set default sort to SFBs ascending
+        currentSort = { column: 'same_finger_bigrams', direction: 'asc' };
         
         // Initial render with default sort
         const sorted = sortData(layoutsData);
@@ -231,7 +231,7 @@ async function loadData() {
     } catch (error) {
         console.error('Error loading data:', error);
         document.getElementById('tableBody').innerHTML = 
-            '<tr><td colspan="10" class="no-results">Error loading data. Please try again later.</td></tr>';
+            '<tr><td colspan="9" class="no-results">Error loading data. Please try again later.</td></tr>';
     }
 }
 
@@ -240,7 +240,7 @@ function renderTable(data) {
     const tbody = document.getElementById('tableBody');
     
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="11" class="no-results">No layouts found matching your search.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="no-results">No layouts found matching your search.</td></tr>';
         return;
     }
 
@@ -285,8 +285,6 @@ function renderTable(data) {
                     <a href="${updateCyanophageUrl(layout.url)}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="Analyze in playground"><i class="fa-solid fa-square-poll-vertical"></i></a>
                     ${thumbIcon}
                 </td>
-                <td class="stat-value">${metrics.total_word_effort || 'N/A'}</td>
-                <td class="stat-value">${metrics.effort || 'N/A'}</td>
                 <td class="stat-value">${metrics.same_finger_bigrams || 'N/A'}</td>
                 <td class="stat-value">${metrics.skip_bigrams || 'N/A'}</td>
                 <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>

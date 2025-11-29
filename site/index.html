@@ -27,7 +27,7 @@
             <nav class="main-nav">
                 <a href="index.html" class="nav-btn active">
                     <i class="fa-solid fa-ranking-star"></i>
-                    <span>Rankings</span>
+                    <span>Statistics</span>
                 </a>
                 <a href="try-layout.html" class="nav-btn" id="tryLayoutLink">
                     <i class="fa-solid fa-keyboard"></i>
@@ -86,8 +86,6 @@
                     <tr>
                         <th class="pin-star-column" data-column="starred"></th>
                         <th data-column="name">Layout Name</th>
-                        <th data-column="total_word_effort">Total Word Effort</th>
-                        <th data-column="effort">Effort</th>
                         <th data-column="same_finger_bigrams">
                             <span class="tooltip" data-tooltip="Same-finger bigrams (SFB): two keys typed by the same finger. Lower is better">SFBs</span>
                         </th>
@@ -113,7 +111,7 @@
                 </thead>
                 <tbody id="tableBody">
                     <tr>
-                        <td colspan="11" class="loading">Loading layouts...</td>
+                        <td colspan="9" class="loading">Loading layouts...</td>
                     </tr>
                 </tbody>
             </table>

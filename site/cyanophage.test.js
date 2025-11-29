@@ -10,10 +10,20 @@ function expectLayoutsEqual(converted, expected) {
   const convertedFlat = converted.toFlatArray();
   const expectedFlat = expected.toFlatArray();
   
+  // Map index to KeyIndex name for better error messages
+  const indexToKeyName = Object.fromEntries(
+    Object.entries(KeyIndex).map(([name, index]) => [index, name])
+  );
+  
   for (let i = 0; i < 40; i++) {
     // Only compare positions where expected has a non-blank character
     if (expectedFlat[i] !== ' ') {
-      expect(convertedFlat[i]).toBe(expectedFlat[i]);
+      const keyName = indexToKeyName[i] || `index ${i}`;
+      if (convertedFlat[i] !== expectedFlat[i]) {
+        throw new Error(
+          `Key mismatch at ${keyName}: expected "${expectedFlat[i]}" but received "${convertedFlat[i]}"`
+        );
+      }
     }
   }
 }
@@ -218,6 +228,77 @@ describe('Racket layout conversion', () => {
     const converted_layout = cyanophageToKeyboard(racket_url);
     // Use helper that ignores blank positions (Cyanophage fills blanks with placeholders)
     expectLayoutsEqual(converted_layout, racket_layout);
+  });
+});
+
+describe('Bunya layout conversion', () => {
+  // Define the expected Bunya layout using KeyboardLayout class
+  // Layout:
+  //   b l m c z   x f o u ,
+  //   n r t d p   y h a e i -
+  //   ; j q g w   k v ' / .
+  //         s
+
+  const bunya_layout = new KeyboardLayout();
+  
+  // Left hand top row
+  bunya_layout.setKeyByIndex(KeyIndex.L_TOP_PINKY_OUTER, ' ');
+  bunya_layout.setKeyByIndex(KeyIndex.L_TOP_PINKY, 'b');
+  bunya_layout.setKeyByIndex(KeyIndex.L_TOP_RING, 'l');
+  bunya_layout.setKeyByIndex(KeyIndex.L_TOP_MIDDLE, 'm');
+  bunya_layout.setKeyByIndex(KeyIndex.L_TOP_INDEX, 'c');
+  bunya_layout.setKeyByIndex(KeyIndex.L_TOP_INDEX_INNER, 'z');
+  
+  // Right hand top row
+  bunya_layout.setKeyByIndex(KeyIndex.R_TOP_INDEX_INNER, 'x');
+  bunya_layout.setKeyByIndex(KeyIndex.R_TOP_INDEX, 'f');
+  bunya_layout.setKeyByIndex(KeyIndex.R_TOP_MIDDLE, 'o');
+  bunya_layout.setKeyByIndex(KeyIndex.R_TOP_RING, 'u');
+  bunya_layout.setKeyByIndex(KeyIndex.R_TOP_PINKY, ',');
+  bunya_layout.setKeyByIndex(KeyIndex.R_TOP_PINKY_OUTER, ' ');
+  
+  // Left hand home row
+  bunya_layout.setKeyByIndex(KeyIndex.L_HOME_PINKY_OUTER, ' ');
+  bunya_layout.setKeyByIndex(KeyIndex.L_HOME_PINKY, 'n');
+  bunya_layout.setKeyByIndex(KeyIndex.L_HOME_RING, 'r');
+  bunya_layout.setKeyByIndex(KeyIndex.L_HOME_MIDDLE, 't');
+  bunya_layout.setKeyByIndex(KeyIndex.L_HOME_INDEX, 'd');
+  bunya_layout.setKeyByIndex(KeyIndex.L_HOME_INDEX_INNER, 'p');
+  
+  // Right hand home row
+  bunya_layout.setKeyByIndex(KeyIndex.R_HOME_INDEX_INNER, 'y');
+  bunya_layout.setKeyByIndex(KeyIndex.R_HOME_INDEX, 'h');
+  bunya_layout.setKeyByIndex(KeyIndex.R_HOME_MIDDLE, 'a');
+  bunya_layout.setKeyByIndex(KeyIndex.R_HOME_RING, 'e');
+  bunya_layout.setKeyByIndex(KeyIndex.R_HOME_PINKY, 'i');
+  bunya_layout.setKeyByIndex(KeyIndex.R_HOME_PINKY_OUTER, '-');
+  
+  // Left hand bottom row
+  bunya_layout.setKeyByIndex(KeyIndex.L_BOTTOM_PINKY_OUTER, ' ');
+  bunya_layout.setKeyByIndex(KeyIndex.L_BOTTOM_PINKY, ';');
+  bunya_layout.setKeyByIndex(KeyIndex.L_BOTTOM_RING, 'j');
+  bunya_layout.setKeyByIndex(KeyIndex.L_BOTTOM_MIDDLE, 'q');
+  bunya_layout.setKeyByIndex(KeyIndex.L_BOTTOM_INDEX, 'g');
+  bunya_layout.setKeyByIndex(KeyIndex.L_BOTTOM_INDEX_INNER, 'w');
+  
+  // Right hand bottom row
+  bunya_layout.setKeyByIndex(KeyIndex.R_BOTTOM_INDEX_INNER, 'k');
+  bunya_layout.setKeyByIndex(KeyIndex.R_BOTTOM_INDEX, 'v');
+  bunya_layout.setKeyByIndex(KeyIndex.R_BOTTOM_MIDDLE, "'");
+  bunya_layout.setKeyByIndex(KeyIndex.R_BOTTOM_RING, '/');
+  bunya_layout.setKeyByIndex(KeyIndex.R_BOTTOM_PINKY, '.');
+  bunya_layout.setKeyByIndex(KeyIndex.R_BOTTOM_PINKY_OUTER, ' ');
+  
+  // Left thumb key
+  bunya_layout.setKeyByIndex(KeyIndex.THUMB_LEFT_INNER, 's');
+
+  // The Cyanophage URL for Bunya
+  const bunya_url = 'https://cyanophage.github.io/playground.html?layout=blmczxfou%2C*nrtdpyhaei-%3Bjqgwkv%27%2F.%5Cs%3D&mode=ergo&thumb=l&lan=english';
+
+  test('should convert Cyanophage Bunya URL to KeyboardLayout', () => {
+    const converted_layout = cyanophageToKeyboard(bunya_url);
+    // Use helper that ignores blank positions (Cyanophage fills blanks with placeholders)
+    expectLayoutsEqual(converted_layout, bunya_layout);
   });
 });
 
