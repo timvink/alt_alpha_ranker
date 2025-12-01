@@ -286,7 +286,7 @@ function renderTable(data) {
                     ${thumbIcon}
                 </td>
                 <td class="stat-value">${metrics.same_finger_bigrams || 'N/A'}</td>
-                <td class="stat-value">${metrics.skip_bigrams || 'N/A'}</td>
+                <td class="stat-value">${metrics.skip_bigrams_1u || 'N/A'}</td>
                 <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>
                 <td class="stat-value">${metrics.scissors || 'N/A'}</td>
                 <td class="stat-value">${calculateRolls(metrics)}</td>
@@ -382,7 +382,7 @@ function sortData(data) {
             if (currentSort.column === 'total_word_effort' || currentSort.column === 'effort') {
                 aVal = parseFloat(aVal) || 0;
                 bVal = parseFloat(bVal) || 0;
-            } else if (currentSort.column === 'same_finger_bigrams' || currentSort.column === 'skip_bigrams' || 
+            } else if (currentSort.column === 'same_finger_bigrams' || currentSort.column === 'skip_bigrams_1u' || 
                        currentSort.column === 'lat_stretch_bigrams' || currentSort.column === 'scissors' || 
                        currentSort.column === 'pinky_off' || currentSort.column === 'redirect') {
                 // Remove % sign and convert to number

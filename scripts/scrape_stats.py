@@ -80,9 +80,10 @@ def has_invalid_metrics(metrics: dict) -> bool:
     
     # Check all metric fields
     metric_fields = [
-        'total_word_effort', 'effort', 'same_finger_bigrams', 'skip_bigrams',
-        'lat_stretch_bigrams', 'scissors', 'pinky_off', 'bigram_roll_in',
-        'bigram_roll_out', 'roll_in', 'roll_out', 'redirect', 'weak_redirect'
+        'total_word_effort', 'effort', 'same_finger_bigrams', 'skip_bigrams_1u',
+        'skip_bigrams_2u', 'lat_stretch_bigrams', 'scissors', 'pinky_off',
+        'bigram_roll_in', 'bigram_roll_out', 'roll_in', 'roll_out', 'redirect',
+        'weak_redirect'
     ]
     
     for field in metric_fields:
@@ -147,6 +148,34 @@ def scrape_layout_stats(url: str) -> dict:
             except Exception:
                 stats['pinky_off'] = None
             
+            # Calculate skip bigrams percentages (both 1u and 2u)
+            try:
+                skip_bigrams = page.evaluate("""
+                    () => {
+                        if (typeof m_skip_bigram !== 'undefined' && typeof m_skip_bigram2 !== 'undefined' && typeof m_input_length !== 'undefined') {
+                            let sum_1u = 0;
+                            let sum_2u = 0;
+                            for (var bigram in m_skip_bigram) {
+                                sum_1u += m_skip_bigram[bigram] / m_input_length;
+                            }
+                            for (var bigram in m_skip_bigram2) {
+                                sum_2u += m_skip_bigram2[bigram] / m_input_length;
+                            }
+                            return {
+                                skip_bigrams_1u: (100 * sum_1u).toFixed(2) + '%',
+                                skip_bigrams_2u: (100 * sum_2u).toFixed(2) + '%'
+                            };
+                        }
+                        return null;
+                    }
+                """)
+                if skip_bigrams:
+                    stats['skip_bigrams_1u'] = skip_bigrams.get('skip_bigrams_1u')
+                    stats['skip_bigrams_2u'] = skip_bigrams.get('skip_bigrams_2u')
+            except Exception:
+                stats['skip_bigrams_1u'] = None
+                stats['skip_bigrams_2u'] = None
+            
             # Calculate trigram percentages
             try:
                 trigram_percentages = page.evaluate("""
@@ -190,11 +219,6 @@ def scrape_layout_stats(url: str) -> dict:
                         if '%' in part:
                             stats['same_finger_bigrams'] = part
                             break
-                elif line_stripped.startswith('Skip Bigrams'):
-                    for part in parts:
-                        if '%' in part:
-                            stats['skip_bigrams'] = part
-                            break
                 elif 'Lat Stretch Bigrams' in line_stripped or 'Lateral Stretch' in line_stripped:
                     for part in parts:
                         if '%' in part:
@@ -208,9 +232,10 @@ def scrape_layout_stats(url: str) -> dict:
             
             # Set None for missing stats
             default_stats = [
-                'total_word_effort', 'effort', 'same_finger_bigrams', 'skip_bigrams',
-                'lat_stretch_bigrams', 'scissors', 'pinky_off', 'bigram_roll_in',
-                'bigram_roll_out', 'roll_in', 'roll_out', 'redirect', 'weak_redirect'
+                'total_word_effort', 'effort', 'same_finger_bigrams', 'skip_bigrams_1u',
+                'skip_bigrams_2u', 'lat_stretch_bigrams', 'scissors', 'pinky_off',
+                'bigram_roll_in', 'bigram_roll_out', 'roll_in', 'roll_out', 'redirect',
+                'weak_redirect'
             ]
             for stat in default_stats:
                 if stat not in stats:
@@ -227,7 +252,8 @@ def scrape_layout_stats(url: str) -> dict:
                 'total_word_effort': None,
                 'effort': None,
                 'same_finger_bigrams': None,
-                'skip_bigrams': None,
+                'skip_bigrams_1u': None,
+                'skip_bigrams_2u': None,
                 'lat_stretch_bigrams': None,
                 'scissors': None,
                 'pinky_off': None,
