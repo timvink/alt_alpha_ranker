@@ -2,15 +2,72 @@
 # Set thumb values manually based on actual thumb key usage in layouts
 
 layouts:
-- name: qwerty
-  link: https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5E&mode=ergo&lan=english&thumb=l
+- name: anymak:end
+  link: https://cyanophage.github.io/playground.html?layout=qkouyvdclfjhaei%2Cgtrns*-z'.xbpmw-%5C&mode=ergo
   thumb: false
-  year: 1873
-- name: dvorak
-  link: https://cyanophage.github.io/playground.html?layout=%27%2C.pyfgcrl%2Faoeuidhtns-%3Bqjkxbmwvz%5C%5E&mode=ergo&lan=english
+  year: 2023
+  website: https://github.com/rpnfan/Anymak
+- name: aptmak
+  link: https://cyanophage.github.io/playground.html?layout=vwfpbjluy%27%3Drsthkxnaio%3B%2Fcgdqzm%2C.-%5Ce&mode=ergo&lan=english
+  thumb: true
+  year: 2022
+  website: https://github.com/Apsu/aptmak
+- name: aptV3
+  link: https://cyanophage.github.io/playground.html?layout=wgdfbqluoy-rsthkjneai%3Bxcmpvz%2C.%27%2F%5C%5E&mode=ergo&lan=english
   thumb: false
-  year: 1936
-  website: https://www.dvzine.org/
+  year: 2021
+- name: arensito
+  link: https://cyanophage.github.io/playground.html?layout=ql%2Cp%3D%7Cfudk-arenbgsito-zw.hjvcymx%5C&mode=ergo
+  thumb: false
+  year: 2001
+  website: http://www.pvv.org/~hakonhal/main.cgi/keyboard
+- name: beakl19bis
+  link: https://cyanophage.github.io/playground.html?layout=qyouzwdnck-hiea%2Cgtrsp%3Bj%27%2F.xvmlfb%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2020
+- name: beakl43
+  link: https://cyanophage.github.io/playground.html?layout=qhou%2Cglrfb-jieaydtsnp-xk%22.'vmcwz%5C&mode=ergo
+  thumb: false
+  year: 2023
+  website: http://www.ieants.cc/beakl/index.php
+- name: birdie
+  link: https://cyanophage.github.io/playground.html?layout=%24lpdf%27wou-%3Btsnhmgcaie%2Fvzbkqxy%2C.j%5Cr%5E&mode=ergo&lan=english&thumb=l
+  thumb: true
+  website: https://layouts.wiki/guides/start/recommendations/#birdie
+  year: 2025
+- name: boo
+  link: https://cyanophage.github.io/playground.html?layout=%2C.ucvqfdly-aoesgbntri-%3Bx'wzphmkj%5C&mode=ergo
+  thumb: false
+  year: 2021
+  website: https://ballerboo.github.io/boolayout/
+- name: bunya
+  link: https://cyanophage.github.io/playground.html?layout=blmczxfou%2C%5Enrtdpyhaei-%3Bjqgwkv%27%2F.%5Cs&mode=ergo&lan=english&thumb=l
+  thumb: true
+  year: 2023
+  website: https://discord.com/channels/807843650717483049/1063291226243207268/1112009138021613568
+- name: calemog
+  link: https://cyanophage.github.io/playground.html?layout=xlcwkzfuy%3B-orstmbneia-qjvdgph'%2C.%5C&mode=ergo
+  thumb: false
+  year: 0
+  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
+- name: canary
+  link: https://cyanophage.github.io/playground.html?layout=wlypbzfou%27-crstgmneia-qjvdkxh%2F%2C.%5C&mode=ergo
+  thumb: false
+  year: 2022
+  website: https://github.com/Apsu/Canary
+- name: capewell_0.9.3
+  link: https://cyanophage.github.io/playground.html?layout=.ywdfjpluq%2Faersgbtnio-xzcv%3Bkwh%2C'%5C&mode=ergo
+  thumb: false
+  year: 2005
+  website: http://www.michaelcapewell.com/projects/keyboard/index.htm
+- name: carbyne
+  link: https://cyanophage.github.io/playground.html?layout=fwhgzqouypjsnrtv-aeic%27bmldk%3Bx%2C.%2F%5C%5E&mode=ergo&lan=english
+  thumb: false
+- name: caster4
+  link: https://cyanophage.github.io/playground.html?layout=bwdl%3B%2Ffouj-cstrxqnaih%27vygmz%3Dp.%2Ck%5Ce&mode=ergo&lan=english
+  thumb: true
+  year: 2024
+  website: https://www.reddit.com/r/KeyboardLayouts/comments/1g895nx/comment/lwv6ndi/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 - name: colemak
   link: https://cyanophage.github.io/playground.html?layout=qwfpgjluy%3B-arstdhneio%27zxcvbkm%2C.%2F%5C%5E&mode=ergo&lan=english
   thumb: false
@@ -21,174 +78,45 @@ layouts:
   thumb: false
   year: 2014
   website: https://colemakmods.github.io/mod-dh/
-- name: graphite
-  link: https://cyanophage.github.io/playground.html?layout=bldwz%27fouj%3Bnrtsgyhaei%2Cqxmcvkp.-%2F%5C%5E&mode=ergo&lan=english
+- name: colemak-qi;x
+  link: https://cyanophage.github.io/playground.html?layout=%3Blcmkjfuyq-arstgpneio'zxwdvbh%2F.%2C%5C&mode=ergo
+  thumb: false
+  year: 2021
+  website: https://github.com/DreymaR/BigBagKbdTrixPKL/tree/master/Layouts/Colemak/Cmk-Qmods#colemak-qix-by-nyfee-2021-03
+- name: compound
+  link: https://cyanophage.github.io/playground.html?layout='uogjqdlrf-aiecykhtns-%2C.%3Bwpbmvxz%5C&mode=ergo
   thumb: false
   year: 2023
-  website: https://github.com/rdavison/graphite-layout
-- name: gallium
-  link: https://cyanophage.github.io/playground.html?layout=bldcvzyou%2C-nrtsgphaei%2Fqxmwjkf%27%3B.%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2023
-  website: https://github.com/GalileoBlues/Gallium
-- name: gallium v2
-  link: https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5E&mode=iso&lan=english&thumb=l
-  thumb: false
-  year: 2024
-  website: https://github.com/GalileoBlues/Gallium
-- name: gallium colstag
-  link: https://cyanophage.github.io/playground.html?layout=bldcvjyou%2C-nrtsgphaei%2Fxqmwzkf%27%3B.%5C%5E&mode=ergo&lan=english&thumb=l
-  thumb: false
-  year: 2024
-  website: https://github.com/GalileoBlues/Gallium
-- name: canary
-  link: https://cyanophage.github.io/playground.html?layout=wlypbzfou%27-crstgmneia-qjvdkxh%2F%2C.%5C&mode=ergo
-  thumb: false
-  year: 2022
-  website: https://github.com/Apsu/Canary
-- name: aptV3
-  link: https://cyanophage.github.io/playground.html?layout=wgdfbqluoy-rsthkjneai%3Bxcmpvz%2C.%27%2F%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2021
-- name: handsdown-neu
-  link: https://cyanophage.github.io/playground.html?layout=wfmpv%2F.q%3B%27zrsntb%2Caeihjxcldg-uoyk%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2021
-- name: sturdy
-  link: https://cyanophage.github.io/playground.html?layout=vmlcpxfouj-strdy.naei%2Fzkqgwbh%27%3B%2C%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2021
-  website: https://o-x-e-y.github.io/layouts/sturdy/index.html
-- name: engram-2021 
-  link: https://cyanophage.github.io/playground.html?layout=byou%27-ldwvzciea%2C.htsnqgxjk%2F%3Brmfp%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2021
-  website: https://www.preprints.org/manuscript/202103.0287
-- name: engram-2025 
-  link: https://cyanophage.github.io/playground.html?layout=byou%27-dngvqhiae%2C.trsczkjxw%2F%3Bmlfp%5C%5E&mode=ergo&lan=english&thumb=l
-  year: 2025
-  thumb: false
-  website: https://github.com/binarybottle/engram
-- name: carbyne
-  link: https://cyanophage.github.io/playground.html?layout=fwhgzqouypjsnrtv-aeic%27bmldk%3Bx%2C.%2F%5C%5E&mode=ergo&lan=english
-  thumb: false
-- name: really
-  link: https://cyanophage.github.io/playground.html?layout=yuolzqchgwkiearxvsntd%27-%2F%2C.%3Bjfpmb%5C%5E&mode=ergo&lan=english
-  thumb: false
-- name: whorf
-  link: https://cyanophage.github.io/playground.html?layout=flhdmvwou%2C%2Fsrntkgyaei-xjbzqpc%27%3B.%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2021
-- name: northstar_v1
-  link: https://cyanophage.github.io/playground.html?layout=qwmbzjfou%3B-nrstgyheia%27xlcdvkp%2C.%2F%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2022
-  website: https://www.reddit.com/r/KeyboardLayouts/comments/13e4lm4/northstar/
-- name: northstar_pl
-  link: https://cyanophage.github.io/playground.html?layout=qwmbzjfou%3B-nrstgyheia%27xlcdvkp%2C.%2F%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2023
-  website: https://www.reddit.com/r/KeyboardLayouts/comments/13e4lm4/comment/jjv85pk/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
-- name: semimak
-  link: https://cyanophage.github.io/playground.html?layout=flhvzqwuoy-srntkcdeai%3Bx%27bmjpg%2C.%2F%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2021
-  website: https://github.com/semilin/semimak
-- name: mtgap
-  link: https://cyanophage.github.io/playground.html?layout=ypoujkdlcw-inea%2Cmhtsr%27qz%2F.%3Bbfgvx%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2010
-  website: https://mathematicalmulticore.wordpress.com/the-keyboard-layout-project/
+  website: https://oxey.dev/compound/index.html
 - name: ctgap
   link: https://cyanophage.github.io/playground.html?layout=qplcjxfou%2F-rntsgyheia%3Bzbmwvkd%27%2C.%5C%5E&mode=ergo&lan=english
   thumb: false
   year: 2022
-- name: recurva
-  link: https://cyanophage.github.io/playground.html?layout=frdpvqjuoy-sntcb.heai%2Fzxkgwml%3B%27%2C%5C%5E&mode=ergo&lan=english
+- name: dhorf
+  link: https://cyanophage.github.io/playground.html?layout=vlhkqjfou%2C-srntwycaei-zxmdbpg'%3B.%5C&mode=ergo
   thumb: false
   year: 2023
-- name: halmak
-  link: https://cyanophage.github.io/playground.html?layout=wlrbzqgudj-shnt%2C.aeoi%27fmvc%2F%3Bpxky%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2016
-- name: workman
-  link: https://cyanophage.github.io/playground.html?layout=qdrwbjfup%3B-ashtgyneoi%27zxmcvkl%2C.%2F%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2010
-- name: nerps
-  link: https://cyanophage.github.io/playground.html?layout=xldpvzkou%3Bqnrtsgyheia-%2Fjmcwbf%27%2C.%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2022
-- name: focal
-  link: https://cyanophage.github.io/playground.html?layout=vlhgkqfouj-srntbycaei%2Fzxmdp%27w.%3B%2C%5C%5E&mode=ergo&lan=english
-  thumb: false
+  website: https://oxey.dev/dhorf/index.html
+- name: dusk-wp
+  link: https://cyanophage.github.io/playground.html?layout=xfdwpj'ou%2C-nstcymhaei%3Bbvkgqzl-%3F.%5Cr%5E&mode=ergo&thumb=l
+  thumb: true
   year: 2024
-- name: isrt
-  link: https://cyanophage.github.io/playground.html?layout=yclmkzfu%2C%27-isrtgpneao%3Bqvwdjbh%2F.x%5C%5E&mode=ergo&lan=english
+  website: https://discord.com/channels/807843650717483049/1063291226243207268/1309332617673576529
+- name: dvorak
+  link: https://cyanophage.github.io/playground.html?layout=%27%2C.pyfgcrl%2Faoeuidhtns-%3Bqjkxbmwvz%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 1936
+  website: https://www.dvzine.org/
+- name: engram-2021
+  link: https://cyanophage.github.io/playground.html?layout=byou%27-ldwvzciea%2C.htsnqgxjk%2F%3Brmfp%5C%5E&mode=ergo&lan=english
   thumb: false
   year: 2021
-- name: irst
-  link: https://cyanophage.github.io/playground.html?layout=ylcmkzfu%2C%27-irstgbneao%3Bjxwdvph%2F.q%5C%5E&mode=ergo&lan=english
-  thumb: false
-- name: pine_v1
-  link: https://cyanophage.github.io/playground.html?layout=ylrdwjmou%2C-csntgphaei%3Bxzqvkbf%27%2F.%5C%5E&mode=ergo&lan=english
-  thumb: false
-- name: pine_v4
-  link: https://cyanophage.github.io/playground.html?layout=qlcmk%27fuoy-nrstwpheai%2Fjxzgvbd%3B%2C.%5C%5E&mode=ergo&lan=english
-  thumb: false
-- name: beakl19bis
-  link: https://cyanophage.github.io/playground.html?layout=qyouzwdnck-hiea%2Cgtrsp%3Bj%27%2F.xvmlfb%5C%5E&mode=ergo&lan=english
-  thumb: false
-  year: 2020
-- name: maltron
-  link: https://cyanophage.github.io/playground.html?layout=qpycbvmuzl%3Danisfdthor%27%2C.jg%3B%2Fwk-x%5Ce&mode=ergo&lan=english
-  thumb: true
-  year: 1977
-  website: https://en.wikipedia.org/wiki/Maltron#Layouts
-- name: rsthd
-  link: https://cyanophage.github.io/playground.html?layout=jcyfkzl%2Cuq%3Drsthdmnaio%27%2Fvgpbxw.%3B-%5Ce&mode=ergo&lan=english
-  thumb: true
-  year: 2016
-  website: https://simn.me/rsthd/
-- name: aptmak
-  link: https://cyanophage.github.io/playground.html?layout=vwfpbjluy%27%3Drsthkxnaio%3B%2Fcgdqzm%2C.-%5Ce&mode=ergo&lan=english
-  thumb: true
-  year: 2022
-  website: https://github.com/Apsu/aptmak
-- name: caster4
-  link: https://cyanophage.github.io/playground.html?layout=bwdl%3B%2Ffouj-cstrxqnaih%27vygmz%3Dp.%2Ck%5Ce&mode=ergo&lan=english
-  thumb: true
-  year: 2024
-  website: https://www.reddit.com/r/KeyboardLayouts/comments/1g895nx/comment/lwv6ndi/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
-- name: handsdown-vibranium
-  link: https://cyanophage.github.io/playground.html?layout=xwmgqz.%27jb%3Bscntk%2Caeih%3Dvpld%2F-uoyf%5Cr&mode=ergo&lan=english
-  thumb: true
-  year: 2023
-- name: handsdown-promethium
-  link: https://cyanophage.github.io/playground.html?layout=fpdlx%3Buoybzsnthk%2Caeicqvwgmj-.%27%3D%2F%5Cr&mode=ergo&lan=english
-  thumb: true
-  year: 2024
-  website: https://www.reddit.com/r/KeyboardLayouts/comments/1g66ivi/hands_down_promethium_snth_meets_hd_silverengram/
-- name: snth
-  link: https://cyanophage.github.io/playground.html?layout=xpdmq%3Dyou%2C-snthvgcaei%3Bfbkljzw%27%2F.%5Cr&mode=ergo&lan=english
-  thumb: true
-- name: sunlight
-  link: https://cyanophage.github.io/playground.html?layout=fwhgk%2Couypjsnltv.aeic%27xbmdq%3D%3B%2F-z%5Cr&mode=ergo&lan=english
-  thumb: true
-- name: nordrassil
-  link: https://cyanophage.github.io/playground.html?layout=qyou-jgnwk%3Dhiea.pdrslzx%2F%27%2C%3Bbcmfv%5Ct&thumb=r&mode=ergo&lan=english
-  thumb: true
-  year: 2024
-  website: https://github.com/empressabyss/nordrassil
-- name: night
-  link: https://cyanophage.github.io/playground.html?layout=bflkqpgou.%3Dnshtmycaei%3Bxvjdz%27w-%2F%2C%5Cr&mode=ergo&lan=english
-  thumb: true
-  year: 2024
-- name: enthium_v9
-  link: https://cyanophage.github.io/playground.html?layout=qyuo%2Fxldwz*ciea%2Ckhtnsv%27-%3D.%3Bjmgpf%5Crb&thumb=r&mode=ergo&lan=english
-  website: https://github.com/sunaku/enthium/tree/v9
-  thumb: true
+  website: https://www.preprints.org/manuscript/202103.0287
+- name: engram-2025
+  link: https://cyanophage.github.io/playground.html?layout=byou%27-dngvqhiae%2C.trsczkjxw%2F%3Bmlfp%5C%5E&mode=ergo&lan=english&thumb=l
   year: 2025
+  thumb: false
+  website: https://github.com/binarybottle/engram
 - name: enthium_v10
   link: https://cyanophage.github.io/playground.html?layout=zyuo%3Bqldpx%5Cciea%2Ckhtnsf%27-%3D.%2Fjmgbv*rw&mode=ergo&lan=english&thumb=r
   website: https://github.com/sunaku/enthium/tree/v10
@@ -199,129 +127,54 @@ layouts:
   website: https://github.com/sunaku/enthium/tree/v11
   thumb: true
   year: 2025
-- name: nordrassil_rejuvenated
-  link: https://cyanophage.github.io/playground.html?layout=jyou-qgnwk%3Dhiea.mdrspvx%2F%27%2C%3Bzclfb%5Ct&thumb=r&mode=ergo&lan=english
-  website: https://www.reddit.com/r/KeyboardLayouts/comments/1oqqfql/%F0%96%A3%82nordrassils_rejuvenation%EF%BE%9F_a_refinement_of_the/
+- name: enthium_v9
+  link: https://cyanophage.github.io/playground.html?layout=qyuo%2Fxldwz*ciea%2Ckhtnsv%27-%3D.%3Bjmgpf%5Crb&thumb=r&mode=ergo&lan=english
+  website: https://github.com/sunaku/enthium/tree/v9
   thumb: true
   year: 2025
-- name: serotine
-  link: https://cyanophage.github.io/playground.html?layout=bldwj%2Ffouk-nrtcgvsaih%27qxmpz%5Cy%2C.%3B%5Ee&mode=ergo&lan=english
-  thumb: true
-  website: https://github.com/drogalis/Serotonin
+- name: focal
+  link: https://cyanophage.github.io/playground.html?layout=vlhgkqfouj-srntbycaei%2Fzxmdp%27w.%3B%2C%5C%5E&mode=ergo&lan=english
+  thumb: false
   year: 2024
-- name: birdie
-  link: https://cyanophage.github.io/playground.html?layout=%24lpdf%27wou-%3Btsnhmgcaie%2Fvzbkqxy%2C.j%5Cr%5E&mode=ergo&lan=english&thumb=l
-  thumb: true
-  website: https://layouts.wiki/guides/start/recommendations/#birdie
-  year: 2025
-- name: racket
-  link: https://cyanophage.github.io/playground.html?layout=fdlwj%3Bbou%2C-sthcyqnaei-xkmgvzp'%2F.%5Cr%5E&mode=ergo&thumb=l
-  thumb: true
-  website: https://github.com/GalileoBlues
+- name: gallium
+  link: https://cyanophage.github.io/playground.html?layout=bldcvzyou%2C-nrtsgphaei%2Fqxmwjkf%27%3B.%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2023
+  website: https://github.com/GalileoBlues/Gallium
+- name: gallium colstag
+  link: https://cyanophage.github.io/playground.html?layout=bldcvjyou%2C-nrtsgphaei%2Fxqmwzkf%27%3B.%5C%5E&mode=ergo&lan=english&thumb=l
+  thumb: false
   year: 2024
-- name: bunya
-  link: https://cyanophage.github.io/playground.html?layout=blmczxfou%2C%5Enrtdpyhaei-%3Bjqgwkv%27%2F.%5Cs&mode=ergo&lan=english&thumb=l
-  thumb: true
-  year: 2023
-  website: https://discord.com/channels/807843650717483049/1063291226243207268/1112009138021613568
-- name: noctum
-  link: https://cyanophage.github.io/playground.html?layout=bfdlzjgou%2C-nstrkycaei-qvmhxpw'%3B.%5C&mode=ergo
+  website: https://github.com/GalileoBlues/Gallium
+- name: gallium v2
+  link: https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5E&mode=iso&lan=english&thumb=l
+  thumb: false
+  year: 2024
+  website: https://github.com/GalileoBlues/Gallium
+- name: graphite
+  link: https://cyanophage.github.io/playground.html?layout=bldwz%27fouj%3Bnrtsgyhaei%2Cqxmcvkp.-%2F%5C%5E&mode=ergo&lan=english
   thumb: false
   year: 2023
-  website: https://oxey.dev/noctum/index.html
-- name: compound
-  link: https://cyanophage.github.io/playground.html?layout='uogjqdlrf-aiecykhtns-%2C.%3Bwpbmvxz%5C&mode=ergo
+  website: https://github.com/rdavison/graphite-layout
+- name: halmak
+  link: https://cyanophage.github.io/playground.html?layout=wlrbzqgudj-shnt%2C.aeoi%27fmvc%2F%3Bpxky%5C%5E&mode=ergo&lan=english
   thumb: false
-  year: 2023
-  website: https://oxey.dev/compound/index.html
-- name: dhorf
-  link: https://cyanophage.github.io/playground.html?layout=vlhkqjfou%2C-srntwycaei-zxmdbpg'%3B.%5C&mode=ergo
+  year: 2016
+- name: handsdown-neu
+  link: https://cyanophage.github.io/playground.html?layout=wfmpv%2F.q%3B%27zrsntb%2Caeihjxcldg-uoyk%5C%5E&mode=ergo&lan=english
   thumb: false
-  year: 2023
-  website: https://oxey.dev/dhorf/index.html
-- name: stronk
-  link: https://cyanophage.github.io/playground.html?layout=fdlbvjgou%2C-strnkymaei-zqxhpwc'%3B.%5C&mode=ergo
-  thumb: false
-  year: 2023
-  website: https://oxey.dev/compound/index.html
-- name: dusk-wp
-  link: https://cyanophage.github.io/playground.html?layout=xfdwpj'ou%2C-nstcymhaei%3Bbvkgqzl-%3F.%5Cr%5E&mode=ergo&thumb=l
+  year: 2021
+- name: handsdown-promethium
+  link: https://cyanophage.github.io/playground.html?layout=fpdlx%3Buoybzsnthk%2Caeicqvwgmj-.%27%3D%2F%5Cr&mode=ergo&lan=english
   thumb: true
   year: 2024
-  website: https://discord.com/channels/807843650717483049/1063291226243207268/1309332617673576529
-- name: rollla
-  link: https://cyanophage.github.io/playground.html?layout=youb.xkclv-iaen%2Cmhsrt-'%2Fpwzfdgjq%5C&mode=ergo
-  thumb: false
-  year: 2022
-  website: https://github.com/samuelxyz/layouts#rollla
-- name: nitro_s
-  link: https://cyanophage.github.io/playground.html?layout=pmldxvcou%2C-ntrhybsaei-zqjfkwg'%3B.%5C&mode=ergo
-  thumb: false
-  year: 0000
-  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
-- name: nerts
-  link: https://cyanophage.github.io/playground.html?layout=pldvxzkou%3B-nrtsgyheia%2Fqjmcwbf'%2C.%5C&mode=ergo
-  thumb: false
-  year: 0000
-  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
-- name: megamak
-  link: https://cyanophage.github.io/playground.html?layout=xlywkzfou%3B-crstgbneia'jvdmqph%2F%2C.%5C&mode=ergo
-  thumb: false
-  year: 0000
-  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
-- name: sertain
-  link: https://cyanophage.github.io/playground.html?layout=xldkvzwou%3B-srtnfgyeia%2Fqjmhbpc'%2C.%5C&mode=ergo
-  thumb: false
-  year: 0000
-  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
-- name: calemog
-  link: https://cyanophage.github.io/playground.html?layout=xlcwkzfuy%3B-orstmbneia-qjvdgph'%2C.%5C&mode=ergo
-  thumb: false
-  year: 0000
-  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
-- name: vitrimak
-  link: https://cyanophage.github.io/playground.html?layout=tyqocaiv.e-w%2Cxpmgd%2Fjs-hbzufnl'kr%5C&mode=ergo
-  thumb: false
-  year: 0000
-  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
-- name: beakl43
-  link: https://cyanophage.github.io/playground.html?layout=qhou%2Cglrfb-jieaydtsnp-xk%22.'vmcwz%5C&mode=ergo
-  thumb: false
-  year: 2023
-  website: http://www.ieants.cc/beakl/index.php
-- name: anymak:end
-  link: https://cyanophage.github.io/playground.html?layout=qkouyvdclfjhaei%2Cgtrns*-z'.xbpmw-%5C&mode=ergo
-  thumb: false
-  year: 2023
-  website: https://github.com/rpnfan/Anymak
-- name: Hieamtsrn
-  link: https://cyanophage.github.io/playground.html?layout=byou%E2%80%99kdclpqhiea%2Cmtsrnvx%E2%80%9D-.%3Fwgfjz%5C&mode=ergo 
-  thumb: false
-  year: 2014
-  website: https://mathematicalmulticore.wordpress.com/the-keyboard-layout-project/#comment-4976
-- name: octa8
-  link: https://cyanophage.github.io/playground.html?layout=youkxgwdl%2C-iaenfbstrc%3Bq%2Fzh'vpmj.%5C&mode=ergo
-  thumb: false
-  year: 2022
-  website: https://github.com/OctahedronV2/Octa8/blob/main/README.md#octa8
-- name: seht_drai
-  link: https://cyanophage.github.io/playground.html?layout=fulvbqgnoj-sehtk'drai.%3Bmpwzycx%2F%2C%5C&mode=ergo
-  thumb: false
-  year: 2022
-  website: https://github.com/samuelxyz/layouts#seht-drai
-# This one has a magic key.
-# - name: vylet
-#   link: https://cyanophage.github.io/playground.html?layout=wcmpbxlouj-rsthfynaei%2Cqvgdkz*'%3B.%5C&mode=ergo
-#   thumb: false
-#   year: 2024
-#   website: https://github.com/MightyAcas/vylet
-- name: hanster-21s
-  link: https://cyanophage.github.io/playground.html?layout=qyouxkmlpb-hiea.dtrcn%3Bj-'%2C%2Fvgwfz%5Cs%5E&mode=ergo&thumb=l
+  website: https://www.reddit.com/r/KeyboardLayouts/comments/1g66ivi/hands_down_promethium_snth_meets_hd_silverengram/
+- name: handsdown-vibranium
+  link: https://cyanophage.github.io/playground.html?layout=xwmgqz.%27jb%3Bscntk%2Caeih%3Dvpld%2F-uoyf%5Cr&mode=ergo&lan=english
   thumb: true
-  year: 2024
-  website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
-- name: hanster-23s
-  link: https://cyanophage.github.io/playground.html?layout=qyou-kmlpbzhiea.dtrcn%3Bjxsvf%27w%2Cg%2F%5C%5E&mode=ergo&lan=english&thumb=l
+  year: 2023
+- name: hanster-21l
+  link: https://cyanophage.github.io/playground.html?layout=qyouxkgnfv-hiea.dtrcs%3Bj-'%2C%2Fwmzpb%5Cl%5E&mode=ergo&thumb=l
   thumb: true
   year: 2024
   website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
@@ -330,23 +183,13 @@ layouts:
   thumb: true
   year: 2024
   website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
-- name: hanster-23n
-  link: https://cyanophage.github.io/playground.html?layout=qyou-zmlpbwhiea.dtrcs%3Bjx%27vfnk%2Cg%2F%5C%5E&mode=ergo&lan=english&thumb=l
-  thumb: true
-  year: 2024
-  website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
 - name: hanster-21r
   link: https://cyanophage.github.io/playground.html?layout=qyouxzdlfb-hiea.ptnsc%3Bj-'%2C%2Fkgmwv%5Cr%5E&mode=ergo&thumb=l
   thumb: true
   year: 2024
   website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
-- name: hanster-23r
-  link: https://cyanophage.github.io/playground.html?layout=qyou-zdlfbwhiea.ptnsc%3Bjx%27vrkm%2Cg%2F%5C%5E&mode=ergo&lan=english&thumb=l
-  thumb: true
-  year: 2024
-  website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
-- name: hanster-21l
-  link: https://cyanophage.github.io/playground.html?layout=qyouxkgnfv-hiea.dtrcs%3Bj-'%2C%2Fwmzpb%5Cl%5E&mode=ergo&thumb=l
+- name: hanster-21s
+  link: https://cyanophage.github.io/playground.html?layout=qyouxkmlpb-hiea.dtrcn%3Bj-'%2C%2Fvgwfz%5Cs%5E&mode=ergo&thumb=l
   thumb: true
   year: 2024
   website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
@@ -355,23 +198,174 @@ layouts:
   thumb: true
   year: 2024
   website: https://cyanophage.github.io/playground.html?layout=qyou-kgnfvzhiea.dtrcs%3Bjxlpb%27m%2Cw%2F%5C%5E&mode=ergo&lan=english&thumb=l
-- name: arensito
-  link: https://cyanophage.github.io/playground.html?layout=ql%2Cp%3D%7Cfudk-arenbgsito-zw.hjvcymx%5C&mode=ergo
+- name: hanster-23n
+  link: https://cyanophage.github.io/playground.html?layout=qyou-zmlpbwhiea.dtrcs%3Bjx%27vfnk%2Cg%2F%5C%5E&mode=ergo&lan=english&thumb=l
+  thumb: true
+  year: 2024
+  website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
+- name: hanster-23r
+  link: https://cyanophage.github.io/playground.html?layout=qyou-zdlfbwhiea.ptnsc%3Bjx%27vrkm%2Cg%2F%5C%5E&mode=ergo&lan=english&thumb=l
+  thumb: true
+  year: 2024
+  website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
+- name: hanster-23s
+  link: https://cyanophage.github.io/playground.html?layout=qyou-kmlpbzhiea.dtrcn%3Bjxsvf%27w%2Cg%2F%5C%5E&mode=ergo&lan=english&thumb=l
+  thumb: true
+  year: 2024
+  website: https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout
+- name: Hieamtsrn
+  link: https://cyanophage.github.io/playground.html?layout=byou%E2%80%99kdclpqhiea%2Cmtsrnvx%E2%80%9D-.%3Fwgfjz%5C&mode=ergo
   thumb: false
-  year: 2001
-  website: http://www.pvv.org/~hakonhal/main.cgi/keyboard
-- name: colemak-qi;x
-  link: https://cyanophage.github.io/playground.html?layout=%3Blcmkjfuyq-arstgpneio'zxwdvbh%2F.%2C%5C&mode=ergo
+  year: 2014
+  website: https://mathematicalmulticore.wordpress.com/the-keyboard-layout-project/#comment-4976
+- name: irst
+  link: https://cyanophage.github.io/playground.html?layout=ylcmkzfu%2C%27-irstgbneao%3Bjxwdvph%2F.q%5C%5E&mode=ergo&lan=english
+  thumb: false
+- name: isrt
+  link: https://cyanophage.github.io/playground.html?layout=yclmkzfu%2C%27-isrtgpneao%3Bqvwdjbh%2F.x%5C%5E&mode=ergo&lan=english
   thumb: false
   year: 2021
-  website: https://github.com/DreymaR/BigBagKbdTrixPKL/tree/master/Layouts/Colemak/Cmk-Qmods#colemak-qix-by-nyfee-2021-03
-- name: boo
-  link: https://cyanophage.github.io/playground.html?layout=%2C.ucvqfdly-aoesgbntri-%3Bx'wzphmkj%5C&mode=ergo
+- name: maltron
+  link: https://cyanophage.github.io/playground.html?layout=qpycbvmuzl%3Danisfdthor%27%2C.jg%3B%2Fwk-x%5Ce&mode=ergo&lan=english
+  thumb: true
+  year: 1977
+  website: https://en.wikipedia.org/wiki/Maltron#Layouts
+- name: megamak
+  link: https://cyanophage.github.io/playground.html?layout=xlywkzfou%3B-crstgbneia'jvdmqph%2F%2C.%5C&mode=ergo
+  thumb: false
+  year: 0
+  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
+- name: mtgap
+  link: https://cyanophage.github.io/playground.html?layout=ypoujkdlcw-inea%2Cmhtsr%27qz%2F.%3Bbfgvx%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2010
+  website: https://mathematicalmulticore.wordpress.com/the-keyboard-layout-project/
+- name: nerps
+  link: https://cyanophage.github.io/playground.html?layout=xldpvzkou%3Bqnrtsgyheia-%2Fjmcwbf%27%2C.%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2022
+- name: nerts
+  link: https://cyanophage.github.io/playground.html?layout=pldvxzkou%3B-nrtsgyheia%2Fqjmcwbf'%2C.%5C&mode=ergo
+  thumb: false
+  year: 0
+  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
+- name: night
+  link: https://cyanophage.github.io/playground.html?layout=bflkqpgou.%3Dnshtmycaei%3Bxvjdz%27w-%2F%2C%5Cr&mode=ergo&lan=english
+  thumb: true
+  year: 2024
+- name: nitro_s
+  link: https://cyanophage.github.io/playground.html?layout=pmldxvcou%2C-ntrhybsaei-zqjfkwg'%3B.%5C&mode=ergo
+  thumb: false
+  year: 0
+  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
+- name: noctum
+  link: https://cyanophage.github.io/playground.html?layout=bfdlzjgou%2C-nstrkycaei-qvmhxpw'%3B.%5C&mode=ergo
+  thumb: false
+  year: 2023
+  website: https://oxey.dev/noctum/index.html
+- name: nordrassil
+  link: https://cyanophage.github.io/playground.html?layout=qyou-jgnwk%3Dhiea.pdrslzx%2F%27%2C%3Bbcmfv%5Ct&thumb=r&mode=ergo&lan=english
+  thumb: true
+  year: 2024
+  website: https://github.com/empressabyss/nordrassil
+- name: nordrassil_rejuvenated
+  link: https://cyanophage.github.io/playground.html?layout=jyou-qgnwk%3Dhiea.mdrspvx%2F%27%2C%3Bzclfb%5Ct&thumb=r&mode=ergo&lan=english
+  website: https://www.reddit.com/r/KeyboardLayouts/comments/1oqqfql/%F0%96%A3%82nordrassils_rejuvenation%EF%BE%9F_a_refinement_of_the/
+  thumb: true
+  year: 2025
+- name: northstar_pl
+  link: https://cyanophage.github.io/playground.html?layout=qwmbzjfou%3B-nrstgyheia%27xlcdvkp%2C.%2F%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2023
+  website: https://www.reddit.com/r/KeyboardLayouts/comments/13e4lm4/comment/jjv85pk/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+- name: northstar_v1
+  link: https://cyanophage.github.io/playground.html?layout=qwmbzjfou%3B-nrstgyheia%27xlcdvkp%2C.%2F%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2022
+  website: https://www.reddit.com/r/KeyboardLayouts/comments/13e4lm4/northstar/
+- name: octa8
+  link: https://cyanophage.github.io/playground.html?layout=youkxgwdl%2C-iaenfbstrc%3Bq%2Fzh'vpmj.%5C&mode=ergo
+  thumb: false
+  year: 2022
+  website: https://github.com/OctahedronV2/Octa8/blob/main/README.md#octa8
+- name: pine_v1
+  link: https://cyanophage.github.io/playground.html?layout=ylrdwjmou%2C-csntgphaei%3Bxzqvkbf%27%2F.%5C%5E&mode=ergo&lan=english
+  thumb: false
+- name: pine_v4
+  link: https://cyanophage.github.io/playground.html?layout=qlcmk%27fuoy-nrstwpheai%2Fjxzgvbd%3B%2C.%5C%5E&mode=ergo&lan=english
+  thumb: false
+- name: qwerty
+  link: https://cyanophage.github.io/playground.html?layout=qwertyuiop-asdfghjkl%3B%27zxcvbnm%2C.%2F%5C%5E&mode=ergo&lan=english&thumb=l
+  thumb: false
+  year: 1873
+- name: racket
+  link: https://cyanophage.github.io/playground.html?layout=fdlwj%3Bbou%2C-sthcyqnaei-xkmgvzp'%2F.%5Cr%5E&mode=ergo&thumb=l
+  thumb: true
+  website: https://github.com/GalileoBlues
+  year: 2024
+- name: really
+  link: https://cyanophage.github.io/playground.html?layout=yuolzqchgwkiearxvsntd%27-%2F%2C.%3Bjfpmb%5C%5E&mode=ergo&lan=english
+  thumb: false
+- name: recurva
+  link: https://cyanophage.github.io/playground.html?layout=frdpvqjuoy-sntcb.heai%2Fzxkgwml%3B%27%2C%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2023
+- name: rollla
+  link: https://cyanophage.github.io/playground.html?layout=youb.xkclv-iaen%2Cmhsrt-'%2Fpwzfdgjq%5C&mode=ergo
+  thumb: false
+  year: 2022
+  website: https://github.com/samuelxyz/layouts#rollla
+- name: rsthd
+  link: https://cyanophage.github.io/playground.html?layout=jcyfkzl%2Cuq%3Drsthdmnaio%27%2Fvgpbxw.%3B-%5Ce&mode=ergo&lan=english
+  thumb: true
+  year: 2016
+  website: https://simn.me/rsthd/
+- name: seht_drai
+  link: https://cyanophage.github.io/playground.html?layout=fulvbqgnoj-sehtk'drai.%3Bmpwzycx%2F%2C%5C&mode=ergo
+  thumb: false
+  year: 2022
+  website: https://github.com/samuelxyz/layouts#seht-drai
+- name: semimak
+  link: https://cyanophage.github.io/playground.html?layout=flhvzqwuoy-srntkcdeai%3Bx%27bmjpg%2C.%2F%5C%5E&mode=ergo&lan=english
   thumb: false
   year: 2021
-  website: https://ballerboo.github.io/boolayout/
-- name: capewell_0.9.3
-  link: https://cyanophage.github.io/playground.html?layout=.ywdfjpluq%2Faersgbtnio-xzcv%3Bkwh%2C'%5C&mode=ergo
+  website: https://github.com/semilin/semimak
+- name: serotine
+  link: https://cyanophage.github.io/playground.html?layout=bldwj%2Ffouk-nrtcgvsaih%27qxmpz%5Cy%2C.%3B%5Ee&mode=ergo&lan=english
+  thumb: true
+  website: https://github.com/drogalis/Serotonin
+  year: 2024
+- name: sertain
+  link: https://cyanophage.github.io/playground.html?layout=xldkvzwou%3B-srtnfgyeia%2Fqjmhbpc'%2C.%5C&mode=ergo
   thumb: false
-  year: 2005
-  website: http://www.michaelcapewell.com/projects/keyboard/index.htm 
+  year: 0
+  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
+- name: snth
+  link: https://cyanophage.github.io/playground.html?layout=xpdmq%3Dyou%2C-snthvgcaei%3Bfbkljzw%27%2F.%5Cr&mode=ergo&lan=english
+  thumb: true
+- name: stronk
+  link: https://cyanophage.github.io/playground.html?layout=fdlbvjgou%2C-strnkymaei-zqxhpwc'%3B.%5C&mode=ergo
+  thumb: false
+  year: 2023
+  website: https://oxey.dev/compound/index.html
+- name: sturdy
+  link: https://cyanophage.github.io/playground.html?layout=vmlcpxfouj-strdy.naei%2Fzkqgwbh%27%3B%2C%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2021
+  website: https://o-x-e-y.github.io/layouts/sturdy/index.html
+- name: sunlight
+  link: https://cyanophage.github.io/playground.html?layout=fwhgk%2Couypjsnltv.aeic%27xbmdq%3D%3B%2F-z%5Cr&mode=ergo&lan=english
+  thumb: true
+- name: vitrimak
+  link: https://cyanophage.github.io/playground.html?layout=tyqocaiv.e-w%2Cxpmgd%2Fjs-hbzufnl'kr%5C&mode=ergo
+  thumb: false
+  year: 0
+  website: https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts
+- name: whorf
+  link: https://cyanophage.github.io/playground.html?layout=flhdmvwou%2C%2Fsrntkgyaei-xjbzqpc%27%3B.%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2021
+- name: workman
+  link: https://cyanophage.github.io/playground.html?layout=qdrwbjfup%3B-ashtgyneoi%27zxmcvkl%2C.%2F%5C%5E&mode=ergo&lan=english
+  thumb: false
+  year: 2010
