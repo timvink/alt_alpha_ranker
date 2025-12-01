@@ -258,9 +258,9 @@ def main():
     print(f"Found {len(languages)} language(s): {', '.join(languages)}")
     print(f"Mode: {'Full refresh' if args.full_refresh else 'Update missing/invalid only'}\n")
     
-    # Initialize results structure
+    # Initialize results structure - preserve existing scraped_at by default
     results = {
-        'scraped_at': datetime.now().isoformat(),
+        'scraped_at': existing_data.get('scraped_at', datetime.now().isoformat()),
         'languages': languages,
         'layouts': []
     }
@@ -329,6 +329,10 @@ def main():
                 total_skipped += 1
         
         results['layouts'].append(layout_data)
+    
+    # Only update scraped_at if we actually scraped something
+    if total_scraped > 0:
+        results['scraped_at'] = datetime.now().isoformat()
     
     # Save results
     output_file = 'site/data.json'
