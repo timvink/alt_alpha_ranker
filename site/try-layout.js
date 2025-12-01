@@ -1165,13 +1165,13 @@ function renderTypingLine() {
                         typeSpan.classList.add('typed');
                     }
                 } else if (globalIdx === currentPosition) {
-                    // Add blinking cursor when typing hasn't started, otherwise show highlight
+                    // Use blinking cursor when typing hasn't started, non-blinking when active
                     if (startTime === null) {
                         typeSpan.classList.add('cursor');
-                        typeSpan.classList.add('pending');
                     } else {
-                        typeSpan.classList.add('current');
+                        typeSpan.classList.add('cursor-active');
                     }
+                    typeSpan.classList.add('pending');
                 } else {
                     typeSpan.classList.add('pending');
                 }
@@ -1190,12 +1190,13 @@ function renderTypingLine() {
                         outputSpan.classList.add('typed');
                     }
                 } else if (globalIdx === currentPosition) {
-                    // Only highlight current when typing has started
+                    // Use lighter cursor in output row - blinking before typing, non-blinking during
                     if (startTime === null) {
-                        outputSpan.classList.add('pending');
+                        outputSpan.classList.add('cursor');
                     } else {
-                        outputSpan.classList.add('current');
+                        outputSpan.classList.add('cursor-active');
                     }
+                    outputSpan.classList.add('pending');
                 } else {
                     outputSpan.classList.add('pending');
                 }

@@ -23,6 +23,10 @@ import argparse
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 from datetime import datetime
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn
+from rich.console import Console
+
+console = Console()
 
 
 def load_layouts(yml_path: str = "config/layouts.yml") -> list[dict]:
@@ -115,7 +119,7 @@ def update_url_language(url: str, language: str) -> str:
     return re.sub(r'(&lan=)[^&]+', f'\\1{language}', url)
 
 
-def scrape_layout_stats(url: str) -> dict:
+def scrape_layout_stats(url: str, silent: bool = False) -> dict:
     """
     Scrape statistics from a keyboard layout URL.
     
@@ -247,7 +251,8 @@ def scrape_layout_stats(url: str) -> dict:
         except Exception as e:
             browser.close()
             # Return None for all stats on error
-            print(f"    Error: {str(e)[:100]}")
+            if not silent:
+                console.print(f"    [red]Error:[/red] {str(e)[:100]}")
             return {
                 'total_word_effort': None,
                 'effort': None,
@@ -267,6 +272,13 @@ def scrape_layout_stats(url: str) -> dict:
 
 
 
+def save_results(results: dict, output_file: str = 'site/data.json'):
+    """Save results to JSON file."""
+    results['scraped_at'] = datetime.now().isoformat()
+    with open(output_file, 'w') as f:
+        json.dump(results, f, indent=2)
+
+
 def main():
     """Main function to scrape stats for all layouts."""
     # Parse arguments
@@ -280,16 +292,7 @@ def main():
     languages = load_languages()
     existing_data = load_existing_data()
     
-    print(f"Found {len(layouts)} layout(s)")
-    print(f"Found {len(languages)} language(s): {', '.join(languages)}")
-    print(f"Mode: {'Full refresh' if args.full_refresh else 'Update missing/invalid only'}\n")
-    
-    # Initialize results structure - preserve existing scraped_at by default
-    results = {
-        'scraped_at': existing_data.get('scraped_at', datetime.now().isoformat()),
-        'languages': languages,
-        'layouts': []
-    }
+    output_file = 'site/data.json'
     
     # Build lookup for existing layout data
     existing_layouts = {}
@@ -297,11 +300,10 @@ def main():
         for layout in existing_data['layouts']:
             existing_layouts[layout['name']] = layout
     
-    # Track statistics
-    total_scraped = 0
-    total_skipped = 0
+    # First pass: prepare all layout entries and count what needs scraping
+    layout_entries = {}  # Use dict for easy lookup by name
+    scrape_tasks = []  # List of (layout_name, language, base_link) tuples
     
-    # Process each layout
     for layout in layouts:
         name = layout.get('name', 'Unknown')
         base_link = layout.get('link', '')
@@ -310,12 +312,7 @@ def main():
         year = layout.get('year')
         
         if not base_link:
-            print(f"Skipping {name}: No link provided")
             continue
-        
-        print(f"\n{'='*60}")
-        print(f"Layout: {name}")
-        print(f"{'='*60}")
         
         # Get existing data for this layout or create new entry
         existing_layout = existing_layouts.get(name, {})
@@ -334,42 +331,87 @@ def main():
         if year:
             layout_data['year'] = year
         
-        # Process each language
+        layout_entries[name] = layout_data
+        
+        # Check each language
         for language in languages:
             if needs_scraping(layout_data, language, args.full_refresh):
-                url = update_url_language(base_link, language)
-                
-                print(f"  Scraping {language}...")
-                stats = scrape_layout_stats(url)
-                
-                # Store metrics
-                layout_data['metrics'][language] = stats
-                total_scraped += 1
-                
-                # Show key results
-                effort = stats.get('effort', 'N/A')
-                sfb = stats.get('same_finger_bigrams', 'N/A')
-                print(f"    Effort: {effort}, SFB: {sfb}")
-            else:
-                print(f"  Skipping {language} (valid data exists)")
-                total_skipped += 1
+                scrape_tasks.append((name, language, base_link))
+    
+    # Calculate stats
+    total_tasks = len(scrape_tasks)
+    total_skipped = len(layouts) * len(languages) - total_tasks
+    
+    # Print summary
+    console.print(f"\n[bold]Keyboard Layout Scraper[/bold]")
+    console.print(f"  Layouts: {len(layouts)}")
+    console.print(f"  Languages: {len(languages)} ({', '.join(languages)})")
+    console.print(f"  Mode: {'[yellow]Full refresh[/yellow]' if args.full_refresh else '[green]Update missing/invalid only[/green]'}")
+    console.print(f"  To scrape: [cyan]{total_tasks}[/cyan] | Already valid: [dim]{total_skipped}[/dim]\n")
+    
+    # Prepare results structure
+    results = {
+        'scraped_at': existing_data.get('scraped_at', datetime.now().isoformat()),
+        'languages': languages,
+        'layouts': list(layout_entries.values())
+    }
+    
+    if total_tasks == 0:
+        console.print("[green]✓ All layouts already have valid data. Nothing to scrape.[/green]")
+        save_results(results, output_file)
+        return
+    
+    # Track progress
+    scraped_count = 0
+    errors = 0
+    
+    # Scrape with progress bar
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TaskProgressColumn(),
+        TimeElapsedColumn(),
+        TextColumn("•"),
+        TimeRemainingColumn(),
+        console=console,
+        transient=False
+    ) as progress:
+        task = progress.add_task("Scraping layouts...", total=total_tasks)
         
-        results['layouts'].append(layout_data)
+        for layout_name, language, base_link in scrape_tasks:
+            url = update_url_language(base_link, language)
+            
+            # Update description to show current layout
+            progress.update(task, description=f"[cyan]{layout_name}[/cyan] ({language})")
+            
+            stats = scrape_layout_stats(url, silent=True)
+            
+            # Check for errors
+            if stats.get('effort') is None:
+                errors += 1
+            
+            # Store metrics in the layout entry
+            layout_entries[layout_name]['metrics'][language] = stats
+            scraped_count += 1
+            
+            # Save progress after each scrape
+            results['layouts'] = list(layout_entries.values())
+            save_results(results, output_file)
+            
+            progress.advance(task)
     
-    # Only update scraped_at if we actually scraped something
-    if total_scraped > 0:
-        results['scraped_at'] = datetime.now().isoformat()
+    # Final save
+    results['layouts'] = list(layout_entries.values())
+    save_results(results, output_file)
     
-    # Save results
-    output_file = 'site/data.json'
-    with open(output_file, 'w') as f:
-        json.dump(results, f, indent=2)
-    
-    print(f"\n{'='*60}")
-    print(f"✓ Saved results to {output_file}")
-    print(f"  Scraped: {total_scraped}")
-    print(f"  Skipped: {total_skipped}")
-    print(f"{'='*60}")
+    # Print summary
+    console.print(f"\n[bold green]✓ Complete![/bold green]")
+    console.print(f"  Scraped: [cyan]{scraped_count}[/cyan]")
+    console.print(f"  Skipped: [dim]{total_skipped}[/dim]")
+    if errors > 0:
+        console.print(f"  Errors: [red]{errors}[/red]")
+    console.print(f"  Saved to: [blue]{output_file}[/blue]")
 
 
 if __name__ == '__main__':

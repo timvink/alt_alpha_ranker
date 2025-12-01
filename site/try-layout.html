@@ -818,27 +818,64 @@
             51%, 100% { opacity: 0; }
         }
 
-        .typing-char.cursor::before {
+        .typing-char.cursor::before,
+        .typing-char.cursor-active::before {
             content: '';
             position: absolute;
             left: -1px;
             top: 4px;
             bottom: 4px;
-            width: 2px;
+            width: 3px;
             background: var(--accent-color);
-            animation: blink 1s infinite;
             border-radius: 1px;
         }
 
-        .typing-char.cursor {
+        .typing-char.cursor::before {
+            animation: blink 1s infinite;
+        }
+
+        .typing-char.cursor-active::before {
+            animation: none;
+        }
+
+        .typing-char.cursor,
+        .typing-char.cursor-active {
             position: relative;
             /* Remove highlight background when showing cursor */
             background: transparent !important;
             color: #718096 !important;
         }
 
-        body.dark-mode .typing-char.cursor {
+        body.dark-mode .typing-char.cursor,
+        body.dark-mode .typing-char.cursor-active {
             color: #5a6578 !important;
+        }
+
+        /* Lighter cursor for the output row (original text) */
+        .original-char.cursor::before,
+        .original-char.cursor-active::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: var(--text-tertiary);
+            border-radius: 1px;
+        }
+
+        .original-char.cursor::before {
+            animation: blink 1s infinite;
+        }
+
+        .original-char.cursor-active::before {
+            animation: none;
+        }
+
+        .original-char.cursor,
+        .original-char.cursor-active {
+            position: relative;
+            background: transparent !important;
         }
 
         /* Focus mode - hide elements when user is typing */
