@@ -1,3 +1,5 @@
+import { calculateScores as calculateLayoutScores } from './layout-scores.js';
+
 let layoutsData = [];
 let allLanguages = [];
 let currentSort = { column: null, direction: 'asc' };
@@ -5,6 +7,59 @@ let currentThumbFilter = 'all';
 let currentLanguage = 'english';
 let pinnedLayouts = new Set();
 let starredLayouts = new Set();
+
+// Score weights (0-100 for each metric)
+let scoreWeights = {
+    sfb: 50,
+    sfs: 50,
+    lsb: 50,
+    scissors: 50,
+    rolls: 50,
+    redirect: 50,
+    pinky: 50
+};
+
+// Presets for score weights
+const weightPresets = {
+    'balanced': { sfb: 50, sfs: 50, lsb: 50, scissors: 50, rolls: 50, redirect: 50, pinky: 50 },
+    'low-pinky': { sfb: 50, sfs: 50, lsb: 50, scissors: 50, rolls: 50, redirect: 50, pinky: 100 },
+    'comfort': { sfb: 80, sfs: 40, lsb: 80, scissors: 100, rolls: 30, redirect: 40, pinky: 80 }
+};
+
+// Load score weights from localStorage
+function loadScoreWeights() {
+    const saved = localStorage.getItem('scoreWeights');
+    if (saved) {
+        scoreWeights = JSON.parse(saved);
+    } else {
+        // Default to 'balanced' preset if no saved weights
+        scoreWeights = { ...weightPresets['balanced'] };
+    }
+}
+
+// Save score weights to localStorage
+function saveScoreWeights() {
+    localStorage.setItem('scoreWeights', JSON.stringify(scoreWeights));
+}
+
+// Save selected preset name to localStorage (for UI state only)
+function saveSelectedPreset(presetName) {
+    if (presetName) {
+        localStorage.setItem('selectedPreset', presetName);
+    } else {
+        localStorage.removeItem('selectedPreset');
+    }
+}
+
+// Global scores cache - recalculated when weights change or language changes
+let cachedScores = {};
+
+// Recalculate and cache scores for all layouts using the layout-scores module
+function recalculateAllScores() {
+    if (layoutsData.length > 0) {
+        cachedScores = calculateLayoutScores(layoutsData, scoreWeights, currentLanguage);
+    }
+}
 
 // Load pinned layouts from localStorage
 function loadPinnedLayouts() {
@@ -30,6 +85,95 @@ function loadStarredLayouts() {
 // Save starred layouts to localStorage
 function saveStarredLayouts() {
     localStorage.setItem('starredLayouts', JSON.stringify([...starredLayouts]));
+}
+
+// Setup weight controls
+function setupWeightControls() {
+    const weightInputs = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'redirect', 'pinky'];
+    
+    weightInputs.forEach(metric => {
+        const slider = document.getElementById(`weight-${metric}`);
+        const valueInput = document.getElementById(`weight-${metric}-value`);
+        
+        if (slider && valueInput) {
+            // Set initial values from stored weights
+            slider.value = scoreWeights[metric];
+            valueInput.value = scoreWeights[metric];
+            
+            // Sync slider and number input
+            slider.addEventListener('input', () => {
+                valueInput.value = slider.value;
+                scoreWeights[metric] = parseInt(slider.value);
+                saveScoreWeights();
+                updateActivePreset();
+                recalculateAndRender();
+            });
+            
+            valueInput.addEventListener('input', () => {
+                let val = parseInt(valueInput.value) || 0;
+                val = Math.max(0, Math.min(100, val));
+                valueInput.value = val;
+                slider.value = val;
+                scoreWeights[metric] = val;
+                saveScoreWeights();
+                updateActivePreset();
+                recalculateAndRender();
+            });
+        }
+    });
+    
+    // Setup preset buttons
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const preset = btn.dataset.preset;
+            if (weightPresets[preset]) {
+                scoreWeights = { ...weightPresets[preset] };
+                saveScoreWeights();
+                updateWeightUI();
+                updateActivePreset();
+                recalculateAndRender();
+            }
+        });
+    });
+}
+
+// Update weight UI from scoreWeights
+function updateWeightUI() {
+    const weightInputs = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'redirect', 'pinky'];
+    weightInputs.forEach(metric => {
+        const slider = document.getElementById(`weight-${metric}`);
+        const valueInput = document.getElementById(`weight-${metric}-value`);
+        if (slider && valueInput) {
+            slider.value = scoreWeights[metric];
+            valueInput.value = scoreWeights[metric];
+        }
+    });
+}
+
+// Check which preset is active (if any) and update UI
+function updateActivePreset() {
+    let activePreset = null;
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        const preset = btn.dataset.preset;
+        const presetWeights = weightPresets[preset];
+        const isActive = Object.keys(presetWeights).every(key => 
+            scoreWeights[key] === presetWeights[key]
+        );
+        btn.classList.toggle('active', isActive);
+        if (isActive) {
+            activePreset = preset;
+        }
+    });
+    // Save the active preset (or null if custom weights)
+    saveSelectedPreset(activePreset);
+}
+
+// Recalculate scores and re-render
+function recalculateAndRender() {
+    recalculateAllScores();
+    const filtered = getFilteredData();
+    const sorted = sortData(filtered);
+    renderTable(sorted);
 }
 
 // Toggle pin status for a layout
@@ -116,7 +260,8 @@ function setupLanguageFilter() {
         // Update try-layout link with current language
         updateTryLayoutLink();
         
-        // Re-render with new language and apply current sort
+        // Recalculate scores for new language and re-render
+        recalculateAllScores();
         const filtered = getFilteredData();
         const sorted = sortData(filtered);
         renderTable(sorted);
@@ -195,6 +340,7 @@ async function loadData() {
         // Load pinned and starred layouts from localStorage
         loadPinnedLayouts();
         loadStarredLayouts();
+        loadScoreWeights();
         
         const response = await fetch('data.json');
         const data = await response.json();
@@ -204,6 +350,11 @@ async function loadData() {
         // Populate language dropdown
         populateLanguageDropdown(allLanguages);
         setupLanguageFilter();
+        
+        // Setup weight controls
+        setupWeightControls();
+        updateWeightUI();
+        updateActivePreset();
         
         // Update last updated time in footer with relative time
         const date = new Date(data.scraped_at);
@@ -219,8 +370,11 @@ async function loadData() {
         // Update search placeholder
         updateSearchPlaceholder();
         
-        // Set default sort to SFBs ascending
-        currentSort = { column: 'same_finger_bigrams', direction: 'asc' };
+        // Set default sort to Score descending (higher is better)
+        currentSort = { column: 'score', direction: 'desc' };
+        
+        // Calculate scores for all layouts
+        recalculateAllScores();
         
         // Initial render with default sort
         const sorted = sortData(layoutsData);
@@ -231,7 +385,7 @@ async function loadData() {
     } catch (error) {
         console.error('Error loading data:', error);
         document.getElementById('tableBody').innerHTML = 
-            '<tr><td colspan="9" class="no-results">Error loading data. Please try again later.</td></tr>';
+            '<tr><td colspan="10" class="no-results">Error loading data. Please try again later.</td></tr>';
     }
 }
 
@@ -240,9 +394,12 @@ function renderTable(data) {
     const tbody = document.getElementById('tableBody');
     
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="no-results">No layouts found matching your search.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="no-results">No layouts found matching your search.</td></tr>';
         return;
     }
+
+    // Use cached scores (calculated from full dataset)
+    const scores = cachedScores;
 
     tbody.innerHTML = data.map(layout => {
         const metrics = getMetrics(layout);
@@ -258,6 +415,10 @@ function renderTable(data) {
         const starIcon = isStarred ? '★' : '☆';
         
         const rowClass = isStarred ? 'starred' : '';
+        
+        // Get the calculated score
+        const score = scores[layout.name];
+        const scoreDisplay = score !== undefined ? `${score.toFixed(1)}%` : 'N/A';
         
         // Calculate rolls sum (bigram roll in + bigram roll out + roll in + roll out)
         const calculateRolls = (metrics) => {
@@ -285,6 +446,7 @@ function renderTable(data) {
                     <a href="${updateCyanophageUrl(layout.url)}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="Analyze in playground"><i class="fa-solid fa-square-poll-vertical"></i></a>
                     ${thumbIcon}
                 </td>
+                <td class="stat-value score-value">${scoreDisplay}</td>
                 <td class="stat-value">${metrics.same_finger_bigrams || 'N/A'}</td>
                 <td class="stat-value">${metrics.skip_bigrams_1u || 'N/A'}</td>
                 <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>
@@ -337,6 +499,9 @@ function sortData(data) {
     const pinned = data.filter(layout => pinnedLayouts.has(layout.name));
     const unpinned = data.filter(layout => !pinnedLayouts.has(layout.name));
     
+    // Use cached scores (calculated from full dataset)
+    const scores = cachedScores;
+    
     // Sort function for a group
     const sortGroup = (group) => {
         if (!currentSort.column) {
@@ -354,6 +519,10 @@ function sortData(data) {
                 // Sort by starred status (starred first when descending)
                 aVal = starredLayouts.has(a.name) ? 1 : 0;
                 bVal = starredLayouts.has(b.name) ? 1 : 0;
+            } else if (currentSort.column === 'score') {
+                // Sort by calculated score
+                aVal = scores[a.name] || 0;
+                bVal = scores[b.name] || 0;
             } else if (currentSort.column === 'rolls') {
                 // Calculate rolls sum for sorting
                 const aMetrics = getMetrics(a);
@@ -388,7 +557,7 @@ function sortData(data) {
                 // Remove % sign and convert to number
                 aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
                 bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
-            } else if (currentSort.column !== 'rolls' && currentSort.column !== 'starred') {
+            } else if (currentSort.column !== 'rolls' && currentSort.column !== 'starred' && currentSort.column !== 'score') {
                 // String comparison for name column
                 aVal = (aVal || '').toString().toLowerCase();
                 bVal = (bVal || '').toString().toLowerCase();
@@ -463,3 +632,13 @@ document.querySelectorAll('th[data-column]').forEach(th => {
 
 // Load data on page load
 loadData();
+
+// Add click handler for the "customize weights" link
+document.querySelector('.score-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const wrapper = document.querySelector('.score-controls-wrapper');
+    if (wrapper) {
+        wrapper.open = true;
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+});

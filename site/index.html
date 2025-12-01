@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="keyboard-accordion.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" async></script>
 </head>
 <body>
     <div class="container">
@@ -47,7 +48,7 @@
             </div>
             <div class="usage-text">
                 <p>This table ranks layouts using <a href="https://cyanophage.github.io/" target="_blank">cyanophage.github.io</a>'s layout statistics data, based on various ergonomic metrics.</p>
-                <p>Use the <i class="fa-solid fa-thumbtack"></i> icon to pin layouts to the top, and the <i class="fa-solid fa-star"></i> icon to highlight that row. Click on a row to view the layout.</p>
+                <p>Use the <i class="fa-solid fa-thumbtack"></i> icon to pin layouts to the top, and the <i class="fa-solid fa-star"></i> icon to highlight that row. Click on a row to view the layout. The <strong>Score</strong> column combines all metrics — <a href="#" class="score-link">customize weights</a>.</p>
             </div>
         </div>
 
@@ -80,12 +81,102 @@
             </div>
         </div>
 
+        <details class="score-controls-wrapper">
+            <summary class="score-controls-toggle">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Customize Score Weights</span>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </summary>
+            <div class="score-controls">
+                <div class="preset-buttons">
+                    <span class="preset-label">Presets:</span>
+                    <button class="preset-btn active" data-preset="balanced">Balanced</button>
+                    <button class="preset-btn" data-preset="low-pinky">Low Pinky</button>
+                    <button class="preset-btn" data-preset="comfort">Comfort</button>
+                </div>
+                <div class="weight-sliders">
+                    <div class="weight-control">
+                        <label for="weight-sfb">SFB</label>
+                        <input type="range" id="weight-sfb" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-sfb-value" min="0" max="100" value="50">
+                        <span class="weight-description">Same-finger bigrams, e.g. qwerty 'SW' or 'UN'</span>
+                    </div>
+                    <div class="weight-control">
+                        <label for="weight-sfs">SFS</label>
+                        <input type="range" id="weight-sfs" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-sfs-value" min="0" max="100" value="50">
+                        <span class="weight-description">Same-finger skipgrams, e.g. qwerty 'WAS'</span>
+                    </div>
+                    <div class="weight-control">
+                        <label for="weight-lsb">LSB</label>
+                        <input type="range" id="weight-lsb" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-lsb-value" min="0" max="100" value="50">
+                        <span class="weight-description">Lateral stretch bigrams, e.g. qwerty 'ET'</span>
+                    </div>
+                    <div class="weight-control">
+                        <label for="weight-scissors">Scissors</label>
+                        <input type="range" id="weight-scissors" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-scissors-value" min="0" max="100" value="50">
+                        <span class="weight-description">Scissor movements, e.g. qwerty 'CR'</span>
+                    </div>
+                    <div class="weight-control">
+                        <label for="weight-rolls">Rolls</label>
+                        <input type="range" id="weight-rolls" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-rolls-value" min="0" max="100" value="50">
+                        <span class="weight-description">Rolling motions, e.g. qwerty 'AWE'</span>
+                    </div>
+                    <div class="weight-control">
+                        <label for="weight-redirect">Redirect</label>
+                        <input type="range" id="weight-redirect" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-redirect-value" min="0" max="100" value="50">
+                        <span class="weight-description">Direction changes mid-trigram, e.g. qwerty 'SAD'</span>
+                    </div>
+                    <div class="weight-control">
+                        <label for="weight-pinky">Pinky Off</label>
+                        <input type="range" id="weight-pinky" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-pinky-value" min="0" max="100" value="50">
+                        <span class="weight-description">Off-home pinky usage, e.g. qwerty 'P'</span>
+                    </div>
+                </div>
+
+                <details class="score-explanation-nested" id="scoreExplanation">
+                    <summary>
+                        <i class="fa-solid fa-calculator"></i>
+                        How is the score calculated?
+                    </summary>
+                    <div class="score-explanation-content">
+                        <p>The <strong>Score</strong> measures improvement over QWERTY using fixed reference points. A score of 0% means the same as QWERTY, 100% means the theoretical best. Negative scores are possible for layouts worse than QWERTY.</p>
+                        
+                        <h4>Step 1: Normalize using QWERTY-fixed approach</h4>
+                        <p>Each metric is normalized using QWERTY as the worst reference and a fixed best value:</p>
+                        <p>For <em>lower is better</em> metrics (SFB, SFS, LSB, Scissors, Redirect, Pinky), 0 is the best value:</p>
+                        <p>$$\text{normalized} = \frac{\text{qwerty} - \text{value}}{\text{qwerty}}$$</p>
+                        <p>For <em>higher is better</em> metrics (Rolls), 100% is the best value:</p>
+                        <p>$$\text{normalized} = \frac{\text{value} - \text{qwerty}}{100 - \text{qwerty}}$$</p>
+                        
+                        <h4>Step 2: Apply weights</h4>
+                        <p>Each normalized value (already in "higher is better" form) is multiplied by its weight:</p>
+                        <p>$$\text{contribution} = w \times \text{normalized}$$</p>
+                        
+                        <h4>Step 3: Calculate final score</h4>
+                        <p>The weighted sum is converted to a percentage of maximum possible improvement:</p>
+                        <p>$$\text{score} = 100 \times \frac{\sum w_i \times \text{normalized}_i}{\sum w_i}$$</p>
+                        
+                        <p><em>Note: This QWERTY-fixed approach ensures stable rankings — adding or removing layouts won't change the relative order of existing layouts. QWERTY's metrics are language-specific, so scores may vary by language.</em></p>
+                    </div>
+                </details>
+            </div>
+        </details>
+
         <div class="table-wrapper">
             <table id="layoutTable">
                 <thead>
                     <tr>
                         <th class="pin-star-column" data-column="starred"></th>
                         <th data-column="name">Layout Name</th>
+                        <th data-column="score">
+                            <span class="tooltip" data-tooltip="Improvement over QWERTY. 0% = same as QWERTY, 100% = best in dataset. Can be negative.">Score</span>
+                        </th>
                         <th data-column="same_finger_bigrams">
                             <span class="tooltip" data-tooltip="Same-finger bigrams: like qwerty's 'SW' or 'UN'. Lower is better">SFBs</span>
                         </th>
@@ -111,7 +202,7 @@
                 </thead>
                 <tbody id="tableBody">
                     <tr>
-                        <td colspan="9" class="loading">Loading layouts...</td>
+                        <td colspan="10" class="loading">Loading layouts...</td>
                     </tr>
                 </tbody>
             </table>

@@ -16,5 +16,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "marimo>=0.18.1",
     "pytest>=9.0.1",
+    "seaborn>=0.13.2",
 ]
