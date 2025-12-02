@@ -88,12 +88,10 @@ def _(layouts, parse_metric_value):
             pinky = parse_metric_value(metrics.get("pinky_off"))
             effort = parse_metric_value(metrics.get("effort"))
 
-            # Combine roll metrics
+            # Inward rolls only (more comfortable than outward rolls)
             roll_in = parse_metric_value(metrics.get("bigram_roll_in")) or 0
-            roll_out = parse_metric_value(metrics.get("bigram_roll_out")) or 0
             roll_in2 = parse_metric_value(metrics.get("roll_in")) or 0
-            roll_out2 = parse_metric_value(metrics.get("roll_out")) or 0
-            rolls = roll_in + roll_out + roll_in2 + roll_out2
+            rolls_in = roll_in + roll_in2
 
             results.append({
                 "name": layout["name"],
@@ -103,7 +101,7 @@ def _(layouts, parse_metric_value):
                 "scissors": scissors,
                 "redirect": redirect,
                 "pinky": pinky,
-                "rolls": rolls,
+                "rolls_in": rolls_in,
                 "effort": effort,
             })
         return results
@@ -120,7 +118,7 @@ def _(mo):
 
     Each plot shows all layouts sorted by that metric's value.
     - **Lower is better** for: SFB, SFS, LSB, Scissors, Redirect, Pinky, Effort
-    - **Higher is better** for: Rolls
+    - **Higher is better** for: Rolls In (inward rolls are more comfortable than outward rolls)
 
     The red dot marks QWERTY's position.
     """)
@@ -273,13 +271,16 @@ def _(plot_metric_distribution):
 
 @app.cell
 def _(mo):
-    mo.md(r"""### Rolls (Combined) - Higher is Better""")
+    mo.md(r"""### Rolls In - Higher is Better
+    
+    Inward rolls are generally perceived as more comfortable than outward rolls.
+    """)
     return
 
 
 @app.cell
 def _(plot_metric_distribution):
-    plot_metric_distribution("rolls", "Total Rolls (%)", lower_is_better=False)
+    plot_metric_distribution("rolls_in", "Rolls In (%)", lower_is_better=False)
     return
 
 
@@ -316,7 +317,7 @@ def _(all_metrics, np, plt):
             ("scissors", "Scissors", True),
             ("redirect", "Redirect", True),
             ("pinky", "Pinky", True),
-            ("rolls", "Rolls", False),
+            ("rolls_in", "Rolls In", False),
             ("effort", "Effort", True),
         ]
 

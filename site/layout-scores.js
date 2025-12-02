@@ -14,7 +14,7 @@
  * - SFS (skip_bigrams_1u): lower is better
  * - LSB (lat_stretch_bigrams): lower is better
  * - Scissors: lower is better
- * - Rolls (sum of bigram_roll_in, bigram_roll_out, roll_in, roll_out): higher is better
+ * - Rolls In (bigram_roll_in + roll_in): higher is better (inward rolls are more comfortable)
  * - Redirect: lower is better
  * - Pinky Off (pinky_off): lower is better
  */
@@ -46,11 +46,9 @@ export function extractMetricValues(metrics) {
     const redirect = parseMetricValue(metrics.redirect);
     const pinky = parseMetricValue(metrics.pinky_off);
     
-    // Calculate rolls sum (bigram roll in + bigram roll out + roll in + roll out)
+    // Calculate rolls in (inward rolls only - more comfortable than outward rolls)
     const rolls = parseMetricValue(metrics.bigram_roll_in) +
-                  parseMetricValue(metrics.bigram_roll_out) +
-                  parseMetricValue(metrics.roll_in) +
-                  parseMetricValue(metrics.roll_out);
+                  parseMetricValue(metrics.roll_in);
 
     return { sfb, sfs, lsb, scissors, rolls, redirect, pinky };
 }

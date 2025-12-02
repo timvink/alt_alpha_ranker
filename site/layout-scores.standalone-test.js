@@ -121,13 +121,13 @@ assertApproxEqual(graphiteValues.scissors, 0.41, 0.01, 'graphite scissors extrac
 assertApproxEqual(graphiteValues.redirect, 1.80, 0.01, 'graphite redirect extracted correctly');
 assertApproxEqual(graphiteValues.pinky, 2.34, 0.01, 'graphite pinky extracted correctly');
 
-// Rolls = 21.68 + 22.65 + 0.50 + 1.18 = 46.01
-assertApproxEqual(graphiteValues.rolls, 46.01, 0.01, 'graphite rolls sum calculated correctly');
+// Rolls In = 21.68 + 0.50 = 22.18 (inward rolls only)
+assertApproxEqual(graphiteValues.rolls, 22.18, 0.01, 'graphite rolls in calculated correctly');
 
 const qwertyValues = extractMetricValues(qwertyMetrics);
 assertApproxEqual(qwertyValues.sfb, 4.38, 0.01, 'qwerty SFB extracted correctly');
-// Rolls = 20.38 + 17.58 + 1.32 + 1.48 = 40.76
-assertApproxEqual(qwertyValues.rolls, 40.76, 0.01, 'qwerty rolls sum calculated correctly');
+// Rolls In = 20.38 + 1.32 = 21.70 (inward rolls only)
+assertApproxEqual(qwertyValues.rolls, 21.70, 0.01, 'qwerty rolls in calculated correctly');
 
 console.log('\n=== Testing normalizeToQwerty (QWERTY-fixed approach) ===');
 // For lower-is-better: normalized = (qwerty - value) / qwerty
@@ -140,13 +140,13 @@ assertApproxEqual(normalizeToQwerty(4.38, 4.38, true), 0.0, 0.01, 'qwerty value 
 assertApproxEqual(normalizeToQwerty(0, 4.38, true), 1.0, 0.01, 'zero value normalizes to 1.0 (best)');
 
 // For higher-is-better: normalized = (value - qwerty) / (100 - qwerty)
-// Rolls: qwerty=40.76
-// octa8 (48.80): (48.80 - 40.76) / (100 - 40.76) = 8.04 / 59.24 = 0.136
-// qwerty: (40.76 - 40.76) / (100 - 40.76) = 0.0 (reference)
-assertApproxEqual(normalizeToQwerty(48.80, 40.76, false), 0.136, 0.01, 'octa8 rolls normalizes correctly');
-assertApproxEqual(normalizeToQwerty(40.76, 40.76, false), 0.0, 0.01, 'qwerty rolls normalizes to 0.0');
-// At value=100, normalized = (100 - 40.76) / (100 - 40.76) = 1.0 (perfect)
-assertApproxEqual(normalizeToQwerty(100, 40.76, false), 1.0, 0.01, '100% rolls normalizes to 1.0 (best)');
+// Rolls In: qwerty=21.70
+// octa8 (24.67): (24.67 - 21.70) / (100 - 21.70) = 2.97 / 78.30 = 0.038
+// qwerty: (21.70 - 21.70) / (100 - 21.70) = 0.0 (reference)
+assertApproxEqual(normalizeToQwerty(24.67, 21.70, false), 0.038, 0.01, 'octa8 rolls in normalizes correctly');
+assertApproxEqual(normalizeToQwerty(21.70, 21.70, false), 0.0, 0.01, 'qwerty rolls in normalizes to 0.0');
+// At value=100, normalized = (100 - 21.70) / (100 - 21.70) = 1.0 (perfect)
+assertApproxEqual(normalizeToQwerty(100, 21.70, false), 1.0, 0.01, '100% rolls in normalizes to 1.0 (best)');
 
 // Test negative values (worse than qwerty)
 // If a layout has SFB = 5.0 (worse than qwerty's 4.38):

@@ -420,13 +420,11 @@ function renderTable(data) {
         const score = scores[layout.name];
         const scoreDisplay = score !== undefined ? `${score.toFixed(1)}%` : 'N/A';
         
-        // Calculate rolls sum (bigram roll in + bigram roll out + roll in + roll out)
+        // Calculate rolls in (inward rolls only - more comfortable than outward rolls)
         const calculateRolls = (metrics) => {
             const bigramRollIn = parseFloat((metrics.bigram_roll_in || '0').replace('%', '')) || 0;
-            const bigramRollOut = parseFloat((metrics.bigram_roll_out || '0').replace('%', '')) || 0;
             const rollIn = parseFloat((metrics.roll_in || '0').replace('%', '')) || 0;
-            const rollOut = parseFloat((metrics.roll_out || '0').replace('%', '')) || 0;
-            const sum = bigramRollIn + bigramRollOut + rollIn + rollOut;
+            const sum = bigramRollIn + rollIn;
             return sum > 0 ? `${sum.toFixed(2)}%` : 'N/A';
         };
         
@@ -524,19 +522,15 @@ function sortData(data) {
                 aVal = scores[a.name] || 0;
                 bVal = scores[b.name] || 0;
             } else if (currentSort.column === 'rolls') {
-                // Calculate rolls sum for sorting
+                // Calculate rolls in for sorting (inward rolls only)
                 const aMetrics = getMetrics(a);
                 const bMetrics = getMetrics(b);
                 
                 const aRolls = (parseFloat((aMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
-                               (parseFloat((aMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
-                               (parseFloat((aMetrics.roll_in || '0').replace('%', '')) || 0) +
-                               (parseFloat((aMetrics.roll_out || '0').replace('%', '')) || 0);
+                               (parseFloat((aMetrics.roll_in || '0').replace('%', '')) || 0);
                 
                 const bRolls = (parseFloat((bMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
-                               (parseFloat((bMetrics.bigram_roll_out || '0').replace('%', '')) || 0) +
-                               (parseFloat((bMetrics.roll_in || '0').replace('%', '')) || 0) +
-                               (parseFloat((bMetrics.roll_out || '0').replace('%', '')) || 0);
+                               (parseFloat((bMetrics.roll_in || '0').replace('%', '')) || 0);
                 
                 aVal = aRolls;
                 bVal = bRolls;
