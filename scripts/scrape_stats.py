@@ -87,7 +87,7 @@ def has_invalid_metrics(metrics: dict) -> bool:
         'total_word_effort', 'effort', 'same_finger_bigrams', 'skip_bigrams_1u',
         'skip_bigrams_2u', 'lat_stretch_bigrams', 'scissors', 'pinky_off',
         'bigram_roll_in', 'bigram_roll_out', 'roll_in', 'roll_out', 'redirect',
-        'weak_redirect'
+        'weak_redirect', 'alt', 'alt_sfs'
     ]
     
     for field in metric_fields:
@@ -203,6 +203,8 @@ def scrape_layout_stats(url: str, silent: bool = False) -> dict:
                     stats['roll_out'] = f"{trigram_percentages.get('roll out', 0):.2f}%"
                     stats['redirect'] = f"{trigram_percentages.get('redirect', 0):.2f}%"
                     stats['weak_redirect'] = f"{trigram_percentages.get('weak redirect', 0):.2f}%"
+                    stats['alt'] = f"{trigram_percentages.get('alt', 0):.2f}%"
+                    stats['alt_sfs'] = f"{trigram_percentages.get('alt sfs', 0):.2f}%"
             except Exception:
                 pass
             
@@ -239,7 +241,7 @@ def scrape_layout_stats(url: str, silent: bool = False) -> dict:
                 'total_word_effort', 'effort', 'same_finger_bigrams', 'skip_bigrams_1u',
                 'skip_bigrams_2u', 'lat_stretch_bigrams', 'scissors', 'pinky_off',
                 'bigram_roll_in', 'bigram_roll_out', 'roll_in', 'roll_out', 'redirect',
-                'weak_redirect'
+                'weak_redirect', 'alt', 'alt_sfs'
             ]
             for stat in default_stats:
                 if stat not in stats:
@@ -267,7 +269,9 @@ def scrape_layout_stats(url: str, silent: bool = False) -> dict:
                 'roll_in': None,
                 'roll_out': None,
                 'redirect': None,
-                'weak_redirect': None
+                'weak_redirect': None,
+                'alt': None,
+                'alt_sfs': None
             }
 
 
