@@ -272,6 +272,8 @@ A post/comment announces a new layout if it:
 - Introduces a layout the author created or is releasing
 - Presents a layout that appears to be new/original
 - Shares a new variant or modification of an existing layout
+- It is *not* mentioned as a 'work in progress' or 'idea'
+- It mentions a name for the layout
 
 A post/comment does NOT announce a new layout if it:
 - Just asks questions about existing layouts
@@ -280,7 +282,7 @@ A post/comment does NOT announce a new layout if it:
 - Is asking for help or recommendations
 - Is sharing someone else's existing layout without modifications
 
-Be conservative - only return true if you're reasonably confident this is announcing a new layout.""",
+Be conservative - only return true if you're confident this is announcing a new layout.""",
     )
 
 
