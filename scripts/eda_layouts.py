@@ -93,6 +93,11 @@ def _(layouts, parse_metric_value):
             roll_in2 = parse_metric_value(metrics.get("roll_in")) or 0
             rolls_in = roll_in + roll_in2
 
+            # Hand alternation (alt + alt_sfs)
+            alt = parse_metric_value(metrics.get("alt")) or 0
+            alt_sfs = parse_metric_value(metrics.get("alt_sfs")) or 0
+            hand_alternation = alt + alt_sfs if (alt or alt_sfs) else None
+
             results.append({
                 "name": layout["name"],
                 "sfb": sfb,
@@ -103,6 +108,7 @@ def _(layouts, parse_metric_value):
                 "pinky": pinky,
                 "rolls_in": rolls_in,
                 "effort": effort,
+                "hand_alternation": hand_alternation,
             })
         return results
 
@@ -286,6 +292,22 @@ def _(plot_metric_distribution):
 
 @app.cell
 def _(mo):
+    mo.md(r"""### Hand Alternation - Higher is Better
+    
+    Hand alternation (alt + alt_sfs) measures how often you switch between hands.
+    Higher alternation can reduce strain on individual hands.
+    """)
+    return
+
+
+@app.cell
+def _(plot_metric_distribution):
+    plot_metric_distribution("hand_alternation", "Hand Alternation (%)", lower_is_better=False)
+    return
+
+
+@app.cell
+def _(mo):
     mo.md(r"""### Effort - Lower is Better""")
     return
 
@@ -318,10 +340,11 @@ def _(all_metrics, np, plt):
             ("redirect", "Redirect", True),
             ("pinky", "Pinky", True),
             ("rolls_in", "Rolls In", False),
+            ("hand_alternation", "Hand Alt", False),
             ("effort", "Effort", True),
         ]
 
-        fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+        fig, axes = plt.subplots(3, 3, figsize=(15, 12))
         axes = axes.flatten()
 
         for idx, (metric_key, title, lower_is_better) in enumerate(metrics_config):
