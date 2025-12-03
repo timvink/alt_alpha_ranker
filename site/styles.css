@@ -1034,17 +1034,18 @@ body.dark-mode .loading {
     font-size: 0.85rem;
     color: #4a5568;
     font-weight: 600;
-    min-width: 65px;
+    min-width: 80px;
 }
 
 .weight-description {
     font-size: 0.75rem;
     color: #718096;
     flex: 1;
+    min-width: 200px;
 }
 
 .weight-control input[type="range"] {
-    width: 80px;
+    width: 120px;
     height: 6px;
     -webkit-appearance: none;
     appearance: none;
@@ -1218,6 +1219,22 @@ body.dark-mode .weight-description {
     margin-bottom: 0.4rem;
 }
 
+.score-explanation-nested .score-explanation-content p.formula-explanation {
+    font-style: italic;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+}
+
+.score-explanation-nested .score-explanation-content ul {
+    margin: 0.3rem 0 0.5rem 1.25rem;
+    padding: 0;
+}
+
+.score-explanation-nested .score-explanation-content li {
+    margin-bottom: 0.2rem;
+}
+
 /* Dark mode nested score explanation */
 body.dark-mode .score-explanation-nested {
     background: #1e293b;
@@ -1245,17 +1262,21 @@ body.dark-mode .score-explanation-nested .score-explanation-content h4 {
     color: #cbd5e1;
 }
 
+body.dark-mode .score-explanation-nested .score-explanation-content p.formula-explanation {
+    color: #64748b;
+}
+
 /* Score Explanation in Footer - REMOVED, now using nested version */
 
 /* Responsive weight controls */
 @media (max-width: 600px) {
     .weight-control label {
-        min-width: 55px;
+        min-width: 70px;
         font-size: 0.8rem;
     }
     
     .weight-control input[type="range"] {
-        width: 60px;
+        width: 80px;
     }
     
     .weight-description {

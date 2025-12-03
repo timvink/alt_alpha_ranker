@@ -15,22 +15,25 @@ let scoreWeights = {
     lsb: 50,
     scissors: 50,
     rolls: 50,
+    alternation: 50,
     redirect: 50,
     pinky: 50
 };
 
 // Presets for score weights
 const weightPresets = {
-    'balanced': { sfb: 50, sfs: 50, lsb: 50, scissors: 50, rolls: 50, redirect: 50, pinky: 50 },
-    'low-pinky': { sfb: 50, sfs: 50, lsb: 50, scissors: 50, rolls: 50, redirect: 50, pinky: 100 },
-    'comfort': { sfb: 80, sfs: 40, lsb: 80, scissors: 100, rolls: 30, redirect: 40, pinky: 80 }
+    'balanced': { sfb: 50, sfs: 50, lsb: 50, scissors: 50, rolls: 50, alternation: 50, redirect: 50, pinky: 50 },
+    'low-pinky': { sfb: 50, sfs: 50, lsb: 50, scissors: 50, rolls: 50, alternation: 50, redirect: 50, pinky: 100 },
+    'comfort': { sfb: 80, sfs: 40, lsb: 80, scissors: 100, rolls: 30, alternation: 30, redirect: 40, pinky: 80 }
 };
 
 // Load score weights from localStorage
 function loadScoreWeights() {
     const saved = localStorage.getItem('scoreWeights');
     if (saved) {
-        scoreWeights = JSON.parse(saved);
+        const savedWeights = JSON.parse(saved);
+        // Merge with balanced preset to ensure all keys exist (handles new metrics like alternation)
+        scoreWeights = { ...weightPresets['balanced'], ...savedWeights };
     } else {
         // Default to 'balanced' preset if no saved weights
         scoreWeights = { ...weightPresets['balanced'] };
@@ -89,7 +92,7 @@ function saveStarredLayouts() {
 
 // Setup weight controls
 function setupWeightControls() {
-    const weightInputs = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'redirect', 'pinky'];
+    const weightInputs = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'alternation', 'redirect', 'pinky'];
     
     weightInputs.forEach(metric => {
         const slider = document.getElementById(`weight-${metric}`);
@@ -139,7 +142,7 @@ function setupWeightControls() {
 
 // Update weight UI from scoreWeights
 function updateWeightUI() {
-    const weightInputs = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'redirect', 'pinky'];
+    const weightInputs = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'alternation', 'redirect', 'pinky'];
     weightInputs.forEach(metric => {
         const slider = document.getElementById(`weight-${metric}`);
         const valueInput = document.getElementById(`weight-${metric}-value`);
@@ -385,7 +388,7 @@ async function loadData() {
     } catch (error) {
         console.error('Error loading data:', error);
         document.getElementById('tableBody').innerHTML = 
-            '<tr><td colspan="10" class="no-results">Error loading data. Please try again later.</td></tr>';
+            '<tr><td colspan="11" class="no-results">Error loading data. Please try again later.</td></tr>';
     }
 }
 
@@ -394,7 +397,7 @@ function renderTable(data) {
     const tbody = document.getElementById('tableBody');
     
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="no-results">No layouts found matching your search.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" class="no-results">No layouts found matching your search.</td></tr>';
         return;
     }
 
@@ -428,6 +431,14 @@ function renderTable(data) {
             return sum > 0 ? `${sum.toFixed(2)}%` : 'N/A';
         };
         
+        // Calculate alternation (alt + alt_sfs - hand alternation LRL or RLR)
+        const calculateAlternation = (metrics) => {
+            const alt = parseFloat((metrics.alt || '0').replace('%', '')) || 0;
+            const altSfs = parseFloat((metrics.alt_sfs || '0').replace('%', '')) || 0;
+            const sum = alt + altSfs;
+            return sum > 0 ? `${sum.toFixed(2)}%` : 'N/A';
+        };
+        
         return `
             <tr class="${rowClass}">
                 <td class="pin-star-column">
@@ -450,6 +461,7 @@ function renderTable(data) {
                 <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>
                 <td class="stat-value">${metrics.scissors || 'N/A'}</td>
                 <td class="stat-value">${calculateRolls(metrics)}</td>
+                <td class="stat-value">${calculateAlternation(metrics)}</td>
                 <td class="stat-value">${metrics.redirect || 'N/A'}</td>
                 <td class="stat-value">${metrics.pinky_off || 'N/A'}</td>
             </tr>
@@ -534,6 +546,19 @@ function sortData(data) {
                 
                 aVal = aRolls;
                 bVal = bRolls;
+            } else if (currentSort.column === 'alternation') {
+                // Calculate alternation for sorting (alt + alt_sfs)
+                const aMetrics = getMetrics(a);
+                const bMetrics = getMetrics(b);
+                
+                const aAlt = (parseFloat((aMetrics.alt || '0').replace('%', '')) || 0) +
+                             (parseFloat((aMetrics.alt_sfs || '0').replace('%', '')) || 0);
+                
+                const bAlt = (parseFloat((bMetrics.alt || '0').replace('%', '')) || 0) +
+                             (parseFloat((bMetrics.alt_sfs || '0').replace('%', '')) || 0);
+                
+                aVal = aAlt;
+                bVal = bAlt;
             } else {
                 const aMetrics = getMetrics(a);
                 const bMetrics = getMetrics(b);

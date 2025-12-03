@@ -126,6 +126,12 @@
                         <span class="weight-description">Inward rolling motions (more comfortable than outward rolls)</span>
                     </div>
                     <div class="weight-control">
+                        <label for="weight-alternation">Alternation</label>
+                        <input type="range" id="weight-alternation" min="0" max="100" value="50">
+                        <input type="number" class="weight-value" id="weight-alternation-value" min="0" max="100" value="50">
+                        <span class="weight-description">Hand alternation (LRL or RLR pattern in trigrams)</span>
+                    </div>
+                    <div class="weight-control">
                         <label for="weight-redirect">Redirect</label>
                         <input type="range" id="weight-redirect" min="0" max="100" value="50">
                         <input type="number" class="weight-value" id="weight-redirect-value" min="0" max="100" value="50">
@@ -147,12 +153,20 @@
                     <div class="score-explanation-content">
                         <p>The <strong>Score</strong> measures improvement over QWERTY using fixed reference points. A score of 0% means the same as QWERTY, 100% means the theoretical best. Negative scores are possible for layouts worse than QWERTY.</p>
                         
-                        <h4>Step 1: Normalize using QWERTY-fixed approach</h4>
-                        <p>Each metric is normalized using QWERTY as the worst reference and a fixed best value:</p>
-                        <p>For <em>lower is better</em> metrics (SFB, SFS, LSB, Scissors, Redirect, Pinky), 0 is the best value:</p>
-                        <p>$$\text{normalized} = \frac{\text{qwerty} - \text{value}}{\text{qwerty}}$$</p>
-                        <p>For <em>higher is better</em> metrics (Rolls), 100% is the best value:</p>
-                        <p>$$\text{normalized} = \frac{\text{value} - \text{qwerty}}{100 - \text{qwerty}}$$</p>
+                        <h4>Step 1: Normalize each metric</h4>
+                        <p>Each metric is normalized to measure improvement over QWERTY, where:</p>
+                        <ul>
+                            <li>\( M_{\text{layout}} \) = the layout's metric value</li>
+                            <li>\( M_{\text{qwerty}} \) = QWERTY's metric value</li>
+                        </ul>
+                        
+                        <p>For <em>lower is better</em> metrics (SFB, SFS, LSB, Scissors, Redirect, Pinky):</p>
+                        <p>$$\text{normalized} = \frac{M_{\text{qwerty}} - M_{\text{layout}}}{M_{\text{qwerty}} - 0}$$</p>
+                        <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 0).</p>
+                        
+                        <p>For <em>higher is better</em> metrics (Rolls, Alternation):</p>
+                        <p>$$\text{normalized} = \frac{M_{\text{layout}} - M_{\text{qwerty}}}{100 - M_{\text{qwerty}}}$$</p>
+                        <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 100%).</p>
                         
                         <h4>Step 2: Apply weights</h4>
                         <p>Each normalized value (already in "higher is better" form) is multiplied by its weight:</p>
@@ -192,6 +206,9 @@
                         <th data-column="rolls">
                             <span class="tooltip" data-tooltip="Inward Rolls: comfortable rolling motions toward the center (bigram roll in + roll in). Higher is better">Rolls In</span>
                         </th>
+                        <th data-column="alternation">
+                            <span class="tooltip" data-tooltip="Alternation: the hands used to type a trigram are either LRL or RLR (alt + alt_sfs). Higher is better">Alternation</span>
+                        </th>
                         <th data-column="redirect">
                             <span class="tooltip" data-tooltip="Redirect: changing direction mid-trigram (like qwerty 'SAD'). Lower is better">Redirect</span>
                         </th>
@@ -202,7 +219,7 @@
                 </thead>
                 <tbody id="tableBody">
                     <tr>
-                        <td colspan="10" class="loading">Loading layouts...</td>
+                        <td colspan="11" class="loading">Loading layouts...</td>
                     </tr>
                 </tbody>
             </table>

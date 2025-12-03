@@ -25,7 +25,9 @@ const qwertyMetrics = {
     "redirect": "6.22%",
     "same_finger_bigrams": "4.38%",
     "lat_stretch_bigrams": "4.55%",
-    "scissors": "1.46%"
+    "scissors": "1.46%",
+    "alt": "15.00%",
+    "alt_sfs": "3.50%"
 };
 
 const graphiteMetrics = {
@@ -42,7 +44,9 @@ const graphiteMetrics = {
     "effort": "521.49",
     "same_finger_bigrams": "0.68%",
     "lat_stretch_bigrams": "0.87%",
-    "scissors": "0.41%"
+    "scissors": "0.41%",
+    "alt": "30.00%",
+    "alt_sfs": "4.00%"
 };
 
 const octa8Metrics = {
@@ -59,7 +63,9 @@ const octa8Metrics = {
     "effort": "557.99",
     "same_finger_bigrams": "0.88%",
     "lat_stretch_bigrams": "0.64%",
-    "scissors": "0.10%"
+    "scissors": "0.10%",
+    "alt": "28.00%",
+    "alt_sfs": "3.80%"
 };
 
 const testLayouts = [
@@ -75,6 +81,7 @@ const equalWeights = {
     lsb: 100,
     scissors: 100,
     rolls: 100,
+    alternation: 100,
     redirect: 100,
     pinky: 100
 };
@@ -189,7 +196,9 @@ const mtgapMetrics = {
     "redirect": "1.78%",
     "same_finger_bigrams": "0.92%",
     "lat_stretch_bigrams": "0.46%",
-    "scissors": "0.15%"
+    "scissors": "0.15%",
+    "alt": "25.00%",
+    "alt_sfs": "3.60%"
 };
 
 const aptV3Metrics = {
@@ -202,7 +211,9 @@ const aptV3Metrics = {
     "redirect": "3.60%",
     "same_finger_bigrams": "0.81%",
     "lat_stretch_bigrams": "0.33%",
-    "scissors": "0.11%"
+    "scissors": "0.11%",
+    "alt": "30.73%",
+    "alt_sfs": "4.76%"
 };
 
 const extendedLayouts = [

@@ -15,6 +15,7 @@
  * - LSB (lat_stretch_bigrams): lower is better
  * - Scissors: lower is better
  * - Rolls In (bigram_roll_in + roll_in): higher is better (inward rolls are more comfortable)
+ * - Alternation (alt + alt_sfs): higher is better (hand alternation LRL or RLR)
  * - Redirect: lower is better
  * - Pinky Off (pinky_off): lower is better
  */
@@ -36,7 +37,7 @@ export function parseMetricValue(value) {
  */
 export function extractMetricValues(metrics) {
     if (!metrics) {
-        return { sfb: 0, sfs: 0, lsb: 0, scissors: 0, rolls: 0, redirect: 0, pinky: 0 };
+        return { sfb: 0, sfs: 0, lsb: 0, scissors: 0, rolls: 0, alternation: 0, redirect: 0, pinky: 0 };
     }
 
     const sfb = parseMetricValue(metrics.same_finger_bigrams);
@@ -49,8 +50,12 @@ export function extractMetricValues(metrics) {
     // Calculate rolls in (inward rolls only - more comfortable than outward rolls)
     const rolls = parseMetricValue(metrics.bigram_roll_in) +
                   parseMetricValue(metrics.roll_in);
+    
+    // Calculate alternation (alt + alt_sfs - hand alternation LRL or RLR)
+    const alternation = parseMetricValue(metrics.alt) +
+                        parseMetricValue(metrics.alt_sfs);
 
-    return { sfb, sfs, lsb, scissors, rolls, redirect, pinky };
+    return { sfb, sfs, lsb, scissors, rolls, alternation, redirect, pinky };
 }
 
 /**
@@ -113,6 +118,7 @@ export function calculateRawScore(normalizedValues, weights) {
         weights.lsb * normalizedValues.lsb +
         weights.scissors * normalizedValues.scissors +
         weights.rolls * normalizedValues.rolls +
+        weights.alternation * normalizedValues.alternation +
         weights.redirect * normalizedValues.redirect +
         weights.pinky * normalizedValues.pinky
     );
@@ -160,7 +166,7 @@ export function calculateScores(layouts, weights, language = 'english') {
     });
 
     // Calculate normalized values and raw scores using fixed best values
-    // Fixed best: 0 for lower-is-better, 100 for higher-is-better (rolls)
+    // Fixed best: 0 for lower-is-better, 100 for higher-is-better (rolls, alternation)
     const rawScores = metricValuesList.map(({ name, values }) => {
         const normalizedValues = {
             sfb: normalizeToQwerty(values.sfb, qwertyValues.sfb, true),
@@ -168,6 +174,7 @@ export function calculateScores(layouts, weights, language = 'english') {
             lsb: normalizeToQwerty(values.lsb, qwertyValues.lsb, true),
             scissors: normalizeToQwerty(values.scissors, qwertyValues.scissors, true),
             rolls: normalizeToQwerty(values.rolls, qwertyValues.rolls, false),
+            alternation: normalizeToQwerty(values.alternation, qwertyValues.alternation, false),
             redirect: normalizeToQwerty(values.redirect, qwertyValues.redirect, true),
             pinky: normalizeToQwerty(values.pinky, qwertyValues.pinky, true)
         };
@@ -203,7 +210,7 @@ function calculateScoresFallback(layouts, weights, language) {
         };
     });
 
-    const keys = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'redirect', 'pinky'];
+    const keys = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'alternation', 'redirect', 'pinky'];
     const minMax = {};
     keys.forEach(key => {
         const values = metricValuesList.map(m => m.values[key]);
@@ -222,6 +229,7 @@ function calculateScoresFallback(layouts, weights, language) {
             weights.lsb * (1 - normalize(values.lsb, minMax.lsb.min, minMax.lsb.max)) +
             weights.scissors * (1 - normalize(values.scissors, minMax.scissors.min, minMax.scissors.max)) +
             weights.rolls * normalize(values.rolls, minMax.rolls.min, minMax.rolls.max) +
+            weights.alternation * normalize(values.alternation, minMax.alternation.min, minMax.alternation.max) +
             weights.redirect * (1 - normalize(values.redirect, minMax.redirect.min, minMax.redirect.max)) +
             weights.pinky * (1 - normalize(values.pinky, minMax.pinky.min, minMax.pinky.max));
         return { name, rawScore };
