@@ -225,6 +225,9 @@ async function selectWordSet(ws) {
     // Close dropdown
     closeWordSetDropdown();
     
+    // Re-render keyboard with updated stats URL (based on new language)
+    renderKeyboardWithLayoutInfo();
+    
     // Generate new text from random words
     generateRandomText();
     
@@ -789,19 +792,60 @@ async function loadLayouts() {
         return;
     }
     
+    // Store the target layout data for use in re-rendering
+    window.currentTargetLayoutData = targetLayoutData;
+    
     // Parse layouts from their cyanophage URLs
     // Use 'url' field from data.json
     knownLayout = cyanophageToKeyboard(knownLayoutData.url);
     targetLayout = cyanophageToKeyboard(targetLayoutData.url);
     
     // Render keyboard visualization with target layout and known layout mapping
-    const keyboardSvg = document.getElementById('layoutKeyboardSvg');
-    if (keyboardSvg) {
-        renderKeyboardWithMapping(targetLayout, knownLayout, keyboardSvg);
-    }
+    renderKeyboardWithLayoutInfo();
     
     // Translate the text and reset
     translateAndReset();
+}
+
+/**
+ * Update cyanophage URL to use the current word set language
+ */
+function updateCyanophageUrl(url) {
+    if (!url) return url;
+    const language = currentWordSet?.language || 'english';
+    try {
+        const urlObj = new URL(url);
+        urlObj.searchParams.set('lan', language);
+        return urlObj.toString();
+    } catch (e) {
+        // If URL parsing fails, try simple string replacement
+        if (url.includes('&lan=')) {
+            return url.replace(/&lan=[^&]+/, `&lan=${language}`);
+        } else if (url.includes('?')) {
+            return url + `&lan=${language}`;
+        }
+        return url;
+    }
+}
+
+/**
+ * Render the keyboard with layout info panel
+ */
+function renderKeyboardWithLayoutInfo() {
+    const keyboardSvg = document.getElementById('layoutKeyboardSvg');
+    if (!keyboardSvg || !targetLayout || !knownLayout) return;
+    
+    const targetLayoutData = window.currentTargetLayoutData;
+    if (!targetLayoutData) return;
+    
+    // Build layout info for the left panel
+    const layoutInfo = {
+        name: targetLayoutData.name,
+        statsUrl: updateCyanophageUrl(targetLayoutData.url),
+        website: targetLayoutData.website || null
+    };
+    
+    renderKeyboardWithMapping(targetLayout, knownLayout, keyboardSvg, { layoutInfo });
 }
 
 /**

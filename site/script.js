@@ -4,9 +4,11 @@ let layoutsData = [];
 let allLanguages = [];
 let currentSort = { column: null, direction: 'asc' };
 let currentThumbFilter = 'all';
-let currentLanguage = 'english';
 let pinnedLayouts = new Set();
 let starredLayouts = new Set();
+
+// Expose currentLanguage globally for accordion to access
+window.currentLanguage = 'english';
 
 // Score weights (0-100 for each metric)
 let scoreWeights = {
@@ -60,7 +62,7 @@ let cachedScores = {};
 // Recalculate and cache scores for all layouts using the layout-scores module
 function recalculateAllScores() {
     if (layoutsData.length > 0) {
-        cachedScores = calculateLayoutScores(layoutsData, scoreWeights, currentLanguage);
+        cachedScores = calculateLayoutScores(layoutsData, scoreWeights, window.currentLanguage);
     }
 }
 
@@ -246,7 +248,7 @@ function populateLanguageDropdown(languages) {
     // Set saved language or default to english
     const savedLanguage = localStorage.getItem('selectedLanguage') || 'english';
     if (languages.includes(savedLanguage)) {
-        currentLanguage = savedLanguage;
+        window.currentLanguage = savedLanguage;
         select.value = savedLanguage;
     }
     
@@ -257,11 +259,16 @@ function populateLanguageDropdown(languages) {
 // Language filter functionality
 function setupLanguageFilter() {
     document.getElementById('languageSelect').addEventListener('change', (e) => {
-        currentLanguage = e.target.value;
-        localStorage.setItem('selectedLanguage', currentLanguage);
+        window.currentLanguage = e.target.value;
+        localStorage.setItem('selectedLanguage', window.currentLanguage);
         
         // Update try-layout link with current language
         updateTryLayoutLink();
+        
+        // Refresh any open accordions to update the stats URL
+        if (window.keyboardAccordion) {
+            window.keyboardAccordion.refreshAllOpen();
+        }
         
         // Recalculate scores for new language and re-render
         recalculateAllScores();
@@ -275,7 +282,7 @@ function setupLanguageFilter() {
 function updateTryLayoutLink() {
     const link = document.getElementById('tryLayoutLink');
     if (link) {
-        const params = currentLanguage !== 'english' ? `?wordset=${currentLanguage}` : '';
+        const params = window.currentLanguage !== 'english' ? `?wordset=${window.currentLanguage}` : '';
         link.href = `try-layout.html${params}`;
     }
 }
@@ -285,16 +292,16 @@ function updateCyanophageUrl(url) {
     if (!url) return url;
     try {
         const urlObj = new URL(url);
-        urlObj.searchParams.set('lan', currentLanguage);
+        urlObj.searchParams.set('lan', window.currentLanguage);
         const result = urlObj.toString();
         return result;
     } catch (e) {
         console.error('Error updating cyanophage URL:', e);
         // If URL parsing fails, try simple string replacement
         if (url.includes('&lan=')) {
-            return url.replace(/&lan=[^&]+/, `&lan=${currentLanguage}`);
+            return url.replace(/&lan=[^&]+/, `&lan=${window.currentLanguage}`);
         } else if (url.includes('?')) {
-            return url + `&lan=${currentLanguage}`;
+            return url + `&lan=${window.currentLanguage}`;
         }
         return url;
     }
@@ -302,7 +309,7 @@ function updateCyanophageUrl(url) {
 
 // Get metrics for current language
 function getMetrics(layout) {
-    return layout.metrics?.[currentLanguage] || {};
+    return layout.metrics?.[window.currentLanguage] || {};
 }
 
 // Filter and render data
@@ -452,7 +459,6 @@ function renderTable(data) {
                         ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}${yearSuffix}</a>`
                         : `${layout.name}${yearSuffix}`
                     }
-                    <a href="${updateCyanophageUrl(layout.url)}" target="_blank" rel="noopener noreferrer" class="external-link-icon" title="Analyze in playground"><i class="fa-solid fa-square-poll-vertical"></i></a>
                     ${thumbIcon}
                 </td>
                 <td class="stat-value score-value">${scoreDisplay}</td>
@@ -497,7 +503,7 @@ function renderTable(data) {
             // Get the layout data for this row
             const layout = data[index];
             if (layout && window.keyboardAccordion) {
-                window.keyboardAccordion.toggle(layout.name, layout.url, row, layout.thumb);
+                window.keyboardAccordion.toggle(layout.name, layout.url, row, layout.thumb, layout.website);
             }
         });
     });

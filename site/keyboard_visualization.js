@@ -290,6 +290,16 @@ function getKeyPositions(viewType) {
     }
 }
 
+/**
+ * Get the Y position of the top-left key for a given view type
+ * @param {string} viewType - One of KEYBOARD_VIEW values
+ * @returns {number} Y position of the first key
+ */
+function getTopKeyY(viewType) {
+    const positions = getKeyPositions(viewType);
+    return positions[0].y; // First key is top-left pinky
+}
+
 // Key positions array (40 keys total) - default to columnar staggered
 // Matches the KeyIndex and KeyMetadata structure from keyboard.js
 const keyPositions = getColstagPositions();
@@ -382,15 +392,143 @@ function createKey(id, x, y, w, h, isHome, isThumb, options = {}) {
 // Width reserved for view switcher on the right side
 const VIEW_SWITCHER_WIDTH = 50;
 
+// Width reserved for layout info on the left side
+const LAYOUT_INFO_WIDTH = 100;
+
 /**
- * Creates a view switcher control to toggle between keyboard layouts
+ * Creates a layout info panel on the left side of the keyboard
+ * Shows layout name, stats link, source/website link, and view switcher buttons
+ * Aligns to the top-left key position for consistent visual alignment
+ * @param {SVGElement} svgElement - The SVG element to add the info to
+ * @param {Object} layoutInfo - Layout metadata { name, statsUrl, website }
+ * @param {string} currentView - Current keyboard view type
+ * @param {Function} onViewChange - Callback when view changes
+ * @param {number} topKeyY - Y position of the top-left key (for alignment)
+ * @returns {SVGGElement} The group element containing the layout info
+ */
+function createLayoutInfo(svgElement, layoutInfo, currentView, onViewChange, topKeyY) {
+    const infoGroup = document.createElementNS(ns, 'g');
+    infoGroup.setAttribute('class', 'keyboard-layout-info');
+    
+    const { name, statsUrl, website } = layoutInfo || {};
+    if (!name) return infoGroup;
+    
+    const startX = 8;
+    // Align to the top-left key position
+    const startY = topKeyY + 12; // Offset for text baseline
+    const lineHeight = 18;
+    let currentY = startY;
+    
+    // Layout name
+    const nameText = document.createElementNS(ns, 'text');
+    nameText.setAttribute('x', startX);
+    nameText.setAttribute('y', currentY);
+    nameText.setAttribute('class', 'layout-info-name');
+    nameText.textContent = name;
+    infoGroup.appendChild(nameText);
+    currentY += lineHeight;
+    
+    // Stats link (cyanophage)
+    if (statsUrl) {
+        const statsGroup = document.createElementNS(ns, 'a');
+        statsGroup.setAttribute('href', statsUrl);
+        statsGroup.setAttribute('target', '_blank');
+        statsGroup.setAttribute('class', 'layout-info-link');
+        
+        const statsText = document.createElementNS(ns, 'text');
+        statsText.setAttribute('x', startX);
+        statsText.setAttribute('y', currentY);
+        statsText.setAttribute('class', 'layout-info-stats');
+        statsText.textContent = '⊞ stats';
+        statsGroup.appendChild(statsText);
+        infoGroup.appendChild(statsGroup);
+        currentY += lineHeight;
+    }
+    
+    // Website/source link
+    if (website) {
+        const websiteGroup = document.createElementNS(ns, 'a');
+        websiteGroup.setAttribute('href', website);
+        websiteGroup.setAttribute('target', '_blank');
+        websiteGroup.setAttribute('class', 'layout-info-link');
+        
+        const websiteText = document.createElementNS(ns, 'text');
+        websiteText.setAttribute('x', startX);
+        websiteText.setAttribute('y', currentY);
+        websiteText.setAttribute('class', 'layout-info-website');
+        websiteText.textContent = '↗ source';
+        websiteGroup.appendChild(websiteText);
+        infoGroup.appendChild(websiteGroup);
+        currentY += lineHeight;
+    }
+    
+    // View switcher buttons (stacked vertically below links)
+    currentY += 10; // Extra spacing before buttons
+    const views = [
+        { id: KEYBOARD_VIEW.COLSTAG, label: 'Col', title: 'Columnar Staggered' },
+        { id: KEYBOARD_VIEW.ORTHO, label: 'Ortho', title: 'Ortholinear' },
+        { id: KEYBOARD_VIEW.ROWSTAG, label: 'Row', title: 'Row Staggered' }
+    ];
+    
+    const buttonWidth = 42;
+    const buttonHeight = 20;
+    const buttonGap = 4;
+    
+    views.forEach((view, i) => {
+        const buttonGroup = document.createElementNS(ns, 'g');
+        buttonGroup.setAttribute('class', `view-switch-btn ${currentView === view.id ? 'active' : ''}`);
+        buttonGroup.setAttribute('data-view', view.id);
+        buttonGroup.style.cursor = 'pointer';
+        
+        const rect = document.createElementNS(ns, 'rect');
+        rect.setAttribute('x', startX);
+        rect.setAttribute('y', currentY + i * (buttonHeight + buttonGap));
+        rect.setAttribute('width', buttonWidth);
+        rect.setAttribute('height', buttonHeight);
+        rect.setAttribute('rx', 3);
+        rect.setAttribute('fill', 'transparent');
+        rect.setAttribute('class', 'view-switch-rect');
+        
+        const text = document.createElementNS(ns, 'text');
+        text.setAttribute('x', startX + buttonWidth / 2);
+        text.setAttribute('y', currentY + i * (buttonHeight + buttonGap) + buttonHeight / 2 + 1);
+        text.setAttribute('class', 'view-switch-text');
+        text.textContent = view.label;
+        
+        // Add title for tooltip
+        const title = document.createElementNS(ns, 'title');
+        title.textContent = view.title;
+        buttonGroup.appendChild(title);
+        
+        buttonGroup.appendChild(rect);
+        buttonGroup.appendChild(text);
+        
+        // Add click handler
+        buttonGroup.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentView !== view.id) {
+                setKeyboardViewPreference(view.id);
+                if (onViewChange) {
+                    onViewChange(view.id);
+                }
+            }
+        });
+        
+        infoGroup.appendChild(buttonGroup);
+    });
+    
+    return infoGroup;
+}
+
+/**
+ * Creates a standalone view switcher control (when no layout info panel is present)
  * Positioned vertically on the right side of the keyboard
  * @param {SVGElement} svgElement - The SVG element to add the switcher to
  * @param {string} currentView - Current view type
  * @param {Function} onViewChange - Callback when view changes
- * @param {number} keyboardMaxY - Maximum Y position of keyboard keys (for vertical centering)
+ * @param {number} mainRowsMaxY - Maximum Y position of main keyboard rows (for vertical centering)
  */
-function createViewSwitcher(svgElement, currentView, onViewChange, keyboardMaxY) {
+function createViewSwitcher(svgElement, currentView, onViewChange, mainRowsMaxY) {
     const switcherGroup = document.createElementNS(ns, 'g');
     switcherGroup.setAttribute('class', 'keyboard-view-switcher');
     
@@ -409,9 +547,9 @@ function createViewSwitcher(svgElement, currentView, onViewChange, keyboardMaxY)
     const buttonGap = 3;
     const totalHeight = views.length * buttonHeight + (views.length - 1) * buttonGap;
     
-    // Position on right side, vertically centered with the keyboard
+    // Position on right side, vertically centered with the main keyboard rows
     const startX = svgWidth - buttonWidth - 8;
-    const startY = Math.max(10, (keyboardMaxY - totalHeight) / 2);
+    const startY = Math.max(10, (mainRowsMaxY - totalHeight) / 2);
     
     views.forEach((view, i) => {
         const buttonGroup = document.createElementNS(ns, 'g');
@@ -468,13 +606,15 @@ function createViewSwitcher(svgElement, currentView, onViewChange, keyboardMaxY)
  * @param {string} options.viewType - The keyboard view type (colstag, ortho, rowstag)
  * @param {boolean} options.showViewSwitcher - Whether to show the view switcher (default: true)
  * @param {Function} options.onViewChange - Callback when view type changes
+ * @param {Object} options.layoutInfo - Layout metadata { name, statsUrl, website }
  */
 function drawKeyboard(svgElement, showThumbs = true, options = {}) {
     const { 
         showSecondaryLegend = false, 
         viewType = getKeyboardViewPreference(),
         showViewSwitcher = true,
-        onViewChange = null
+        onViewChange = null,
+        layoutInfo = null
     } = options;
     
     svgElement.innerHTML = '';
@@ -483,8 +623,11 @@ function drawKeyboard(svgElement, showThumbs = true, options = {}) {
     const positions = getKeyPositions(viewType);
     
     // Calculate viewBox dimensions based on key positions
+    // Track main rows separately from thumb keys for proper vertical centering
     let maxX = 0;
     let maxY = 0;
+    let mainRowsMaxY = 0; // Max Y of the 3 main rows (excluding thumbs)
+    let topKeyY = Infinity; // Y position of top-left key (for alignment)
     positions.forEach((pos, i) => {
         const isThumb = i >= 36;
         if (isThumb && !showThumbs) return;
@@ -493,19 +636,44 @@ function drawKeyboard(svgElement, showThumbs = true, options = {}) {
         const keyHeight = pos.h || KEY_H;
         maxX = Math.max(maxX, pos.x + keyWidth);
         maxY = Math.max(maxY, pos.y + keyHeight);
+        
+        // Track main rows max Y (keys 0-35 are the 3 main rows)
+        if (!isThumb) {
+            mainRowsMaxY = Math.max(mainRowsMaxY, pos.y + keyHeight);
+        }
+        
+        // Track the top-most key Y position (first key, index 0, is top-left pinky)
+        if (i === 0) {
+            topKeyY = pos.y;
+        }
     });
     
-    // Add padding, and extra width for view switcher on the right
-    const viewBoxWidth = maxX + (showViewSwitcher ? VIEW_SWITCHER_WIDTH + 15 : 20);
+    // Calculate extra width for layout info on left side
+    const leftPadding = layoutInfo ? LAYOUT_INFO_WIDTH : 0;
+    
+    // When layoutInfo is present, view switcher is integrated into it (no extra right padding needed)
+    // When no layoutInfo, add space for standalone view switcher on right
+    const rightPadding = (!layoutInfo && showViewSwitcher) ? VIEW_SWITCHER_WIDTH + 30 : 20;
+    const viewBoxWidth = leftPadding + maxX + rightPadding;
     const viewBoxHeight = maxY + 20;
     
     svgElement.setAttribute('viewBox', `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
     svgElement.setAttribute('height', viewBoxHeight);
     
-    // Add view switcher if enabled (positioned on right side)
-    if (showViewSwitcher) {
-        const switcher = createViewSwitcher(svgElement, viewType, onViewChange, maxY);
+    // Add layout info if provided (includes view switcher buttons)
+    if (layoutInfo) {
+        const info = createLayoutInfo(svgElement, layoutInfo, viewType, onViewChange, topKeyY);
+        svgElement.appendChild(info);
+    } else if (showViewSwitcher) {
+        // Only show standalone view switcher when no layout info
+        const switcher = createViewSwitcher(svgElement, viewType, onViewChange, mainRowsMaxY);
         svgElement.appendChild(switcher);
+    }
+    
+    // Create a group for all keys, translated to account for left padding
+    const keysGroup = document.createElementNS(ns, 'g');
+    if (layoutInfo) {
+        keysGroup.setAttribute('transform', `translate(${leftPadding}, 0)`);
     }
     
     positions.forEach((pos, i) => {
@@ -519,8 +687,10 @@ function drawKeyboard(svgElement, showThumbs = true, options = {}) {
             showSecondaryLegend,
             viewType 
         });
-        svgElement.appendChild(key);
+        keysGroup.appendChild(key);
     });
+    
+    svgElement.appendChild(keysGroup);
 }
 
 /**
@@ -572,9 +742,10 @@ function updateSecondaryLegends(layoutArray, svgElement) {
  * @param {Object} options - Additional rendering options
  * @param {boolean} options.showViewSwitcher - Whether to show the view switcher
  * @param {Function} options.onViewChange - Callback when view changes (will re-render)
+ * @param {Object} options.layoutInfo - Layout metadata { name, statsUrl, website }
  */
 function renderKeyboard(layout, svgElement, options = {}) {
-    const { showViewSwitcher = true, onViewChange = null } = options;
+    const { showViewSwitcher = true, onViewChange = null, layoutInfo = null } = options;
     const hasThumbs = layout.hasThumbKeys();
     const viewType = getKeyboardViewPreference();
     
@@ -589,7 +760,8 @@ function renderKeyboard(layout, svgElement, options = {}) {
     drawKeyboard(svgElement, hasThumbs, { 
         viewType,
         showViewSwitcher,
-        onViewChange: handleViewChange
+        onViewChange: handleViewChange,
+        layoutInfo
     });
     
     const flatArray = layout.toFlatArray();
@@ -605,9 +777,10 @@ function renderKeyboard(layout, svgElement, options = {}) {
  * @param {Object} options - Additional rendering options
  * @param {boolean} options.showViewSwitcher - Whether to show the view switcher
  * @param {Function} options.onViewChange - Callback when view changes (will re-render)
+ * @param {Object} options.layoutInfo - Layout metadata { name, statsUrl, website }
  */
 function renderKeyboardWithMapping(targetLayout, knownLayout, svgElement, options = {}) {
-    const { showViewSwitcher = true, onViewChange = null } = options;
+    const { showViewSwitcher = true, onViewChange = null, layoutInfo = null } = options;
     const targetHasThumbs = targetLayout.hasThumbKeys();
     const knownHasThumbs = knownLayout.hasThumbKeys();
     const viewType = getKeyboardViewPreference();
@@ -628,7 +801,8 @@ function renderKeyboardWithMapping(targetLayout, knownLayout, svgElement, option
         showSecondaryLegend: true,
         viewType,
         showViewSwitcher,
-        onViewChange: handleViewChange
+        onViewChange: handleViewChange,
+        layoutInfo
     });
     
     const targetFlat = targetLayout.toFlatArray();
@@ -668,6 +842,7 @@ if (typeof window !== 'undefined') {
     window.getKeyboardViewPreference = getKeyboardViewPreference;
     window.setKeyboardViewPreference = setKeyboardViewPreference;
     window.getKeyPositions = getKeyPositions;
+    window.getTopKeyY = getTopKeyY;
 }
 
 // ES module exports
@@ -680,5 +855,6 @@ export {
     KEYBOARD_VIEW,
     getKeyboardViewPreference,
     setKeyboardViewPreference,
-    getKeyPositions
+    getKeyPositions,
+    getTopKeyY
 };
