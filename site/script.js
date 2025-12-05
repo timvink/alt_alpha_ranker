@@ -29,6 +29,128 @@ const weightPresets = {
     'comfort': { sfb: 80, sfs: 40, lsb: 80, scissors: 100, rolls: 30, alternation: 30, redirect: 40, pinky: 80 }
 };
 
+// URL Parameter handling for shareable links
+function getUrlParams() {
+    return new URLSearchParams(window.location.search);
+}
+
+function updateUrlParams() {
+    const params = new URLSearchParams();
+    
+    // Add language (only if not default)
+    if (window.currentLanguage && window.currentLanguage !== 'english') {
+        params.set('lang', window.currentLanguage);
+    }
+    
+    // Add search filter (only if not empty)
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput && searchInput.value.trim()) {
+        params.set('search', searchInput.value.trim());
+    }
+    
+    // Add weights - check if it matches a preset
+    let activePreset = null;
+    for (const [presetName, presetWeights] of Object.entries(weightPresets)) {
+        const isMatch = Object.keys(presetWeights).every(key => 
+            scoreWeights[key] === presetWeights[key]
+        );
+        if (isMatch) {
+            activePreset = presetName;
+            break;
+        }
+    }
+    
+    if (activePreset && activePreset !== 'balanced') {
+        // Use preset name if it matches (skip balanced as it's default)
+        params.set('preset', activePreset);
+    } else if (!activePreset) {
+        // Use custom weights if no preset matches
+        const weightStr = Object.entries(scoreWeights)
+            .map(([k, v]) => `${k}:${v}`)
+            .join(',');
+        params.set('weights', weightStr);
+    }
+    
+    // Add highlighted (starred) layouts
+    if (starredLayouts.size > 0) {
+        params.set('highlight', [...starredLayouts].join(','));
+    }
+    
+    // Add pinned layouts
+    if (pinnedLayouts.size > 0) {
+        params.set('pinned', [...pinnedLayouts].join(','));
+    }
+    
+    // Update URL without reloading the page
+    const newUrl = params.toString() 
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+}
+
+function loadFromUrlParams() {
+    const params = getUrlParams();
+    
+    // Load language
+    const lang = params.get('lang');
+    if (lang) {
+        window.currentLanguage = lang;
+    }
+    
+    // Load search filter
+    const search = params.get('search');
+    if (search) {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = search;
+        }
+    }
+    
+    // Load weights - either from preset or custom weights
+    const preset = params.get('preset');
+    const weights = params.get('weights');
+    
+    if (preset && weightPresets[preset]) {
+        scoreWeights = { ...weightPresets[preset] };
+    } else if (weights) {
+        // Parse custom weights string like "sfb:50,sfs:60,..."
+        const customWeights = {};
+        weights.split(',').forEach(pair => {
+            const [key, value] = pair.split(':');
+            if (key && value !== undefined) {
+                const numValue = parseInt(value, 10);
+                if (!isNaN(numValue) && numValue >= 0 && numValue <= 100) {
+                    customWeights[key] = numValue;
+                }
+            }
+        });
+        // Merge with balanced preset to ensure all keys exist
+        scoreWeights = { ...weightPresets['balanced'], ...customWeights };
+    }
+    
+    // Load highlighted (starred) layouts
+    const highlight = params.get('highlight');
+    if (highlight) {
+        starredLayouts = new Set(highlight.split(',').map(s => s.trim()).filter(Boolean));
+    }
+    
+    // Load pinned layouts
+    const pinned = params.get('pinned');
+    if (pinned) {
+        pinnedLayouts = new Set(pinned.split(',').map(s => s.trim()).filter(Boolean));
+    }
+    
+    return {
+        hasUrlParams: params.toString().length > 0,
+        lang,
+        search,
+        preset,
+        weights,
+        highlight,
+        pinned
+    };
+}
+
 // Load score weights from localStorage
 function loadScoreWeights() {
     const saved = localStorage.getItem('scoreWeights');
@@ -111,6 +233,7 @@ function setupWeightControls() {
                 scoreWeights[metric] = parseInt(slider.value);
                 saveScoreWeights();
                 updateActivePreset();
+                updateUrlParams();
                 recalculateAndRender();
             });
             
@@ -122,6 +245,7 @@ function setupWeightControls() {
                 scoreWeights[metric] = val;
                 saveScoreWeights();
                 updateActivePreset();
+                updateUrlParams();
                 recalculateAndRender();
             });
         }
@@ -136,6 +260,7 @@ function setupWeightControls() {
                 saveScoreWeights();
                 updateWeightUI();
                 updateActivePreset();
+                updateUrlParams();
                 recalculateAndRender();
             }
         });
@@ -189,6 +314,7 @@ function togglePin(layoutName) {
         pinnedLayouts.add(layoutName);
     }
     savePinnedLayouts();
+    updateUrlParams();
     
     // Re-render with current filters and sort
     const filtered = getFilteredData();
@@ -204,6 +330,7 @@ function toggleStar(layoutName) {
         starredLayouts.add(layoutName);
     }
     saveStarredLayouts();
+    updateUrlParams();
     
     // Re-render with current filters and sort
     const filtered = getFilteredData();
@@ -275,6 +402,9 @@ function setupLanguageFilter() {
         const filtered = getFilteredData();
         const sorted = sortData(filtered);
         renderTable(sorted);
+        
+        // Update URL params
+        updateUrlParams();
     });
 }
 
@@ -347,10 +477,28 @@ function updateSearchPlaceholder() {
 // Fetch and display data
 async function loadData() {
     try {
-        // Load pinned and starred layouts from localStorage
-        loadPinnedLayouts();
-        loadStarredLayouts();
-        loadScoreWeights();
+        // First, check for URL parameters (they take priority)
+        const urlState = loadFromUrlParams();
+        
+        // Load pinned and starred layouts from localStorage (only if not in URL)
+        if (!urlState.pinned) {
+            loadPinnedLayouts();
+        } else {
+            // Save URL state to localStorage for persistence
+            savePinnedLayouts();
+        }
+        if (!urlState.highlight) {
+            loadStarredLayouts();
+        } else {
+            // Save URL state to localStorage for persistence
+            saveStarredLayouts();
+        }
+        if (!urlState.preset && !urlState.weights) {
+            loadScoreWeights();
+        } else {
+            // Save URL state to localStorage for persistence
+            saveScoreWeights();
+        }
         
         const response = await fetch('data.json');
         const data = await response.json();
@@ -360,6 +508,12 @@ async function loadData() {
         // Populate language dropdown
         populateLanguageDropdown(allLanguages);
         setupLanguageFilter();
+        
+        // If URL had a language param, override the default/saved language
+        if (urlState.lang && allLanguages.includes(urlState.lang)) {
+            window.currentLanguage = urlState.lang;
+            document.getElementById('languageSelect').value = urlState.lang;
+        }
         
         // Setup weight controls
         setupWeightControls();
@@ -386,12 +540,16 @@ async function loadData() {
         // Calculate scores for all layouts
         recalculateAllScores();
         
-        // Initial render with default sort
-        const sorted = sortData(layoutsData);
+        // Initial render with default sort (apply search filter from URL if present)
+        const filtered = getFilteredData();
+        const sorted = sortData(filtered);
         renderTable(sorted);
         
         // Update UI to show sort indicator
         updateSortIndicators();
+        
+        // Initialize URL params (in case we loaded from localStorage)
+        updateUrlParams();
     } catch (error) {
         console.error('Error loading data:', error);
         document.getElementById('tableBody').innerHTML = 
@@ -619,6 +777,7 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     const filtered = getFilteredData();
     const sorted = sortData(filtered);
     renderTable(sorted);
+    updateUrlParams();
 });
 
 // Thumb filter functionality
@@ -665,5 +824,33 @@ document.querySelector('.score-link')?.addEventListener('click', (e) => {
     if (wrapper) {
         wrapper.open = true;
         wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+});
+
+// Share button functionality
+const shareBtn = document.getElementById('shareBtn');
+const shareBtnOriginalHtml = '<i class="fa-solid fa-share-nodes"></i><span>Share</span>';
+
+shareBtn?.addEventListener('click', async () => {
+    try {
+        // Make sure URL is up to date
+        updateUrlParams();
+        
+        // Copy to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        
+        // Show success state
+        shareBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+        shareBtn.classList.add('copied');
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+            shareBtn.innerHTML = shareBtnOriginalHtml;
+            shareBtn.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy URL:', err);
+        // Fallback: select the URL in a prompt
+        prompt('Copy this link:', window.location.href);
     }
 });

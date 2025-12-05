@@ -405,6 +405,56 @@ body.dark-mode .language-select:hover {
     background-color: rgba(102, 126, 234, 0.2);
 }
 
+/* Share button */
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 44px;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.share-btn:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+    transform: translateY(-1px);
+}
+
+.share-btn:active {
+    transform: translateY(0);
+}
+
+.share-btn.copied {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.share-btn i {
+    font-size: 0.95rem;
+}
+
+body.dark-mode .share-btn {
+    background: linear-gradient(135deg, #9f7aea 0%, #b794f4 100%);
+}
+
+body.dark-mode .share-btn:hover {
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    box-shadow: 0 4px 12px rgba(159, 122, 234, 0.4);
+}
+
+body.dark-mode .share-btn.copied {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
 .search-box:focus {
     outline: none;
     border-color: #667eea;
