@@ -276,9 +276,10 @@ def scrape_layout_stats(url: str, silent: bool = False) -> dict:
 
 
 
-def save_results(results: dict, output_file: str = 'site/data.json'):
+def save_results(results: dict, output_file: str = 'site/data.json', update_timestamp: bool = True):
     """Save results to JSON file."""
-    results['scraped_at'] = datetime.now().isoformat()
+    if update_timestamp:
+        results['scraped_at'] = datetime.now().isoformat()
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
 
@@ -362,7 +363,7 @@ def main():
     
     if total_tasks == 0:
         console.print("[green]✓ All layouts already have valid data. Nothing to scrape.[/green]")
-        save_results(results, output_file)
+        # Don't save when nothing changed - preserves existing timestamp
         return
     
     # Track progress
@@ -399,15 +400,15 @@ def main():
             layout_entries[layout_name]['metrics'][language] = stats
             scraped_count += 1
             
-            # Save progress after each scrape
+            # Save progress after each scrape (don't update timestamp until final save)
             results['layouts'] = list(layout_entries.values())
-            save_results(results, output_file)
+            save_results(results, output_file, update_timestamp=False)
             
             progress.advance(task)
     
-    # Final save
+    # Final save with updated timestamp
     results['layouts'] = list(layout_entries.values())
-    save_results(results, output_file)
+    save_results(results, output_file, update_timestamp=True)
     
     # Print summary
     console.print(f"\n[bold green]✓ Complete![/bold green]")
