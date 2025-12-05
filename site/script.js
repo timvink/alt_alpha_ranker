@@ -251,11 +251,23 @@ function setupWeightControls() {
         }
     });
     
-    // Setup preset buttons
+    // Setup preset buttons (including the Custom button)
     document.querySelectorAll('.preset-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const preset = btn.dataset.preset;
-            if (weightPresets[preset]) {
+            const customPanel = document.getElementById('customWeightsPanel');
+            
+            if (preset === 'custom') {
+                // Custom button: open the customize panel
+                if (customPanel) {
+                    customPanel.open = true;
+                }
+                // Mark Custom as active
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                saveSelectedPreset('custom');
+            } else if (weightPresets[preset]) {
+                // Regular preset: apply the preset weights
                 scoreWeights = { ...weightPresets[preset] };
                 saveScoreWeights();
                 updateWeightUI();
@@ -285,6 +297,12 @@ function updateActivePreset() {
     let activePreset = null;
     document.querySelectorAll('.preset-btn').forEach(btn => {
         const preset = btn.dataset.preset;
+        
+        // Skip the custom button in matching logic
+        if (preset === 'custom') {
+            return;
+        }
+        
         const presetWeights = weightPresets[preset];
         const isActive = Object.keys(presetWeights).every(key => 
             scoreWeights[key] === presetWeights[key]
@@ -294,6 +312,20 @@ function updateActivePreset() {
             activePreset = preset;
         }
     });
+    
+    // Handle the Custom button
+    const customBtn = document.querySelector('.preset-btn[data-preset="custom"]');
+    if (customBtn) {
+        if (activePreset) {
+            // A preset is active, so Custom is not active
+            customBtn.classList.remove('active');
+        } else {
+            // No preset matches, so Custom should be active
+            customBtn.classList.add('active');
+            activePreset = 'custom';
+        }
+    }
+    
     // Save the active preset (or null if custom weights)
     saveSelectedPreset(activePreset);
 }
@@ -820,10 +852,16 @@ loadData();
 // Add click handler for the "customize weights" link
 document.querySelector('.score-link')?.addEventListener('click', (e) => {
     e.preventDefault();
-    const wrapper = document.querySelector('.score-controls-wrapper');
+    const wrapper = document.getElementById('customWeightsPanel');
+    const customBtn = document.querySelector('.preset-btn[data-preset="custom"]');
     if (wrapper) {
         wrapper.open = true;
         wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Also activate the Custom button
+        if (customBtn) {
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            customBtn.classList.add('active');
+        }
     }
 });
 

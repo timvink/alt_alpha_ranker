@@ -984,10 +984,46 @@ body.dark-mode .loading {
     color: #a0aec0;
 }
 
+/* Score Presets Section (outside customize panel) */
+.score-presets-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+}
+
+.score-presets-section .preset-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-right: 0.25rem;
+}
+
+.score-presets-section .preset-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+body.dark-mode .score-presets-section {
+    background: linear-gradient(135deg, rgba(159, 122, 234, 0.08) 0%, rgba(183, 148, 244, 0.08) 100%);
+    border-color: #4a5568;
+}
+
+body.dark-mode .score-presets-section .preset-label {
+    color: #cbd5e0;
+}
+
 /* Score Controls Wrapper */
 .score-controls-wrapper {
-    margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
     border-radius: 0.75rem;
     border: 1px solid #e2e8f0;
     overflow: hidden;
@@ -1037,7 +1073,6 @@ body.dark-mode .loading {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 1rem;
 }
 
 .preset-label {
@@ -1211,115 +1246,138 @@ body.dark-mode .weight-description {
     color: #718096;
 }
 
-/* Nested Score Explanation (inside weight controls) */
-.score-explanation-nested {
-    margin-top: 1.25rem;
-    background: #f1f5f9;
+/* Score Explanation Box (standalone) */
+.score-explanation-box {
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.04) 0%, rgba(71, 85, 105, 0.04) 100%);
     border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 
-.score-explanation-nested summary {
-    padding: 0.65rem 1rem;
-    cursor: pointer;
-    font-size: 0.85rem;
-    color: #64748b;
-    font-weight: 500;
-    list-style: none;
+.score-explanation-box[open] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.score-explanation-toggle {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #64748b;
+    list-style: none;
+    user-select: none;
 }
 
-.score-explanation-nested summary::-webkit-details-marker {
+.score-explanation-toggle::-webkit-details-marker {
     display: none;
 }
 
-.score-explanation-nested summary:hover {
-    background: rgba(100, 116, 139, 0.08);
-    border-radius: 0.5rem;
+.score-explanation-toggle i:first-child {
+    color: #667eea;
 }
 
-.score-explanation-nested[open] summary {
-    border-bottom: 1px solid #e2e8f0;
-    border-radius: 0.5rem 0.5rem 0 0;
+.score-explanation-toggle .toggle-icon {
+    margin-left: auto;
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    color: #94a3b8;
 }
 
-.score-explanation-nested .score-explanation-content {
+.score-explanation-toggle:hover {
+    background: rgba(100, 116, 139, 0.06);
+}
+
+.score-explanation-box .score-explanation-content {
     padding: 1rem 1.25rem;
     font-size: 0.85rem;
     line-height: 1.6;
     color: #475569;
     background: #f8fafc;
-    border-radius: 0 0 0.5rem 0.5rem;
+    border-top: 1px solid #e2e8f0;
 }
 
-.score-explanation-nested .score-explanation-content h4 {
+.score-explanation-box .score-explanation-content h4 {
     color: #334155;
     margin-top: 1rem;
     margin-bottom: 0.4rem;
     font-size: 0.85rem;
 }
 
-.score-explanation-nested .score-explanation-content h4:first-child {
+.score-explanation-box .score-explanation-content h4:first-child {
     margin-top: 0;
 }
 
-.score-explanation-nested .score-explanation-content p {
+.score-explanation-box .score-explanation-content p {
     margin-bottom: 0.4rem;
 }
 
-.score-explanation-nested .score-explanation-content p.formula-explanation {
+.score-explanation-box .score-explanation-content p.formula-explanation {
     font-style: italic;
     color: #64748b;
     font-size: 0.8rem;
     margin-bottom: 0.75rem;
 }
 
-.score-explanation-nested .score-explanation-content ul {
+.score-explanation-box .score-explanation-content ul {
     margin: 0.3rem 0 0.5rem 1.25rem;
     padding: 0;
 }
 
-.score-explanation-nested .score-explanation-content li {
+.score-explanation-box .score-explanation-content li {
     margin-bottom: 0.2rem;
 }
 
-/* Dark mode nested score explanation */
-body.dark-mode .score-explanation-nested {
-    background: #1e293b;
+/* Dark mode score explanation box */
+body.dark-mode .score-explanation-box {
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.08) 0%, rgba(71, 85, 105, 0.08) 100%);
     border-color: #475569;
 }
 
-body.dark-mode .score-explanation-nested summary {
+body.dark-mode .score-explanation-toggle {
     color: #94a3b8;
 }
 
-body.dark-mode .score-explanation-nested summary:hover {
+body.dark-mode .score-explanation-toggle:hover {
     background: rgba(148, 163, 184, 0.1);
 }
 
-body.dark-mode .score-explanation-nested[open] summary {
-    border-bottom-color: #475569;
+body.dark-mode .score-explanation-toggle i:first-child {
+    color: #9f7aea;
 }
 
-body.dark-mode .score-explanation-nested .score-explanation-content {
+body.dark-mode .score-explanation-box .score-explanation-content {
     background: #0f172a;
     color: #94a3b8;
+    border-top-color: #475569;
 }
 
-body.dark-mode .score-explanation-nested .score-explanation-content h4 {
+body.dark-mode .score-explanation-box .score-explanation-content h4 {
     color: #cbd5e1;
 }
 
-body.dark-mode .score-explanation-nested .score-explanation-content p.formula-explanation {
+body.dark-mode .score-explanation-box .score-explanation-content p.formula-explanation {
     color: #64748b;
 }
 
-/* Score Explanation in Footer - REMOVED, now using nested version */
-
 /* Responsive weight controls */
 @media (max-width: 600px) {
+    .score-presets-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .score-presets-section .preset-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
     .weight-control label {
         min-width: 70px;
         font-size: 0.8rem;

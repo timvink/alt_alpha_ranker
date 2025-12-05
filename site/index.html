@@ -85,19 +85,23 @@
             </button>
         </div>
 
-        <details class="score-controls-wrapper">
+        <div class="score-presets-section">
+            <span class="preset-label">Score Preset:</span>
+            <div class="preset-buttons">
+                <button class="preset-btn active" data-preset="balanced">Balanced</button>
+                <button class="preset-btn" data-preset="low-pinky">Low Pinky</button>
+                <button class="preset-btn" data-preset="comfort">Comfort</button>
+                <button class="preset-btn" data-preset="custom">Custom</button>
+            </div>
+        </div>
+
+        <details class="score-controls-wrapper" id="customWeightsPanel">
             <summary class="score-controls-toggle">
                 <i class="fa-solid fa-sliders"></i>
                 <span>Customize Score Weights</span>
                 <i class="fa-solid fa-chevron-down toggle-icon"></i>
             </summary>
             <div class="score-controls">
-                <div class="preset-buttons">
-                    <span class="preset-label">Presets:</span>
-                    <button class="preset-btn active" data-preset="balanced">Balanced</button>
-                    <button class="preset-btn" data-preset="low-pinky">Low Pinky</button>
-                    <button class="preset-btn" data-preset="comfort">Comfort</button>
-                </div>
                 <div class="weight-sliders">
                     <div class="weight-control">
                         <label for="weight-sfb">SFB</label>
@@ -148,41 +152,42 @@
                         <span class="weight-description">Off-home pinky usage, e.g. qwerty 'P'</span>
                     </div>
                 </div>
+            </div>
+        </details>
 
-                <details class="score-explanation-nested" id="scoreExplanation">
-                    <summary>
-                        <i class="fa-solid fa-calculator"></i>
-                        How is the score calculated?
-                    </summary>
-                    <div class="score-explanation-content">
-                        <p>The <strong>Score</strong> measures improvement over QWERTY using fixed reference points. A score of 0% means the same as QWERTY, 100% means the theoretical best. Negative scores are possible for layouts worse than QWERTY.</p>
-                        
-                        <h4>Step 1: Normalize each metric</h4>
-                        <p>Each metric is normalized to measure improvement over QWERTY, where:</p>
-                        <ul>
-                            <li>\( M_{\text{layout}} \) = the layout's metric value</li>
-                            <li>\( M_{\text{qwerty}} \) = QWERTY's metric value</li>
-                        </ul>
-                        
-                        <p>For <em>lower is better</em> metrics (SFB, SFS, LSB, Scissors, Redirect, Pinky):</p>
-                        <p>$$\text{normalized} = \frac{M_{\text{qwerty}} - M_{\text{layout}}}{M_{\text{qwerty}} - 0}$$</p>
-                        <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 0).</p>
-                        
-                        <p>For <em>higher is better</em> metrics (Rolls, Alternation):</p>
-                        <p>$$\text{normalized} = \frac{M_{\text{layout}} - M_{\text{qwerty}}}{100 - M_{\text{qwerty}}}$$</p>
-                        <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 100%).</p>
-                        
-                        <h4>Step 2: Apply weights</h4>
-                        <p>Each normalized value (already in "higher is better" form) is multiplied by its weight:</p>
-                        <p>$$\text{contribution} = w \times \text{normalized}$$</p>
-                        
-                        <h4>Step 3: Calculate final score</h4>
-                        <p>The weighted sum is converted to a percentage of maximum possible improvement:</p>
-                        <p>$$\text{score} = 100 \times \frac{\sum w_i \times \text{normalized}_i}{\sum w_i}$$</p>
-                        
-                        <p><em>Note: This QWERTY-fixed approach ensures stable rankings — adding or removing layouts won't change the relative order of existing layouts. QWERTY's metrics are language-specific, so scores may vary by language.</em></p>
-                    </div>
-                </details>
+        <details class="score-explanation-box" id="scoreExplanation">
+            <summary class="score-explanation-toggle">
+                <i class="fa-solid fa-calculator"></i>
+                <span>How is the score calculated?</span>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </summary>
+            <div class="score-explanation-content">
+                <p>The <strong>Score</strong> measures improvement over QWERTY using fixed reference points. A score of 0% means the same as QWERTY, 100% means the theoretical best. Negative scores are possible for layouts worse than QWERTY.</p>
+                
+                <h4>Step 1: Normalize each metric</h4>
+                <p>Each metric is normalized to measure improvement over QWERTY, where:</p>
+                <ul>
+                    <li>\( M_{\text{layout}} \) = the layout's metric value</li>
+                    <li>\( M_{\text{qwerty}} \) = QWERTY's metric value</li>
+                </ul>
+                
+                <p>For <em>lower is better</em> metrics (SFB, SFS, LSB, Scissors, Redirect, Pinky):</p>
+                <p>$$\text{normalized} = \frac{M_{\text{qwerty}} - M_{\text{layout}}}{M_{\text{qwerty}} - 0}$$</p>
+                <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 0).</p>
+                
+                <p>For <em>higher is better</em> metrics (Rolls, Alternation):</p>
+                <p>$$\text{normalized} = \frac{M_{\text{layout}} - M_{\text{qwerty}}}{100 - M_{\text{qwerty}}}$$</p>
+                <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 100%).</p>
+                
+                <h4>Step 2: Apply weights</h4>
+                <p>Each normalized value (already in "higher is better" form) is multiplied by its weight:</p>
+                <p>$$\text{contribution} = w \times \text{normalized}$$</p>
+                
+                <h4>Step 3: Calculate final score</h4>
+                <p>The weighted sum is converted to a percentage of maximum possible improvement:</p>
+                <p>$$\text{score} = 100 \times \frac{\sum w_i \times \text{normalized}_i}{\sum w_i}$$</p>
+                
+                <p><em>Note: This QWERTY-fixed approach ensures stable rankings — adding or removing layouts won't change the relative order of existing layouts. QWERTY's metrics are language-specific, so scores may vary by language.</em></p>
             </div>
         </details>
 
