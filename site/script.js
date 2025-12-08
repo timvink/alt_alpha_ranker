@@ -601,7 +601,15 @@ function renderTable(data) {
     // Use cached scores (calculated from full dataset)
     const scores = cachedScores;
 
-    tbody.innerHTML = data.map(layout => {
+    // Find the index of the last pinned layout to add visual separator
+    let lastPinnedIndex = -1;
+    data.forEach((layout, index) => {
+        if (pinnedLayouts.has(layout.name)) {
+            lastPinnedIndex = index;
+        }
+    });
+
+    tbody.innerHTML = data.map((layout, index) => {
         const metrics = getMetrics(layout);
         const yearSuffix = layout.year ? ` (${layout.year})` : '';
         const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i><i class="fa-regular fa-thumbs-up" style="transform: scaleX(-1);"></i></span>' : '';
@@ -614,7 +622,9 @@ function renderTable(data) {
         const starClass = isStarred ? 'starred' : '';
         const starIcon = isStarred ? '★' : '☆';
         
-        const rowClass = isStarred ? 'starred' : '';
+        const isLastPinned = index === lastPinnedIndex && lastPinnedIndex !== -1;
+        const rowClasses = [isStarred ? 'starred' : '', isLastPinned ? 'last-pinned' : ''].filter(Boolean).join(' ');
+        const rowClass = rowClasses;
         
         // Get the calculated score
         const score = scores[layout.name];

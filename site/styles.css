@@ -883,6 +883,15 @@ body.dark-mode tbody tr.starred:hover {
     background: #92400e !important;
 }
 
+/* Pinned layouts separator - last pinned row gets a thick colored double underline */
+tbody tr.last-pinned {
+    border-bottom: 4px double #667eea;
+}
+
+body.dark-mode tbody tr.last-pinned {
+    border-bottom: 4px double #9f7aea;
+}
+
 .external-link-icon {
     display: inline-block;
     margin-left: 0.35rem;
