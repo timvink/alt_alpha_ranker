@@ -545,24 +545,47 @@ function setupLayoutDropdown(type) {
     const list = document.getElementById(`${type}LayoutList`);
     const select = document.getElementById(`${type}Layout`);
     const nameSpan = document.getElementById(`${type}LayoutName`);
+    const scrollHint = document.getElementById(`${type}LayoutScrollHint`);
+    
+    // Update the placeholder with layout count
+    function updatePlaceholder(count) {
+        search.placeholder = `Search ${count} layouts...`;
+    }
+    
+    // Update scroll hint visibility based on whether list is scrollable
+    function updateScrollHint() {
+        if (scrollHint) {
+            const isScrollable = list.scrollHeight > list.clientHeight;
+            const isAtBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 5;
+            scrollHint.style.display = isScrollable && !isAtBottom ? 'block' : 'none';
+        }
+    }
     
     // Populate the list
     function populateList(filter = '') {
         list.innerHTML = '';
         const filterLower = filter.toLowerCase();
         
-        layoutsData
-            .filter(layout => layout.name.toLowerCase().includes(filterLower))
-            .forEach(layout => {
-                const item = document.createElement('div');
-                item.className = 'layout-item';
-                if (layout.name === select.value) {
-                    item.classList.add('selected');
-                }
-                item.innerHTML = `<span class="layout-item-name">${layout.name}</span>`;
-                item.addEventListener('click', () => selectLayout(type, layout.name));
-                list.appendChild(item);
-            });
+        const filteredLayouts = layoutsData.filter(layout => 
+            layout.name.toLowerCase().includes(filterLower)
+        );
+        
+        filteredLayouts.forEach(layout => {
+            const item = document.createElement('div');
+            item.className = 'layout-item';
+            if (layout.name === select.value) {
+                item.classList.add('selected');
+            }
+            item.innerHTML = `<span class="layout-item-name">${layout.name}</span>`;
+            item.addEventListener('click', () => selectLayout(type, layout.name));
+            list.appendChild(item);
+        });
+        
+        // Update placeholder with total count (not filtered count)
+        updatePlaceholder(layoutsData.length);
+        
+        // Update scroll hint after DOM updates
+        requestAnimationFrame(() => updateScrollHint());
     }
     
     // Select a layout
@@ -581,6 +604,7 @@ function setupLayoutDropdown(type) {
         dropdown.classList.add('show');
         search.value = '';
         populateList();
+        list.scrollTop = 0;
         search.focus();
     }
     
@@ -608,6 +632,11 @@ function setupLayoutDropdown(type) {
     // Filter on search
     search.addEventListener('input', () => {
         populateList(search.value);
+    });
+    
+    // Update scroll hint on scroll
+    list.addEventListener('scroll', () => {
+        updateScrollHint();
     });
     
     // Close on click outside

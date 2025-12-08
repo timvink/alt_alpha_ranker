@@ -194,6 +194,60 @@
         .layout-list {
             max-height: 250px;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(79, 70, 229, 0.4) transparent;
+        }
+
+        body.dark-mode .layout-list {
+            scrollbar-color: rgba(159, 122, 234, 0.5) transparent;
+        }
+
+        .layout-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .layout-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        body.dark-mode .layout-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .layout-list::-webkit-scrollbar-thumb {
+            background: rgba(79, 70, 229, 0.4);
+            border-radius: 4px;
+        }
+
+        .layout-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 70, 229, 0.6);
+        }
+
+        body.dark-mode .layout-list::-webkit-scrollbar-thumb {
+            background: rgba(159, 122, 234, 0.5);
+        }
+
+        body.dark-mode .layout-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(159, 122, 234, 0.7);
+        }
+
+        .layout-scroll-hint {
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            border-top: 1px solid #e2e8f0;
+            background: linear-gradient(to bottom, transparent, rgba(79, 70, 229, 0.03));
+        }
+
+        body.dark-mode .layout-scroll-hint {
+            border-top-color: #3d4a5c;
+            background: linear-gradient(to bottom, transparent, rgba(159, 122, 234, 0.05));
+        }
+
+        .layout-scroll-hint i {
+            margin-right: 0.3rem;
         }
 
         .layout-item {
@@ -970,6 +1024,7 @@
                     <div class="layout-dropdown" id="knownLayoutDropdown">
                         <input type="text" class="layout-search" id="knownLayoutSearch" placeholder="Search layouts..." autocomplete="off">
                         <div class="layout-list" id="knownLayoutList"></div>
+                        <div class="layout-scroll-hint" id="knownLayoutScrollHint"><i class="fas fa-chevron-down"></i>Scroll for more</div>
                     </div>
                 </div>
                 
@@ -983,6 +1038,7 @@
                     <div class="layout-dropdown" id="targetLayoutDropdown">
                         <input type="text" class="layout-search" id="targetLayoutSearch" placeholder="Search layouts..." autocomplete="off">
                         <div class="layout-list" id="targetLayoutList"></div>
+                        <div class="layout-scroll-hint" id="targetLayoutScrollHint"><i class="fas fa-chevron-down"></i>Scroll for more</div>
                     </div>
                 </div>
             </div>
