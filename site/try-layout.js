@@ -547,6 +547,9 @@ function setupLayoutDropdown(type) {
     const nameSpan = document.getElementById(`${type}LayoutName`);
     const scrollHint = document.getElementById(`${type}LayoutScrollHint`);
     
+    // Suggested layouts for "known" dropdown (common layouts users already know)
+    const suggestedLayouts = ['qwerty', 'dvorak', 'colemak', 'colemak-dh'];
+    
     // Update the placeholder with layout count
     function updatePlaceholder(count) {
         search.placeholder = `Search ${count} layouts...`;
@@ -561,25 +564,66 @@ function setupLayoutDropdown(type) {
         }
     }
     
+    // Create a layout item element
+    function createLayoutItem(layout) {
+        const item = document.createElement('div');
+        item.className = 'layout-item';
+        if (layout.name === select.value) {
+            item.classList.add('selected');
+        }
+        item.innerHTML = `<span class="layout-item-name">${layout.name}</span>`;
+        item.addEventListener('click', () => selectLayout(type, layout.name));
+        return item;
+    }
+    
     // Populate the list
     function populateList(filter = '') {
         list.innerHTML = '';
         const filterLower = filter.toLowerCase();
         
-        const filteredLayouts = layoutsData.filter(layout => 
-            layout.name.toLowerCase().includes(filterLower)
-        );
-        
-        filteredLayouts.forEach(layout => {
-            const item = document.createElement('div');
-            item.className = 'layout-item';
-            if (layout.name === select.value) {
-                item.classList.add('selected');
-            }
-            item.innerHTML = `<span class="layout-item-name">${layout.name}</span>`;
-            item.addEventListener('click', () => selectLayout(type, layout.name));
-            list.appendChild(item);
-        });
+        // For "known" layout type, show suggested layouts at the top when not filtering
+        if (type === 'known' && !filter) {
+            // Add suggested section label
+            const suggestedLabel = document.createElement('div');
+            suggestedLabel.className = 'layout-section-label';
+            suggestedLabel.textContent = 'Suggested';
+            list.appendChild(suggestedLabel);
+            
+            // Add suggested layouts
+            suggestedLayouts.forEach(name => {
+                const layout = layoutsData.find(l => l.name === name);
+                if (layout) {
+                    list.appendChild(createLayoutItem(layout));
+                }
+            });
+            
+            // Add divider
+            const divider = document.createElement('div');
+            divider.className = 'layout-section-divider';
+            list.appendChild(divider);
+            
+            // Add "All layouts" label
+            const allLabel = document.createElement('div');
+            allLabel.className = 'layout-section-label';
+            allLabel.textContent = 'All layouts';
+            list.appendChild(allLabel);
+            
+            // Add remaining layouts (excluding suggested ones)
+            layoutsData
+                .filter(layout => !suggestedLayouts.includes(layout.name))
+                .forEach(layout => {
+                    list.appendChild(createLayoutItem(layout));
+                });
+        } else {
+            // Standard filtering for target dropdown or when searching
+            const filteredLayouts = layoutsData.filter(layout => 
+                layout.name.toLowerCase().includes(filterLower)
+            );
+            
+            filteredLayouts.forEach(layout => {
+                list.appendChild(createLayoutItem(layout));
+            });
+        }
         
         // Update placeholder with total count (not filtered count)
         updatePlaceholder(layoutsData.length);
