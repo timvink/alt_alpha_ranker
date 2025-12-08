@@ -45,3 +45,11 @@ jobs:
           git add site/data.json
           git commit -m "chore: update data.json with latest layout statistics"
           git push
+
+  deploy:
+    needs: update-data
+    uses: ./.github/workflows/deploy_website.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
