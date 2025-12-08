@@ -171,7 +171,7 @@ function parseLayoutInput(inputText) {
         if (thumbChars.length > 1) {
             return {
                 layout: null,
-                error: 'Only 1 alpha key is supported on the thumb row'
+                error: 'Only 1 alpha key is supported on the thumb row by the stats engine (cyanophage.github.io)'
             };
         }
         
