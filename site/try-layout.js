@@ -39,6 +39,8 @@ let timerInterval = null;  // Timer interval for countdown
 let timeRemaining = 0;     // Remaining time in seconds
 let includePunctuation = false;  // Whether to add punctuation
 let includeNumbers = false;      // Whether to add numbers
+let useCustomText = false;       // Whether to use custom text
+let customText = '';             // User's custom text
 
 /**
  * Get URL parameters
@@ -242,33 +244,38 @@ async function selectWordSet(ws) {
  * Generate random text from current word set
  */
 function generateRandomText() {
-    // For time mode, generate more words than needed (user might type fast)
-    // 200 wpm * 2 minutes = 400 words max needed
-    const numWords = testMode === 'time' ? 400 : wordCount;
-    
-    if (!currentWordSet || !currentWordSet.words.length) {
-        currentText = 'the quick brown fox jumps over the lazy dog';
+    // If using custom text, use it directly
+    if (useCustomText && customText.trim()) {
+        currentText = customText.trim();
     } else {
-        const words = currentWordSet.words;
-        let selectedWords = [];
+        // For time mode, generate more words than needed (user might type fast)
+        // 200 wpm * 2 minutes = 400 words max needed
+        const numWords = testMode === 'time' ? 400 : wordCount;
         
-        // Randomly select words (with replacement)
-        for (let i = 0; i < numWords; i++) {
-            const randomIndex = Math.floor(Math.random() * words.length);
-            selectedWords.push(words[randomIndex].toLowerCase());
+        if (!currentWordSet || !currentWordSet.words.length) {
+            currentText = 'the quick brown fox jumps over the lazy dog';
+        } else {
+            const words = currentWordSet.words;
+            let selectedWords = [];
+            
+            // Randomly select words (with replacement)
+            for (let i = 0; i < numWords; i++) {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                selectedWords.push(words[randomIndex].toLowerCase());
+            }
+            
+            // Apply punctuation if enabled
+            if (includePunctuation) {
+                selectedWords = applyPunctuation(selectedWords);
+            }
+            
+            // Apply numbers if enabled
+            if (includeNumbers) {
+                selectedWords = applyNumbers(selectedWords);
+            }
+            
+            currentText = selectedWords.join(' ');
         }
-        
-        // Apply punctuation if enabled
-        if (includePunctuation) {
-            selectedWords = applyPunctuation(selectedWords);
-        }
-        
-        // Apply numbers if enabled
-        if (includeNumbers) {
-            selectedWords = applyNumbers(selectedWords);
-        }
-        
-        currentText = selectedWords.join(' ');
     }
     
     // Reset typing state without recursion
@@ -748,13 +755,15 @@ function setupEventListeners() {
             highlightKey(e.key);
         }
         
-        // Don't capture keys when word set search or layout search is focused
+        // Don't capture keys when word set search, layout search, or custom text input is focused
         const wordSetSearch = document.getElementById('wordSetSearch');
         const knownLayoutSearch = document.getElementById('knownLayoutSearch');
         const targetLayoutSearch = document.getElementById('targetLayoutSearch');
+        const customTextInput = document.getElementById('customTextInput');
         if (document.activeElement === wordSetSearch || 
             document.activeElement === knownLayoutSearch || 
-            document.activeElement === targetLayoutSearch) {
+            document.activeElement === targetLayoutSearch ||
+            document.activeElement === customTextInput) {
             // Allow Escape to close dropdown
             if (e.key === 'Escape') {
                 closeWordSetDropdown();
@@ -1398,9 +1407,16 @@ function getErrorCount() {
  * Update statistics display
  */
 function updateStats() {
+    const progressLabel = document.getElementById('progressLabel');
+    
     // Update progress based on mode
-    if (testMode === 'time') {
+    if (useCustomText && customText.trim()) {
+        // For custom text mode, show characters typed / total characters
+        progressLabel.textContent = 'chars';
+        document.getElementById('progressStat').textContent = `${currentPosition}/${currentText.length}`;
+    } else if (testMode === 'time') {
         // For time mode, show countdown
+        progressLabel.textContent = 'time';
         if (startTime === null) {
             document.getElementById('progressStat').textContent = `${timeLimit}s`;
         } else {
@@ -1408,6 +1424,7 @@ function updateStats() {
         }
     } else {
         // For words mode, show x / y words typed
+        progressLabel.textContent = 'words';
         const wordsTyped = currentPosition === 0 ? 0 : 
             currentText.slice(0, currentPosition).split(' ').filter(w => w).length + 
             (currentText[currentPosition - 1] === ' ' ? 0 : 0);
@@ -1477,8 +1494,11 @@ function resetTyping() {
     
     document.getElementById('completeMessage').classList.remove('show');
     
-    // Generate new random words on reset
-    if (currentWordSet && currentWordSet.words.length) {
+    // Generate text (handles both custom text and random words)
+    // If using custom text, use it directly; otherwise generate random words
+    if (useCustomText && customText.trim()) {
+        currentText = customText.trim();
+    } else if (currentWordSet && currentWordSet.words.length) {
         const words = currentWordSet.words;
         let selectedWords = [];
         const numWords = testMode === 'time' ? 400 : wordCount;
@@ -1537,6 +1557,11 @@ function setupTypingSettings() {
     const wordsModeBtn = document.getElementById('wordsModeBtn');
     const punctuationBtn = document.getElementById('punctuationBtn');
     const numbersBtn = document.getElementById('numbersBtn');
+    const customTextBtn = document.getElementById('customTextBtn');
+    const customTextContainer = document.getElementById('customTextContainer');
+    const customTextInput = document.getElementById('customTextInput');
+    const applyCustomTextBtn = document.getElementById('applyCustomTextBtn');
+    const clearCustomTextBtn = document.getElementById('clearCustomTextBtn');
     
     // Punctuation toggle
     punctuationBtn.addEventListener('click', () => {
@@ -1550,6 +1575,71 @@ function setupTypingSettings() {
         includeNumbers = !includeNumbers;
         numbersBtn.classList.toggle('active', includeNumbers);
         resetTyping();
+    });
+    
+    // Custom text toggle
+    customTextBtn.addEventListener('click', () => {
+        const isActive = customTextBtn.classList.contains('active');
+        if (isActive) {
+            // Deactivate custom text mode
+            useCustomText = false;
+            customTextBtn.classList.remove('active');
+            customTextContainer.classList.remove('show');
+            // Re-enable punctuation and numbers buttons
+            punctuationBtn.disabled = false;
+            numbersBtn.disabled = false;
+            punctuationBtn.style.opacity = '1';
+            numbersBtn.style.opacity = '1';
+            // Show mode buttons and options
+            document.querySelectorAll('.settings-divider').forEach(d => d.style.display = '');
+            timeModeBtn.parentElement.style.display = '';
+            document.getElementById('optionsGroup').style.display = '';
+            // Show word set selector
+            document.querySelector('.word-set-card').style.display = '';
+            resetTyping();
+        } else {
+            // Activate custom text mode - show input
+            customTextBtn.classList.add('active');
+            customTextContainer.classList.add('show');
+            customTextInput.focus();
+            // Disable punctuation and numbers buttons in custom mode
+            punctuationBtn.disabled = true;
+            numbersBtn.disabled = true;
+            punctuationBtn.style.opacity = '0.5';
+            numbersBtn.style.opacity = '0.5';
+            // Hide mode buttons and options (not relevant for custom text)
+            document.querySelectorAll('.settings-divider').forEach(d => d.style.display = 'none');
+            timeModeBtn.parentElement.style.display = 'none';
+            document.getElementById('optionsGroup').style.display = 'none';
+            // Hide word set selector
+            document.querySelector('.word-set-card').style.display = 'none';
+        }
+    });
+    
+    // Apply custom text
+    applyCustomTextBtn.addEventListener('click', () => {
+        const text = customTextInput.value.trim();
+        if (text) {
+            customText = text;
+            useCustomText = true;
+            resetTyping();
+            document.getElementById('hiddenInput').focus();
+        }
+    });
+    
+    // Clear custom text
+    clearCustomTextBtn.addEventListener('click', () => {
+        customTextInput.value = '';
+        customText = '';
+        customTextInput.focus();
+    });
+    
+    // Allow Enter to apply custom text (Shift+Enter for newline)
+    customTextInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            applyCustomTextBtn.click();
+        }
     });
     
     // Mode button click handlers

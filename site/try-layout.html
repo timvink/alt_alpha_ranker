@@ -755,6 +755,92 @@
             color: var(--text-tertiary);
         }
 
+        /* Custom text input */
+        .custom-text-container {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 0.75rem auto;
+        }
+
+        .custom-text-container.show {
+            display: block;
+        }
+
+        .custom-text-input {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        body.dark-mode .custom-text-input {
+            border-color: #3d4a5c;
+        }
+
+        .custom-text-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        body.dark-mode .custom-text-input:focus {
+            box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.15);
+        }
+
+        .custom-text-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .custom-text-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .custom-text-btn {
+            padding: 0.4rem 0.8rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .custom-text-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .custom-text-btn.secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid #e2e8f0;
+        }
+
+        body.dark-mode .custom-text-btn.secondary {
+            border-color: #3d4a5c;
+        }
+
+        .custom-text-btn.secondary:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .custom-text-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
         /* Typing test settings bar */
         .typing-settings-bar {
             display: inline-flex;
@@ -956,6 +1042,7 @@
         body.focus-mode .config-card,
         body.focus-mode .keyboard-hint,
         body.focus-mode .typing-settings-container,
+        body.focus-mode .custom-text-container,
         body.focus-mode .stat-item:not(.focus-visible),
         body.focus-mode .complete-message,
         body.focus-mode .theme-toggle,
@@ -1078,6 +1165,10 @@
                             <i class="fas fa-hashtag"></i>
                             <span>numbers</span>
                         </button>
+                        <button class="setting-btn" id="customTextBtn" title="Use custom text">
+                            <i class="fas fa-pen"></i>
+                            <span>custom</span>
+                        </button>
                     </div>
                     <div class="settings-divider"></div>
                     <div class="settings-group">
@@ -1093,6 +1184,19 @@
                     <div class="settings-divider"></div>
                     <div class="settings-group" id="optionsGroup">
                         <!-- Options will be populated by JS based on mode -->
+                    </div>
+                </div>
+
+                <div class="custom-text-container" id="customTextContainer">
+                    <textarea 
+                        class="custom-text-input" 
+                        id="customTextInput" 
+                        placeholder="Enter your custom text to practice typing..."
+                        rows="3"
+                    ></textarea>
+                    <div class="custom-text-actions">
+                        <button class="custom-text-btn secondary" id="clearCustomTextBtn">Clear</button>
+                        <button class="custom-text-btn" id="applyCustomTextBtn">Apply</button>
                     </div>
                 </div>
 
