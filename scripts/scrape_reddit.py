@@ -281,6 +281,7 @@ A post/comment does NOT announce a new layout if it:
 - Is about typing tests, typing speed, or general keyboard discussions
 - Is asking for help or recommendations
 - Is sharing someone else's existing layout without modifications
+- Is about a mobile phone keyboard layout (e.g., for iOS, Android, or touchscreen devices)
 
 Be conservative - only return true if you're confident this is announcing a new layout.""",
     )
