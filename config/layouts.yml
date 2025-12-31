@@ -489,6 +489,11 @@ layouts:
   thumb: true
   year: 2025
   website: https://www.reddit.com/r/KeyboardLayouts/comments/1pgtt3x/valmak_one_month_into_a_colemakenthium_hybrid/
+- name: vitrimak
+  link: https://cyanophage.github.io/playground.html?layout=tkvumiajbr-wx%2Ffpdgq%2Cs%3Bh.'colnzye%5C&mode=ergo
+  thumb: false
+  year: 2021
+  website: https://layouts.wiki/layouts/2021/vitrimak/
 - name: wreathy
   link: https://cyanophage.github.io/playground.html?layout=qgdfvjluo%2C-nsthywreai%3Bbcmpkzx%2F%27.%5C&mode=ergo
   thumb: false
