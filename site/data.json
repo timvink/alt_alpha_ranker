@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2025-12-31T09:58:46.845765",
+  "scraped_at": "2026-01-06T20:19:20.365263",
   "languages": [
     "english",
     "dutch",
@@ -4860,7 +4860,7 @@
           "scissors": "0.43%"
         }
       },
-      "website": "https://github.com/DreymaR/BigBagKbdTrixPKL/tree/master/Layouts/Graphite#gralmak",
+      "website": "https://github.com/DreymaR/Gralmak#gralmak",
       "year": 2025
     },
     {
@@ -4995,7 +4995,7 @@
           "scissors": "0.40%"
         }
       },
-      "website": "https://github.com/DreymaR/BigBagKbdTrixPKL/tree/master/Layouts/Graphite#gralmak",
+      "website": "https://github.com/DreymaR/Gralmak#gralmak",
       "year": 2025
     },
     {
@@ -11722,7 +11722,7 @@
     },
     {
       "name": "kuntem",
-      "url": "https://cyanophage.github.io/playground.html?layout=vlndkqwouj-tsrhfgkaie-zxpb'my.%2C%2F%5C&mode=ergo",
+      "url": "https://cyanophage.github.io/playground.html?layout=vlndkqwouj%3Btsrhfgcaie-zxpb%27my.%2C%2F%5C%5E&mode=ergo&lan=english&thumb=l",
       "thumb": false,
       "metrics": {
         "english": {
@@ -11854,6 +11854,140 @@
       },
       "website": "https://layouts.wiki/layouts/2024/kuntem/",
       "year": 2024
+    },
+    {
+      "name": "kuntum",
+      "url": "https://cyanophage.github.io/playground.html?layout=vlndkjwou%2C*tsrhfgcaei%3Bzxpb%27myq%2F.-%5C%3D&mode=ergo&lan=english&thumb=l",
+      "thumb": false,
+      "metrics": {
+        "english": {
+          "pinky_off": "2.68%",
+          "skip_bigrams_1u": "2.89%",
+          "skip_bigrams_2u": "0.30%",
+          "bigram_roll_in": "23.22%",
+          "bigram_roll_out": "22.19%",
+          "roll_in": "0.25%",
+          "roll_out": "1.49%",
+          "redirect": "3.65%",
+          "weak_redirect": "0.45%",
+          "alt": "33.37%",
+          "alt_sfs": "4.22%",
+          "total_word_effort": "1085.5",
+          "effort": "599.62",
+          "same_finger_bigrams": "0.93%",
+          "lat_stretch_bigrams": "2.08%",
+          "scissors": "0.64%"
+        },
+        "dutch": {
+          "pinky_off": "2.68%",
+          "skip_bigrams_1u": "2.89%",
+          "skip_bigrams_2u": "0.30%",
+          "bigram_roll_in": "23.22%",
+          "bigram_roll_out": "22.19%",
+          "roll_in": "0.25%",
+          "roll_out": "1.49%",
+          "redirect": "3.65%",
+          "weak_redirect": "0.45%",
+          "alt": "33.37%",
+          "alt_sfs": "4.22%",
+          "total_word_effort": "1085.5",
+          "effort": "599.62",
+          "same_finger_bigrams": "0.93%",
+          "lat_stretch_bigrams": "2.08%",
+          "scissors": "0.64%"
+        },
+        "french": {
+          "pinky_off": "2.68%",
+          "skip_bigrams_1u": "2.89%",
+          "skip_bigrams_2u": "0.30%",
+          "bigram_roll_in": "23.22%",
+          "bigram_roll_out": "22.19%",
+          "roll_in": "0.25%",
+          "roll_out": "1.49%",
+          "redirect": "3.65%",
+          "weak_redirect": "0.45%",
+          "alt": "33.37%",
+          "alt_sfs": "4.22%",
+          "total_word_effort": "1085.5",
+          "effort": "599.62",
+          "same_finger_bigrams": "0.93%",
+          "lat_stretch_bigrams": "2.08%",
+          "scissors": "0.64%"
+        },
+        "german": {
+          "pinky_off": "2.68%",
+          "skip_bigrams_1u": "2.89%",
+          "skip_bigrams_2u": "0.30%",
+          "bigram_roll_in": "23.22%",
+          "bigram_roll_out": "22.19%",
+          "roll_in": "0.25%",
+          "roll_out": "1.49%",
+          "redirect": "3.65%",
+          "weak_redirect": "0.45%",
+          "alt": "33.37%",
+          "alt_sfs": "4.22%",
+          "total_word_effort": "1085.5",
+          "effort": "599.62",
+          "same_finger_bigrams": "0.93%",
+          "lat_stretch_bigrams": "2.08%",
+          "scissors": "0.64%"
+        },
+        "italian": {
+          "pinky_off": "2.68%",
+          "skip_bigrams_1u": "2.89%",
+          "skip_bigrams_2u": "0.30%",
+          "bigram_roll_in": "23.22%",
+          "bigram_roll_out": "22.19%",
+          "roll_in": "0.25%",
+          "roll_out": "1.49%",
+          "redirect": "3.65%",
+          "weak_redirect": "0.45%",
+          "alt": "33.37%",
+          "alt_sfs": "4.22%",
+          "total_word_effort": "1085.5",
+          "effort": "599.62",
+          "same_finger_bigrams": "0.93%",
+          "lat_stretch_bigrams": "2.08%",
+          "scissors": "0.64%"
+        },
+        "portuguese": {
+          "pinky_off": "2.68%",
+          "skip_bigrams_1u": "2.89%",
+          "skip_bigrams_2u": "0.30%",
+          "bigram_roll_in": "23.22%",
+          "bigram_roll_out": "22.19%",
+          "roll_in": "0.25%",
+          "roll_out": "1.49%",
+          "redirect": "3.65%",
+          "weak_redirect": "0.45%",
+          "alt": "33.37%",
+          "alt_sfs": "4.22%",
+          "total_word_effort": "1085.5",
+          "effort": "599.62",
+          "same_finger_bigrams": "0.93%",
+          "lat_stretch_bigrams": "2.08%",
+          "scissors": "0.64%"
+        },
+        "spanish": {
+          "pinky_off": "2.68%",
+          "skip_bigrams_1u": "2.89%",
+          "skip_bigrams_2u": "0.30%",
+          "bigram_roll_in": "23.22%",
+          "bigram_roll_out": "22.19%",
+          "roll_in": "0.25%",
+          "roll_out": "1.49%",
+          "redirect": "3.65%",
+          "weak_redirect": "0.45%",
+          "alt": "33.37%",
+          "alt_sfs": "4.22%",
+          "total_word_effort": "1085.5",
+          "effort": "599.62",
+          "same_finger_bigrams": "0.93%",
+          "lat_stretch_bigrams": "2.08%",
+          "scissors": "0.64%"
+        }
+      },
+      "year": 2020
     },
     {
       "name": "maya",
