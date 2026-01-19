@@ -544,3 +544,33 @@ layouts:
   thumb: false
   year: 2023
   website: https://www.reddit.com/r/KeyboardLayouts/comments/1464vck/introducing_middlemaknh_a_variant_that_puts_all/
+- name: xoy
+  link: https://cyanophage.github.io/playground.html?layout=x.o%2Cyvgclj%C3%9Fhaeiudtrnsfkq%C3%A4%C3%BC%C3%B6bpwmz%27%5Eback&mode=ergo&lan=german&thumb=l
+  thumb: false
+  year: 2011
+  website: http://adnw.de/index.php?n=Main.SeitlicheNachbaranschl%c3%a4ge
+- name: koy
+  link: https://cyanophage.github.io/playground.html?layout=k.o%2Cyvgclfzhaeiudtrns%C3%9Fxq%C3%BC%C3%A4%C3%B6bpwmj%27%5Eback&mode=iso&lan=german&thumb=l
+  thumb: false
+  year: 2010
+  website: http://adnw.de/index.php?n=Main.SeitlicheNachbaranschl%c3%a4ge
+- name: neo_2
+  link: https://cyanophage.github.io/playground.html?layout=xvlcwkhgfq%C3%9Fuiaeosnrtdy%C3%BC%C3%B6%C3%A4pzbm%2C.j%5C&mode=ergo
+  thumb: false
+  year: 2010
+  website: https://www.neo-layout.org/
+- name: endeu
+  link: https://cyanophage.github.io/playground.html?layout=q.ouyvdclf%C3%9Fhaei%2Cgtrnsj%C3%A4%C3%B6%C3%BCx%27bpmwzk%5Eback&mode=iso&lan=german&thumb=l
+  thumb: false
+  year: 2026
+  website: https://github.com/rpnfan/EnDeu
+- name: adnw
+  link: https://cyanophage.github.io/playground.html?layout=ku%C3%BC.%C3%A4vgcljfhieaodtrns%C3%9Fxy%C3%B6%2Cqbpwmz%5C&mode=ergo
+  thumb: false
+  year: 2010
+  website: http://www.adnw.de/index.php
+- name: noted
+  link: https://cyanophage.github.io/playground.html?layout=zyuaqpbmlfjcsieodtnrh%27vx%C3%BC%C3%A4%C3%B6wg%2C.k%C3%9F%5Eback&mode=iso&lan=german&thumb=l
+  thumb: false
+  year: 2022
+  website: https://dariogoetz.github.io/noted-layout/index.html
