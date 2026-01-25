@@ -48,6 +48,7 @@ jobs:
 
   deploy:
     needs: update-data
+    if: always() && needs.update-data.result == 'success'
     uses: ./.github/workflows/deploy_website.yml
     permissions:
       contents: read
