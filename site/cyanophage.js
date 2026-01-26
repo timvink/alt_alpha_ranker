@@ -81,6 +81,8 @@ const THUMB_LEFT_INNER_KEY_INDEX = 36;
 const THUMB_LEFT_OUTER_KEY_INDEX = 37;
 const THUMB_RIGHT_OUTER_KEY_INDEX = 38;
 const THUMB_RIGHT_INNER_KEY_INDEX = 39;
+const CYANOPHAGE_BACK_SUFFIX = 'back';
+const CYANOPHAGE_MAX_LAYOUT_LENGTH = 35;
 
 /**
  * Converts a Cyanophage URL to a KeyboardLayout data structure
@@ -255,6 +257,11 @@ function parseCyanophageUrl(rawValue) {
             if (rawValue.includes('&thumb=r')) thumbSide = 'r';
             if (rawValue.includes('&thumb=l')) thumbSide = 'l';
         }
+    }
+
+    if (layoutString && layoutString.length > CYANOPHAGE_MAX_LAYOUT_LENGTH && layoutString.endsWith(CYANOPHAGE_BACK_SUFFIX)) {
+        // Cyanophage appends "back" after the layout string for backspace; ignore it.
+        layoutString = layoutString.slice(0, -CYANOPHAGE_BACK_SUFFIX.length);
     }
     
     return { layoutString, thumbSide };

@@ -302,3 +302,61 @@ describe('Bunya layout conversion', () => {
   });
 });
 
+describe('Cyanophage layout with back suffix', () => {
+  const back_layout = new KeyboardLayout();
+  
+  // Left hand top row
+  back_layout.setKeyByIndex(KeyIndex.L_TOP_PINKY_OUTER, ' ');
+  back_layout.setKeyByIndex(KeyIndex.L_TOP_PINKY, 'f');
+  back_layout.setKeyByIndex(KeyIndex.L_TOP_RING, 'd');
+  back_layout.setKeyByIndex(KeyIndex.L_TOP_MIDDLE, 'h');
+  back_layout.setKeyByIndex(KeyIndex.L_TOP_INDEX, 'w');
+  back_layout.setKeyByIndex(KeyIndex.L_TOP_INDEX_INNER, 'j');
+  
+  // Right hand top row
+  back_layout.setKeyByIndex(KeyIndex.R_TOP_INDEX_INNER, '/');
+  back_layout.setKeyByIndex(KeyIndex.R_TOP_INDEX, 'u');
+  back_layout.setKeyByIndex(KeyIndex.R_TOP_MIDDLE, 'l');
+  back_layout.setKeyByIndex(KeyIndex.R_TOP_RING, 'o');
+  back_layout.setKeyByIndex(KeyIndex.R_TOP_PINKY, 'y');
+  back_layout.setKeyByIndex(KeyIndex.R_TOP_PINKY_OUTER, ',');
+  
+  // Left hand home row
+  back_layout.setKeyByIndex(KeyIndex.L_HOME_PINKY_OUTER, ' ');
+  back_layout.setKeyByIndex(KeyIndex.L_HOME_PINKY, 's');
+  back_layout.setKeyByIndex(KeyIndex.L_HOME_RING, 't');
+  back_layout.setKeyByIndex(KeyIndex.L_HOME_MIDDLE, 'n');
+  back_layout.setKeyByIndex(KeyIndex.L_HOME_INDEX, 'c');
+  back_layout.setKeyByIndex(KeyIndex.L_HOME_INDEX_INNER, 'b');
+  
+  // Right hand home row
+  back_layout.setKeyByIndex(KeyIndex.R_HOME_INDEX_INNER, '-');
+  back_layout.setKeyByIndex(KeyIndex.R_HOME_INDEX, 'e');
+  back_layout.setKeyByIndex(KeyIndex.R_HOME_MIDDLE, 'r');
+  back_layout.setKeyByIndex(KeyIndex.R_HOME_RING, 'a');
+  back_layout.setKeyByIndex(KeyIndex.R_HOME_PINKY, 'i');
+  back_layout.setKeyByIndex(KeyIndex.R_HOME_PINKY_OUTER, '.');
+  
+  // Left hand bottom row
+  back_layout.setKeyByIndex(KeyIndex.L_BOTTOM_PINKY_OUTER, 'v');
+  back_layout.setKeyByIndex(KeyIndex.L_BOTTOM_PINKY, 'k');
+  back_layout.setKeyByIndex(KeyIndex.L_BOTTOM_RING, 'm');
+  back_layout.setKeyByIndex(KeyIndex.L_BOTTOM_MIDDLE, 'g');
+  back_layout.setKeyByIndex(KeyIndex.L_BOTTOM_INDEX, 'p');
+  back_layout.setKeyByIndex(KeyIndex.L_BOTTOM_INDEX_INNER, 'z');
+  
+  // Right hand bottom row
+  back_layout.setKeyByIndex(KeyIndex.R_BOTTOM_INDEX_INNER, ';');
+  back_layout.setKeyByIndex(KeyIndex.R_BOTTOM_INDEX, "'");
+  back_layout.setKeyByIndex(KeyIndex.R_BOTTOM_MIDDLE, 'x');
+  back_layout.setKeyByIndex(KeyIndex.R_BOTTOM_RING, 'q');
+  back_layout.setKeyByIndex(KeyIndex.R_BOTTOM_PINKY, '\\');
+  back_layout.setKeyByIndex(KeyIndex.R_BOTTOM_PINKY_OUTER, ' ');
+  
+  const back_url = 'https://cyanophage.github.io/playground.html?layout=fdhwj%2Fuloy%2Cstncb-erai.kmgpz%3B%27xq%5Cv%5Eback&mode=iso&lan=english&thumb=l';
+  
+  test('should ignore back suffix in Cyanophage layout URL', () => {
+    const converted_layout = cyanophageToKeyboard(back_url);
+    expectLayoutsEqual(converted_layout, back_layout);
+  });
+});
