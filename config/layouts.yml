@@ -122,6 +122,11 @@ layouts:
   year: 2025
   thumb: false
   website: https://github.com/binarybottle/engram
+- name: enthium_v9
+  link: https://cyanophage.github.io/playground.html?layout=qyuo%2Fxldwz*ciea%2Ckhtnsv%27-%3D.%3Bjmgpf%5Crb&thumb=r&mode=ergo&lan=english
+  website: https://github.com/sunaku/enthium/tree/v9
+  thumb: true
+  year: 2025
 - name: enthium_v10
   link: https://cyanophage.github.io/playground.html?layout=zyuo%3Bqldpx%5Cciea%2Ckhtnsf%27-%3D.%2Fjmgbv*rw&mode=ergo&lan=english&thumb=r
   website: https://github.com/sunaku/enthium/tree/v10
@@ -142,11 +147,11 @@ layouts:
   thumb: true
   year: 2025
   website: https://github.com/sunaku/enthium/releases/tag/v13
-- name: enthium_v9
-  link: https://cyanophage.github.io/playground.html?layout=qyuo%2Fxldwz*ciea%2Ckhtnsv%27-%3D.%3Bjmgpf%5Crb&thumb=r&mode=ergo&lan=english
-  website: https://github.com/sunaku/enthium/tree/v9
+- name: enthium_v14
+  link: https://cyanophage.github.io/playground.html?layout=qyou%3Dxldpz-ciae-khtnsw'%2C.%3B%2Fjmgfv%5Crb&mode=ergo&thumb=r
   thumb: true
-  year: 2025
+  year: 2026
+  website: https://github.com/sunaku/enthium/releases/v14
 - name: focal
   link: https://cyanophage.github.io/playground.html?layout=vlhgkqfouj-srntbycaei%2Fzxmdp%27w.%3B%2C%5C%5E&mode=ergo&lan=english
   thumb: false
