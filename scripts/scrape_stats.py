@@ -157,13 +157,14 @@ def update_url_mode(url: str, mode: str) -> str:
         return url + f'?mode={url_mode}'
 
 
-def scrape_layout_stats(url: str, mode: str = 'ergo', silent: bool = False) -> dict:
+def scrape_layout_stats(url: str, mode: str = 'ergo', language: str = 'english', silent: bool = False) -> dict:
     """
     Scrape statistics from a keyboard layout URL.
     
     Args:
         url: The cyanophage URL to scrape
         mode: The keyboard mode (ergo, ansi, iso, anglemod)
+        language: The language to use for statistics (english, dutch, etc.)
         silent: If True, suppress error messages
     
     Returns dict with metric keys and values, or None values on error.
@@ -178,6 +179,13 @@ def scrape_layout_stats(url: str, mode: str = 'ergo', silent: bool = False) -> d
             
             # Wait for initial calculations to complete
             page.wait_for_timeout(2000)
+            
+            # For non-English languages, we need to explicitly call selectLanguage()
+            # The URL parameter alone doesn't guarantee the language data is loaded
+            if language != 'english':
+                page.evaluate(f"selectLanguage('{language}', {{}})")
+                # Wait for the language data to be fetched and recalculated
+                page.wait_for_timeout(2000)
             
             # For anglemod, click the anglemod button (activateIso(true))
             if mode == 'anglemod':
@@ -449,7 +457,7 @@ def main():
             # Update description to show current layout
             progress.update(task, description=f"[cyan]{layout_name}[/cyan] ({mode}/{language})")
             
-            stats = scrape_layout_stats(url, mode=mode, silent=True)
+            stats = scrape_layout_stats(url, mode=mode, language=language, silent=True)
             
             # Check for errors
             if stats.get('effort') is None:

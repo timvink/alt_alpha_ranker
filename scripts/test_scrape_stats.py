@@ -162,5 +162,29 @@ def test_scrape_layout_stats_iso_vs_anglemod():
     assert stats_anglemod['same_finger_bigrams'] == '1.12%', f"Expected anglemod SFB to be '1.12%', got '{stats_anglemod['same_finger_bigrams']}'"
 
 
+@pytest.mark.integration
+def test_scrape_layout_stats_english_vs_dutch():
+    """
+    Test that different languages produce different SFB stats for the same layout.
+    
+    Uses this layout: https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5Eback&mode=iso&thumb=l
+    
+    Expected values:
+    - english: same_finger_bigrams = 0.64%
+    - dutch: same_finger_bigrams = 1.18%
+    """
+    base_url = "https://cyanophage.github.io/playground.html?layout=bldcvjfou%2C-nrtsgyhaei%2Fxqmwzkp%27%3B.%5C%5Eback&mode=iso&thumb=l"
+    
+    # Test English
+    url_english = update_url_language(base_url, 'english')
+    stats_english = scrape_layout_stats(url_english, mode='iso', language='english')
+    assert stats_english['same_finger_bigrams'] == '0.64%', f"Expected English SFB to be '0.64%', got '{stats_english['same_finger_bigrams']}'"
+    
+    # Test Dutch
+    url_dutch = update_url_language(base_url, 'dutch')
+    stats_dutch = scrape_layout_stats(url_dutch, mode='iso', language='dutch')
+    assert stats_dutch['same_finger_bigrams'] == '1.18%', f"Expected Dutch SFB to be '1.18%', got '{stats_dutch['same_finger_bigrams']}'"
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
