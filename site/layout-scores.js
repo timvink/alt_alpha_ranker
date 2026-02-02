@@ -31,6 +31,18 @@ export function parseMetricValue(value) {
 }
 
 /**
+ * Check if a layout has valid metrics data.
+ * @param {Object} metrics - The metrics object for a specific language
+ * @returns {boolean} True if metrics exist and have valid values
+ */
+export function hasValidMetrics(metrics) {
+    if (!metrics) return false;
+    // Check if at least one key metric has a valid value
+    const sfb = metrics.same_finger_bigrams;
+    return sfb !== undefined && sfb !== null && sfb !== 'N/A';
+}
+
+/**
  * Extract all metric values from a layout's metrics object.
  * @param {Object} metrics - The metrics object for a specific language
  * @returns {Object} Object with sfb, sfs, lsb, scissors, rolls, redirect, pinky values
@@ -125,6 +137,24 @@ export function calculateRawScore(normalizedValues, weights) {
 }
 
 /**
+ * Get metrics for a layout given mode and language.
+ * Supports both new structure (metrics.{mode}.{language}) and old structure (metrics.{language}).
+ * @param {Object} layout - Layout object
+ * @param {string} mode - Keyboard mode (ergo, ansi, iso, anglemod)
+ * @param {string} language - Language
+ * @returns {Object} Metrics object
+ */
+function getLayoutMetrics(layout, mode, language) {
+    // Try new structure: metrics.{mode}.{language}
+    const modeMetrics = layout.metrics?.[mode];
+    if (modeMetrics && modeMetrics[language]) {
+        return modeMetrics[language];
+    }
+    // Fallback to old structure: metrics.{language}
+    return layout.metrics?.[language] || {};
+}
+
+/**
  * Calculate scores for all layouts using QWERTY-fixed normalization.
  * 
  * The algorithm:
@@ -137,9 +167,10 @@ export function calculateRawScore(normalizedValues, weights) {
  * @param {Array<Object>} layouts - Array of layout objects with metrics
  * @param {Object} weights - Object with weights for each metric (sfb, sfs, lsb, scissors, rolls, redirect, pinky)
  * @param {string} language - Language to use for metrics (e.g., 'english')
+ * @param {string} mode - Keyboard mode to use (e.g., 'ergo', 'ansi', 'iso', 'anglemod')
  * @returns {Object} Object mapping layout names to scores (0 = QWERTY level, 100 = fixed best, can be negative)
  */
-export function calculateScores(layouts, weights, language = 'english') {
+export function calculateScores(layouts, weights, language = 'english', mode = 'ergo') {
     if (!layouts || layouts.length === 0) {
         return {};
     }
@@ -149,25 +180,32 @@ export function calculateScores(layouts, weights, language = 'english') {
     if (!qwertyLayout) {
         // Fallback: if no QWERTY, use worst values as reference
         console.warn('QWERTY layout not found, falling back to min-max normalization');
-        return calculateScoresFallback(layouts, weights, language);
+        return calculateScoresFallback(layouts, weights, language, mode);
     }
 
-    // Extract QWERTY's metric values for this language
-    const qwertyMetrics = qwertyLayout.metrics?.[language] || {};
+    // Extract QWERTY's metric values for this mode and language
+    const qwertyMetrics = getLayoutMetrics(qwertyLayout, mode, language);
     const qwertyValues = extractMetricValues(qwertyMetrics);
 
-    // Extract metric values for all layouts
+    // Extract metric values for all layouts (only those with valid metrics)
     const metricValuesList = layouts.map(layout => {
-        const metrics = layout.metrics?.[language] || {};
+        const metrics = getLayoutMetrics(layout, mode, language);
+        const valid = hasValidMetrics(metrics);
         return {
             name: layout.name,
-            values: extractMetricValues(metrics)
+            values: extractMetricValues(metrics),
+            valid
         };
     });
 
     // Calculate normalized values and raw scores using fixed best values
     // Fixed best: 0 for lower-is-better, 100 for higher-is-better (rolls, alternation)
-    const rawScores = metricValuesList.map(({ name, values }) => {
+    const rawScores = metricValuesList.map(({ name, values, valid }) => {
+        // Skip layouts without valid metrics
+        if (!valid) {
+            return { name, rawScore: null };
+        }
+        
         const normalizedValues = {
             sfb: normalizeToQwerty(values.sfb, qwertyValues.sfb, true),
             sfs: normalizeToQwerty(values.sfs, qwertyValues.sfs, true),
@@ -189,6 +227,11 @@ export function calculateScores(layouts, weights, language = 'english') {
     // Convert to percentage (0 = QWERTY, 100 = fixed best)
     const scores = {};
     rawScores.forEach(({ name, rawScore }) => {
+        // Skip layouts without valid metrics
+        if (rawScore === null) {
+            scores[name] = null;
+            return;
+        }
         // Score as percentage of max possible improvement over QWERTY
         const score = maxRawScore > 0 ? (rawScore / maxRawScore) * 100 : 0;
         scores[name] = Math.round(score * 10) / 10; // Round to 1 decimal
@@ -201,19 +244,24 @@ export function calculateScores(layouts, weights, language = 'english') {
  * Fallback score calculation when QWERTY is not in the dataset.
  * Uses min-max normalization as before.
  */
-function calculateScoresFallback(layouts, weights, language) {
+function calculateScoresFallback(layouts, weights, language, mode = 'ergo') {
     const metricValuesList = layouts.map(layout => {
-        const metrics = layout.metrics?.[language] || {};
+        const metrics = getLayoutMetrics(layout, mode, language);
+        const valid = hasValidMetrics(metrics);
         return {
             name: layout.name,
-            values: extractMetricValues(metrics)
+            values: extractMetricValues(metrics),
+            valid
         };
     });
+
+    // Filter only valid layouts for min/max calculation
+    const validMetricValuesList = metricValuesList.filter(m => m.valid);
 
     const keys = ['sfb', 'sfs', 'lsb', 'scissors', 'rolls', 'alternation', 'redirect', 'pinky'];
     const minMax = {};
     keys.forEach(key => {
-        const values = metricValuesList.map(m => m.values[key]);
+        const values = validMetricValuesList.map(m => m.values[key]);
         minMax[key] = { min: Math.min(...values), max: Math.max(...values) };
     });
 
@@ -222,7 +270,12 @@ function calculateScoresFallback(layouts, weights, language) {
         return (value - min) / (max - min);
     };
 
-    const rawScores = metricValuesList.map(({ name, values }) => {
+    const rawScores = metricValuesList.map(({ name, values, valid }) => {
+        // Skip layouts without valid metrics
+        if (!valid) {
+            return { name, rawScore: null };
+        }
+        
         const rawScore = 
             weights.sfb * (1 - normalize(values.sfb, minMax.sfb.min, minMax.sfb.max)) +
             weights.sfs * (1 - normalize(values.sfs, minMax.sfs.min, minMax.sfs.max)) +
@@ -235,11 +288,16 @@ function calculateScoresFallback(layouts, weights, language) {
         return { name, rawScore };
     });
 
-    const rawMin = Math.min(...rawScores.map(r => r.rawScore));
-    const rawMax = Math.max(...rawScores.map(r => r.rawScore));
+    const validRawScores = rawScores.filter(r => r.rawScore !== null);
+    const rawMin = Math.min(...validRawScores.map(r => r.rawScore));
+    const rawMax = Math.max(...validRawScores.map(r => r.rawScore));
 
     const scores = {};
     rawScores.forEach(({ name, rawScore }) => {
+        if (rawScore === null) {
+            scores[name] = null;
+            return;
+        }
         const finalScore = rawMax === rawMin ? 50 : 100 * (rawScore - rawMin) / (rawMax - rawMin);
         scores[name] = Math.round(finalScore * 10) / 10;
     });
@@ -250,6 +308,7 @@ function calculateScoresFallback(layouts, weights, language) {
 // Default export for convenience
 export default {
     parseMetricValue,
+    hasValidMetrics,
     extractMetricValues,
     normalizeToQwerty,
     findQwertyLayout,

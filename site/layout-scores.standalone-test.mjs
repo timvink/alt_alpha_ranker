@@ -7,6 +7,7 @@
 
 import {
     parseMetricValue,
+    hasValidMetrics,
     extractMetricValues,
     normalizeToQwerty,
     findQwertyLayout,
@@ -245,6 +246,29 @@ console.log(`octa8: ${scores.octa8} -> ${extendedScores.octa8}`);
 // With QWERTY-fixed approach, scores should be identical
 assertApproxEqual(scores.graphite, extendedScores.graphite, 0.01, 'graphite score UNCHANGED with more layouts');
 assertApproxEqual(scores.octa8, extendedScores.octa8, 0.01, 'octa8 score UNCHANGED with more layouts');
+
+// Test hasValidMetrics
+console.log('\n=== Testing hasValidMetrics ===');
+assert(hasValidMetrics(graphiteMetrics) === true, 'hasValidMetrics returns true for valid metrics');
+assert(hasValidMetrics(null) === false, 'hasValidMetrics returns false for null');
+assert(hasValidMetrics(undefined) === false, 'hasValidMetrics returns false for undefined');
+assert(hasValidMetrics({}) === false, 'hasValidMetrics returns false for empty object');
+assert(hasValidMetrics({ same_finger_bigrams: 'N/A' }) === false, 'hasValidMetrics returns false when SFB is N/A');
+assert(hasValidMetrics({ same_finger_bigrams: null }) === false, 'hasValidMetrics returns false when SFB is null');
+
+// Test layouts with missing data get null scores
+console.log('\n=== Testing null scores for layouts with missing data ===');
+const layoutsWithMissingData = [
+    { name: "qwerty", metrics: { english: qwertyMetrics } },
+    { name: "graphite", metrics: { english: graphiteMetrics } },
+    { name: "enthium_v14", metrics: {} }  // No data
+];
+
+const scoresWithMissingData = calculateScores(layoutsWithMissingData, equalWeights, 'english', 'ergo');
+console.log('Scores with missing data:', scoresWithMissingData);
+assert(scoresWithMissingData.qwerty === 0, 'QWERTY still scores 0% when layout with missing data present');
+assert(typeof scoresWithMissingData.graphite === 'number', 'graphite has numeric score');
+assert(scoresWithMissingData.enthium_v14 === null, 'enthium_v14 (no data) has null score');
 
 // Summary
 console.log('\n=== Test Summary ===');
