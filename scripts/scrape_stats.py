@@ -115,8 +115,18 @@ def needs_scraping(layout_data: dict, language: str, full_refresh: bool) -> bool
 
 
 def update_url_language(url: str, language: str) -> str:
-    """Update the language parameter in a URL."""
-    return re.sub(r'(&lan=)[^&]+', f'\\1{language}', url)
+    """Update or add the language parameter in a URL."""
+    # Check if &lan= already exists in the URL
+    if '&lan=' in url:
+        return re.sub(r'(&lan=)[^&]+', f'\\1{language}', url)
+    # Check if ?lan= exists (language as first query param)
+    elif '?lan=' in url:
+        return re.sub(r'(\?lan=)[^&]+', f'\\1{language}', url)
+    # No lan= parameter exists, add it
+    elif '?' in url:
+        return url + f'&lan={language}'
+    else:
+        return url + f'?lan={language}'
 
 
 def scrape_layout_stats(url: str, silent: bool = False) -> dict:

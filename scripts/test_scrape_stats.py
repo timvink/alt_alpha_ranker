@@ -9,7 +9,35 @@ uv run scripts/test_scrape_stats.py
 """
 
 import pytest
-from scrape_stats import scrape_layout_stats
+from scrape_stats import scrape_layout_stats, update_url_language
+
+
+def test_update_url_language_with_existing_lan():
+    """Test that update_url_language replaces existing &lan= parameter."""
+    url = "https://cyanophage.github.io/playground.html?layout=abc&mode=ergo&lan=english"
+    result = update_url_language(url, "french")
+    assert result == "https://cyanophage.github.io/playground.html?layout=abc&mode=ergo&lan=french"
+
+
+def test_update_url_language_without_lan():
+    """Test that update_url_language adds lan= when missing."""
+    url = "https://cyanophage.github.io/playground.html?layout=abc&mode=ergo"
+    result = update_url_language(url, "french")
+    assert result == "https://cyanophage.github.io/playground.html?layout=abc&mode=ergo&lan=french"
+
+
+def test_update_url_language_with_lan_as_first_param():
+    """Test that update_url_language handles lan= as first query parameter."""
+    url = "https://cyanophage.github.io/playground.html?lan=english&layout=abc"
+    result = update_url_language(url, "german")
+    assert result == "https://cyanophage.github.io/playground.html?lan=german&layout=abc"
+
+
+def test_update_url_language_no_query_params():
+    """Test that update_url_language adds lan= when no query params exist."""
+    url = "https://cyanophage.github.io/playground.html"
+    result = update_url_language(url, "spanish")
+    assert result == "https://cyanophage.github.io/playground.html?lan=spanish"
 
 
 @pytest.mark.integration

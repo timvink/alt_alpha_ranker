@@ -14,6 +14,23 @@ let hasThumb = false;
 let existingLayouts = []; // Loaded from data.json
 
 /**
+ * Strip language parameter from a Cyanophage URL.
+ * The scraper will add the appropriate language when scraping for each language.
+ * @param {string} url - The URL to clean
+ * @returns {string} - URL without &lan= or ?lan= parameters
+ */
+function stripLanguageParam(url) {
+    if (!url) return url;
+    // Remove &lan=... (when lan is not the first param)
+    let cleaned = url.replace(/&lan=[^&]*/g, '');
+    // Remove ?lan=...& (when lan is the first param but not the only one)
+    cleaned = cleaned.replace(/\?lan=[^&]*&/, '?');
+    // Remove ?lan=... (when lan is the only param - unlikely but handle it)
+    cleaned = cleaned.replace(/\?lan=[^&]*$/, '');
+    return cleaned;
+}
+
+/**
  * Load existing layouts from data.json
  */
 async function loadExistingLayouts() {
@@ -448,8 +465,11 @@ function updateYamlPreview() {
     const layoutYear = document.getElementById('layoutYear').value.trim();
     const layoutWebsite = document.getElementById('layoutWebsite').value.trim();
     
+    // Strip language parameter - the scraper will add appropriate language when scraping
+    const cleanUrl = stripLanguageParam(currentUrl);
+    
     let yaml = `- name: ${layoutName.toLowerCase().replace(/\s+/g, '_')}
-  link: ${currentUrl}
+  link: ${cleanUrl}
   thumb: ${hasThumb}`;
     
     if (layoutYear) {
