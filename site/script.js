@@ -7,8 +7,9 @@ let currentThumbFilter = 'all';
 let pinnedLayouts = new Set();
 let starredLayouts = new Set();
 
-// Expose currentLanguage globally for accordion to access
+// Expose currentLanguage and currentMode globally for accordion to access
 window.currentLanguage = 'english';
+window.currentMode = 'ergo';
 
 // Score weights (0-100 for each metric)
 let scoreWeights = {
@@ -40,6 +41,11 @@ function updateUrlParams() {
     // Add language (only if not default)
     if (window.currentLanguage && window.currentLanguage !== 'english') {
         params.set('lang', window.currentLanguage);
+    }
+    
+    // Add mode (only if not default)
+    if (window.currentMode && window.currentMode !== 'ergo') {
+        params.set('mode', window.currentMode);
     }
     
     // Add search filter (only if not empty)
@@ -97,6 +103,12 @@ function loadFromUrlParams() {
         window.currentLanguage = lang;
     }
     
+    // Load mode
+    const mode = params.get('mode');
+    if (mode) {
+        window.currentMode = mode;
+    }
+    
     // Load search filter
     const search = params.get('search');
     if (search) {
@@ -143,6 +155,7 @@ function loadFromUrlParams() {
     return {
         hasUrlParams: params.toString().length > 0,
         lang,
+        mode,
         search,
         preset,
         weights,
@@ -178,13 +191,13 @@ function saveSelectedPreset(presetName) {
     }
 }
 
-// Global scores cache - recalculated when weights change or language changes
+// Global scores cache - recalculated when weights change, language changes, or mode changes
 let cachedScores = {};
 
 // Recalculate and cache scores for all layouts using the layout-scores module
 function recalculateAllScores() {
     if (layoutsData.length > 0) {
-        cachedScores = calculateLayoutScores(layoutsData, scoreWeights, window.currentLanguage);
+        cachedScores = calculateLayoutScores(layoutsData, scoreWeights, window.currentLanguage, window.currentMode);
     }
 }
 
@@ -415,6 +428,17 @@ function populateLanguageDropdown(languages) {
     updateTryLayoutLink();
 }
 
+// Initialize mode select dropdown
+function initModeSelect() {
+    const select = document.getElementById('modeSelect');
+    if (!select) return;
+    
+    // Set saved mode or default to ergo
+    const savedMode = localStorage.getItem('selectedMode') || 'ergo';
+    window.currentMode = savedMode;
+    select.value = savedMode;
+}
+
 // Language filter functionality
 function setupLanguageFilter() {
     document.getElementById('languageSelect').addEventListener('change', (e) => {
@@ -430,6 +454,31 @@ function setupLanguageFilter() {
         }
         
         // Recalculate scores for new language and re-render
+        recalculateAllScores();
+        const filtered = getFilteredData();
+        const sorted = sortData(filtered);
+        renderTable(sorted);
+        
+        // Update URL params
+        updateUrlParams();
+    });
+}
+
+// Mode filter functionality
+function setupModeFilter() {
+    const modeSelect = document.getElementById('modeSelect');
+    if (!modeSelect) return;
+    
+    modeSelect.addEventListener('change', (e) => {
+        window.currentMode = e.target.value;
+        localStorage.setItem('selectedMode', window.currentMode);
+        
+        // Refresh any open accordions to update the stats URL
+        if (window.keyboardAccordion) {
+            window.keyboardAccordion.refreshAllOpen();
+        }
+        
+        // Recalculate scores for new mode and re-render
         recalculateAllScores();
         const filtered = getFilteredData();
         const sorted = sortData(filtered);
@@ -469,8 +518,15 @@ function updateCyanophageUrl(url) {
     }
 }
 
-// Get metrics for current language
+// Get metrics for current mode and language
 function getMetrics(layout) {
+    // New structure: metrics.{mode}.{language}
+    // Fall back to old structure metrics.{language} for backward compatibility
+    const modeMetrics = layout.metrics?.[window.currentMode];
+    if (modeMetrics && modeMetrics[window.currentLanguage]) {
+        return modeMetrics[window.currentLanguage];
+    }
+    // Backward compatibility: try old structure metrics.{language}
     return layout.metrics?.[window.currentLanguage] || {};
 }
 
@@ -537,7 +593,7 @@ async function loadData() {
         layoutsData = data.layouts;
         allLanguages = data.languages || ['english'];
         
-        // Populate language dropdown
+        // Populate language dropdown and setup filter
         populateLanguageDropdown(allLanguages);
         setupLanguageFilter();
         
@@ -545,6 +601,16 @@ async function loadData() {
         if (urlState.lang && allLanguages.includes(urlState.lang)) {
             window.currentLanguage = urlState.lang;
             document.getElementById('languageSelect').value = urlState.lang;
+        }
+        
+        // Initialize mode dropdown and setup filter
+        initModeSelect();
+        setupModeFilter();
+        
+        // If URL had a mode param, override the default/saved mode
+        if (urlState.mode) {
+            window.currentMode = urlState.mode;
+            document.getElementById('modeSelect').value = urlState.mode;
         }
         
         // Setup weight controls
@@ -628,7 +694,7 @@ function renderTable(data) {
         
         // Get the calculated score
         const score = scores[layout.name];
-        const scoreDisplay = score !== undefined ? `${score.toFixed(1)}%` : 'N/A';
+        const scoreDisplay = (score !== undefined && score !== null) ? `${score.toFixed(1)}%` : 'N/A';
         
         // Calculate rolls in (inward rolls only - more comfortable than outward rolls)
         const calculateRolls = (metrics) => {
@@ -736,9 +802,12 @@ function sortData(data) {
                 aVal = starredLayouts.has(a.name) ? 1 : 0;
                 bVal = starredLayouts.has(b.name) ? 1 : 0;
             } else if (currentSort.column === 'score') {
-                // Sort by calculated score
-                aVal = scores[a.name] || 0;
-                bVal = scores[b.name] || 0;
+                // Sort by calculated score (null scores go to bottom)
+                const aScore = scores[a.name];
+                const bScore = scores[b.name];
+                // Use -Infinity for null scores so they sort to bottom
+                aVal = (aScore !== null && aScore !== undefined) ? aScore : -Infinity;
+                bVal = (bScore !== null && bScore !== undefined) ? bScore : -Infinity;
             } else if (currentSort.column === 'rolls') {
                 // Calculate rolls in for sorting (inward rolls only)
                 const aMetrics = getMetrics(a);

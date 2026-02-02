@@ -9,7 +9,7 @@ uv run scripts/test_scrape_stats.py
 """
 
 import pytest
-from scrape_stats import scrape_layout_stats, update_url_language
+from scrape_stats import scrape_layout_stats, update_url_language, update_url_mode
 
 
 def test_update_url_language_with_existing_lan():
@@ -38,6 +38,27 @@ def test_update_url_language_no_query_params():
     url = "https://cyanophage.github.io/playground.html"
     result = update_url_language(url, "spanish")
     assert result == "https://cyanophage.github.io/playground.html?lan=spanish"
+
+
+def test_update_url_mode_with_existing_mode():
+    """Test that update_url_mode replaces existing &mode= parameter."""
+    url = "https://cyanophage.github.io/playground.html?layout=abc&mode=ergo"
+    result = update_url_mode(url, "iso")
+    assert result == "https://cyanophage.github.io/playground.html?layout=abc&mode=iso"
+
+
+def test_update_url_mode_without_mode():
+    """Test that update_url_mode adds mode= when missing."""
+    url = "https://cyanophage.github.io/playground.html?layout=abc"
+    result = update_url_mode(url, "ansi")
+    assert result == "https://cyanophage.github.io/playground.html?layout=abc&mode=ansi"
+
+
+def test_update_url_mode_anglemod_uses_iso():
+    """Test that anglemod mode uses iso in the URL (anglemod is activated via JS)."""
+    url = "https://cyanophage.github.io/playground.html?layout=abc&mode=ergo"
+    result = update_url_mode(url, "anglemod")
+    assert result == "https://cyanophage.github.io/playground.html?layout=abc&mode=iso"
 
 
 @pytest.mark.integration
@@ -117,6 +138,28 @@ def test_scrape_layout_stats_all_metrics():
         else:
             # Should be a valid number
             float(value)
+
+
+@pytest.mark.integration
+def test_scrape_layout_stats_iso_vs_anglemod():
+    """
+    Test that iso and anglemod modes produce different SFB stats.
+    
+    Uses this layout: https://cyanophage.github.io/playground.html?layout=qwmbzjfou%3B-nrstgyheia%27xlcdvkp%2C.%2F%5C%5E
+    
+    Expected values:
+    - iso mode: same_finger_bigrams = 0.86%
+    - anglemod mode: same_finger_bigrams = 1.12%
+    """
+    url = "https://cyanophage.github.io/playground.html?layout=qwmbzjfou%3B-nrstgyheia%27xlcdvkp%2C.%2F%5C%5E&mode=iso&lan=english"
+    
+    # Test ISO mode
+    stats_iso = scrape_layout_stats(url, mode='iso')
+    assert stats_iso['same_finger_bigrams'] == '0.86%', f"Expected ISO SFB to be '0.86%', got '{stats_iso['same_finger_bigrams']}'"
+    
+    # Test anglemod mode (same URL but different mode triggers the anglemod button)
+    stats_anglemod = scrape_layout_stats(url, mode='anglemod')
+    assert stats_anglemod['same_finger_bigrams'] == '1.12%', f"Expected anglemod SFB to be '1.12%', got '{stats_anglemod['same_finger_bigrams']}'"
 
 
 if __name__ == '__main__':

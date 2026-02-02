@@ -376,7 +376,8 @@ body.dark-mode .filter-group label {
     cursor: pointer;
 }
 
-.language-select {
+.language-select,
+.mode-select {
     padding: 0.25rem 0.5rem;
     border: none;
     border-radius: 0.25rem;
@@ -387,21 +388,25 @@ body.dark-mode .filter-group label {
     color: #4a5568;
 }
 
-.language-select:hover {
+.language-select:hover,
+.mode-select:hover {
     background-color: rgba(102, 126, 234, 0.1);
 }
 
-.language-select:focus {
+.language-select:focus,
+.mode-select:focus {
     outline: none;
     background-color: rgba(102, 126, 234, 0.1);
 }
 
-body.dark-mode .language-select {
+body.dark-mode .language-select,
+body.dark-mode .mode-select {
     background-color: transparent;
     color: #cbd5e0;
 }
 
-body.dark-mode .language-select:hover {
+body.dark-mode .language-select:hover,
+body.dark-mode .mode-select:hover {
     background-color: rgba(102, 126, 234, 0.2);
 }
 

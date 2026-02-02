@@ -2,7 +2,7 @@
 Script to scrape keyboard layout statistics from cyanophage.github.io playground.
 
 Reads layouts from config/layouts.yml and languages from config/languages.yml
-Scrapes statistics for each layout in each language.
+Scrapes statistics for each layout in each language and keyboard mode.
 
 Outputs results to data.json for use by static site generator.
 
@@ -27,6 +27,10 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskPr
 from rich.console import Console
 
 console = Console()
+
+# Keyboard modes to scrape
+# Note: anglemod uses mode=iso in URL but requires clicking the anglemod button
+MODES = ['ergo', 'ansi', 'iso', 'anglemod']
 
 
 def load_layouts(yml_path: str = "config/layouts.yml") -> list[dict]:
@@ -97,21 +101,25 @@ def has_invalid_metrics(metrics: dict) -> bool:
     return False
 
 
-def needs_scraping(layout_data: dict, language: str, full_refresh: bool) -> bool:
-    """Determine if a layout/language combination needs to be scraped."""
+def needs_scraping(layout_data: dict, mode: str, language: str, full_refresh: bool) -> bool:
+    """Determine if a layout/mode/language combination needs to be scraped."""
     if full_refresh:
         return True
     
-    # Check if this layout exists in the data
+    # Check if this layout has metrics
     if 'metrics' not in layout_data:
         return True
     
-    # Check if this language exists for the layout
-    if language not in layout_data['metrics']:
+    # Check if this mode exists for the layout
+    if mode not in layout_data['metrics']:
+        return True
+    
+    # Check if this language exists for the mode
+    if language not in layout_data['metrics'][mode]:
         return True
     
     # Check if the metrics have any invalid values
-    return has_invalid_metrics(layout_data['metrics'][language])
+    return has_invalid_metrics(layout_data['metrics'][mode][language])
 
 
 def update_url_language(url: str, language: str) -> str:
@@ -129,9 +137,34 @@ def update_url_language(url: str, language: str) -> str:
         return url + f'?lan={language}'
 
 
-def scrape_layout_stats(url: str, silent: bool = False) -> dict:
+def update_url_mode(url: str, mode: str) -> str:
+    """Update or add the mode parameter in a URL.
+    
+    For anglemod, we use mode=iso in the URL (anglemod button is clicked separately).
+    """
+    url_mode = 'iso' if mode == 'anglemod' else mode
+    
+    # Check if &mode= already exists in the URL
+    if '&mode=' in url:
+        return re.sub(r'(&mode=)[^&]+', f'\\1{url_mode}', url)
+    # Check if ?mode= exists (mode as first query param - unlikely but handle it)
+    elif '?mode=' in url:
+        return re.sub(r'(\?mode=)[^&]+', f'\\1{url_mode}', url)
+    # No mode= parameter exists, add it
+    elif '?' in url:
+        return url + f'&mode={url_mode}'
+    else:
+        return url + f'?mode={url_mode}'
+
+
+def scrape_layout_stats(url: str, mode: str = 'ergo', silent: bool = False) -> dict:
     """
     Scrape statistics from a keyboard layout URL.
+    
+    Args:
+        url: The cyanophage URL to scrape
+        mode: The keyboard mode (ergo, ansi, iso, anglemod)
+        silent: If True, suppress error messages
     
     Returns dict with metric keys and values, or None values on error.
     """
@@ -143,8 +176,14 @@ def scrape_layout_stats(url: str, silent: bool = False) -> dict:
             # Navigate to the page
             page.goto(url, wait_until='networkidle', timeout=30000)
             
-            # Wait for calculations to complete
+            # Wait for initial calculations to complete
             page.wait_for_timeout(2000)
+            
+            # For anglemod, click the anglemod button (activateIso(true))
+            if mode == 'anglemod':
+                page.evaluate("activateIso(true)")
+                # Wait for recalculation
+                page.wait_for_timeout(1500)
             
             stats = {}
             
@@ -299,7 +338,7 @@ def main():
     # Parse arguments
     parser = argparse.ArgumentParser(description='Scrape keyboard layout statistics')
     parser.add_argument('--full-refresh', action='store_true',
-                        help='Re-scrape all layouts and languages')
+                        help='Re-scrape all layouts, modes, and languages')
     args = parser.parse_args()
     
     # Load configurations
@@ -317,7 +356,7 @@ def main():
     
     # First pass: prepare all layout entries and count what needs scraping
     layout_entries = {}  # Use dict for easy lookup by name
-    scrape_tasks = []  # List of (layout_name, language, base_link) tuples
+    scrape_tasks = []  # List of (layout_name, mode, language, base_link) tuples
     
     for layout in layouts:
         name = layout.get('name', 'Unknown')
@@ -348,18 +387,25 @@ def main():
         
         layout_entries[name] = layout_data
         
-        # Check each language
-        for language in languages:
-            if needs_scraping(layout_data, language, args.full_refresh):
-                scrape_tasks.append((name, language, base_link))
+        # Check each mode and language combination
+        for mode in MODES:
+            # Initialize mode dict if it doesn't exist
+            if mode not in layout_data['metrics']:
+                layout_data['metrics'][mode] = {}
+            
+            for language in languages:
+                if needs_scraping(layout_data, mode, language, args.full_refresh):
+                    scrape_tasks.append((name, mode, language, base_link))
     
     # Calculate stats
     total_tasks = len(scrape_tasks)
-    total_skipped = len(layouts) * len(languages) - total_tasks
+    total_possible = len(layouts) * len(MODES) * len(languages)
+    total_skipped = total_possible - total_tasks
     
     # Print summary
     console.print(f"\n[bold]Keyboard Layout Scraper[/bold]")
     console.print(f"  Layouts: {len(layouts)}")
+    console.print(f"  Modes: {len(MODES)} ({', '.join(MODES)})")
     console.print(f"  Languages: {len(languages)} ({', '.join(languages)})")
     console.print(f"  Mode: {'[yellow]Full refresh[/yellow]' if args.full_refresh else '[green]Update missing/invalid only[/green]'}")
     console.print(f"  To scrape: [cyan]{total_tasks}[/cyan] | Already valid: [dim]{total_skipped}[/dim]\n")
@@ -367,6 +413,7 @@ def main():
     # Prepare results structure
     results = {
         'scraped_at': existing_data.get('scraped_at', datetime.now().isoformat()),
+        'modes': MODES,
         'languages': languages,
         'layouts': list(layout_entries.values())
     }
@@ -394,20 +441,24 @@ def main():
     ) as progress:
         task = progress.add_task("Scraping layouts...", total=total_tasks)
         
-        for layout_name, language, base_link in scrape_tasks:
-            url = update_url_language(base_link, language)
+        for layout_name, mode, language, base_link in scrape_tasks:
+            # Update URL with mode and language
+            url = update_url_mode(base_link, mode)
+            url = update_url_language(url, language)
             
             # Update description to show current layout
-            progress.update(task, description=f"[cyan]{layout_name}[/cyan] ({language})")
+            progress.update(task, description=f"[cyan]{layout_name}[/cyan] ({mode}/{language})")
             
-            stats = scrape_layout_stats(url, silent=True)
+            stats = scrape_layout_stats(url, mode=mode, silent=True)
             
             # Check for errors
             if stats.get('effort') is None:
                 errors += 1
             
-            # Store metrics in the layout entry
-            layout_entries[layout_name]['metrics'][language] = stats
+            # Store metrics in the layout entry (metrics.{mode}.{language})
+            if mode not in layout_entries[layout_name]['metrics']:
+                layout_entries[layout_name]['metrics'][mode] = {}
+            layout_entries[layout_name]['metrics'][mode][language] = stats
             scraped_count += 1
             
             # Save progress after each scrape (don't update timestamp until final save)

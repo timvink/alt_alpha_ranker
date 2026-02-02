@@ -14,12 +14,13 @@ let hasThumb = false;
 let existingLayouts = []; // Loaded from data.json
 
 /**
- * Strip language parameter from a Cyanophage URL.
+ * Strip language and default mode parameters from a Cyanophage URL.
  * The scraper will add the appropriate language when scraping for each language.
+ * Mode 'ergo' is the default and doesn't need to be in the URL.
  * @param {string} url - The URL to clean
- * @returns {string} - URL without &lan= or ?lan= parameters
+ * @returns {string} - URL without &lan= or &mode=ergo parameters
  */
-function stripLanguageParam(url) {
+function stripUrlParams(url) {
     if (!url) return url;
     // Remove &lan=... (when lan is not the first param)
     let cleaned = url.replace(/&lan=[^&]*/g, '');
@@ -27,6 +28,8 @@ function stripLanguageParam(url) {
     cleaned = cleaned.replace(/\?lan=[^&]*&/, '?');
     // Remove ?lan=... (when lan is the only param - unlikely but handle it)
     cleaned = cleaned.replace(/\?lan=[^&]*$/, '');
+    // Remove &mode=ergo (it's the default, no need to store it)
+    cleaned = cleaned.replace(/&mode=ergo/g, '');
     return cleaned;
 }
 
@@ -465,8 +468,8 @@ function updateYamlPreview() {
     const layoutYear = document.getElementById('layoutYear').value.trim();
     const layoutWebsite = document.getElementById('layoutWebsite').value.trim();
     
-    // Strip language parameter - the scraper will add appropriate language when scraping
-    const cleanUrl = stripLanguageParam(currentUrl);
+    // Strip language and default mode params - the scraper will add appropriate language when scraping
+    const cleanUrl = stripUrlParams(currentUrl);
     
     let yaml = `- name: ${layoutName.toLowerCase().replace(/\s+/g, '_')}
   link: ${cleanUrl}
