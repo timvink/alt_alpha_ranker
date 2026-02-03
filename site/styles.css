@@ -101,6 +101,66 @@ body.dark-mode .ascii-title:hover {
     margin-bottom: 1.5rem;
 }
 
+.header-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+    position: relative;
+}
+
+.github-link {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: all 0.3s ease;
+}
+
+.github-link:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+}
+
+body.dark-mode .github-link {
+    background: linear-gradient(135deg, rgba(159, 122, 234, 0.15) 0%, rgba(183, 148, 244, 0.15) 100%);
+    color: #9f7aea;
+}
+
+body.dark-mode .github-link:hover {
+    background: linear-gradient(135deg, #9f7aea 0%, #b794f4 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(159, 122, 234, 0.4);
+}
+
+@media (max-width: 768px) {
+    .github-link {
+        width: 32px;
+        height: 32px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .github-link {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+}
+
 .logo-link {
     text-decoration: none;
     display: block;
