@@ -26,9 +26,15 @@
 ██║  ██║███████╗██║       ██║  ██║███████╗██║     ██║  ██║██║  ██║
 ╚═╝  ╚═╝╚══════╝╚═╝       ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝</pre>
                 </a>
-                <a href="https://github.com/timvink/alt_alpha_ranker" target="_blank" class="github-link" title="View source on GitHub">
-                    <i class="fa-brands fa-github"></i>
-                </a>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                        <span class="theme-toggle-light">☀</span>
+                        <span class="theme-toggle-dark">☾</span>
+                    </button>
+                    <a href="https://github.com/timvink/alt_alpha_ranker" target="_blank" class="github-link" title="View source on GitHub">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                </div>
             </div>
             <nav class="main-nav">
                 <a href="index.html" class="nav-btn active">
@@ -47,171 +53,180 @@
         </header>
         
         <div class="intro-section">
-            <div class="intro-text">
-                <p>Explore alternative keyboard layouts. New to the scene? Checkout
-                Pascal Getreuer's <a href="https://getreuer.info/posts/keyboards/alt-layouts/index.html" target="_blank">guide to alt keyboard layouts</a>.</p>
-            </div>
-            <div class="usage-text">
-                <p>This table ranks layouts using <a href="https://cyanophage.github.io/" target="_blank">cyanophage.github.io</a>'s layout statistics data, based on various ergonomic metrics.</p>
-                <p>Don't rely on stats too much as there are many complex factors that make a good layout. There is no "best" layout as there are many trade-offs. Use the scoring system for exploration instead of ranking.</p>
-                <p>Use the <i class="fa-solid fa-thumbtack"></i> icon to pin layouts to the top, and the <i class="fa-solid fa-star"></i> icon to highlight that row. Click on a row to view the layout. The Score column combines all metrics.</p>
-            </div>
-        </div>
-
-        <div class="controls">
-            <input 
-                type="text" 
-                class="search-box" 
-                id="searchInput" 
-                placeholder="🔍 Search layouts..."
-            >
-            <div class="filter-group">
-                <label>
-                    <input type="radio" name="thumbFilter" value="all" checked>
-                    All
-                </label>
-                <label>
-                    <input type="radio" name="thumbFilter" value="true">
-                    With Thumbs
-                </label>
-                <label>
-                    <input type="radio" name="thumbFilter" value="false">
-                    No Thumbs
-                </label>
-            </div>
-            <div class="filter-group">
-                <label for="languageSelect">Language:</label>
-                <select id="languageSelect" class="language-select">
-                    <option value="english">English</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="modeSelect">Keyboard:</label>
-                <select id="modeSelect" class="mode-select">
-                    <option value="ergo">Ergo</option>
-                    <option value="ansi">ANSI</option>
-                    <option value="iso">ISO</option>
-                    <option value="anglemod">Angle Mod</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="familySelect">Families:</label>
-                <select id="familySelect" class="family-select">
-                    <option value="collapsed">Collapsed</option>
-                    <option value="show-all">Show All</option>
-                </select>
-            </div>
-            <button class="share-btn" id="shareBtn" title="Copy shareable link">
-                <i class="fa-solid fa-share-nodes"></i>
-                <span>Share</span>
-            </button>
-        </div>
-
-        <div class="score-presets-section">
-            <span class="preset-label">Score Preset:</span>
-            <div class="preset-buttons">
-                <button class="preset-btn active" data-preset="balanced">Balanced</button>
-                <button class="preset-btn" data-preset="low-pinky">Low Pinky</button>
-                <button class="preset-btn" data-preset="comfort">Comfort</button>
-                <button class="preset-btn" data-preset="custom">Custom</button>
+            <p class="intro-text">Explore alternative keyboard layouts ranked by <a href="https://cyanophage.github.io/" target="_blank">cyanophage</a> ergonomic metrics.
+                <a href="#" class="learn-more-toggle" id="learnMoreToggle">Learn more</a>
+            </p>
+            <div class="learn-more-content" id="learnMoreContent">
+                <p>New to the scene? Check out Pascal Getreuer's <a href="https://getreuer.info/posts/keyboards/alt-layouts/index.html" target="_blank">guide to alt keyboard layouts</a>.</p>
+                <p>Disclaimer: Don't rely on stats too much — there are many complex factors that make a good layout. There is no "best" layout as there are many trade-offs. Use the scoring system for exploration instead of ranking.</p>
+                <p>Use the <i class="fa-solid fa-thumbtack"></i> icon to pin layouts to the top, and the <i class="fa-solid fa-star"></i> icon to highlight a row. Click on a row to view the layout. The Score column combines all metrics.</p>
             </div>
         </div>
 
-        <details class="score-controls-wrapper" id="customWeightsPanel">
-            <summary class="score-controls-toggle">
-                <i class="fa-solid fa-sliders"></i>
-                <span>Customize Score Weights</span>
-                <i class="fa-solid fa-chevron-down toggle-icon"></i>
-            </summary>
-            <div class="score-controls">
-                <div class="weight-sliders">
-                    <div class="weight-control">
-                        <label for="weight-sfb">SFB</label>
-                        <input type="range" id="weight-sfb" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-sfb-value" min="0" max="100" value="50">
-                        <span class="weight-description">Same-finger bigrams, e.g. qwerty 'SW' or 'UN'</span>
-                    </div>
-                    <div class="weight-control">
-                        <label for="weight-sfs">SFS</label>
-                        <input type="range" id="weight-sfs" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-sfs-value" min="0" max="100" value="50">
-                        <span class="weight-description">Same-finger skipgrams, e.g. qwerty 'WAS'</span>
-                    </div>
-                    <div class="weight-control">
-                        <label for="weight-lsb">LSB</label>
-                        <input type="range" id="weight-lsb" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-lsb-value" min="0" max="100" value="50">
-                        <span class="weight-description">Lateral stretch bigrams, e.g. qwerty 'ET'</span>
-                    </div>
-                    <div class="weight-control">
-                        <label for="weight-scissors">Scissors</label>
-                        <input type="range" id="weight-scissors" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-scissors-value" min="0" max="100" value="50">
-                        <span class="weight-description">Scissor movements, e.g. qwerty 'CR'</span>
-                    </div>
-                    <div class="weight-control">
-                        <label for="weight-rolls">Rolls In</label>
-                        <input type="range" id="weight-rolls" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-rolls-value" min="0" max="100" value="50">
-                        <span class="weight-description">Inward rolling motions (more comfortable than outward rolls)</span>
-                    </div>
-                    <div class="weight-control">
-                        <label for="weight-alternation">Alternation</label>
-                        <input type="range" id="weight-alternation" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-alternation-value" min="0" max="100" value="50">
-                        <span class="weight-description">Hand alternation (LRL or RLR pattern in trigrams)</span>
-                    </div>
-                    <div class="weight-control">
-                        <label for="weight-redirect">Redirect</label>
-                        <input type="range" id="weight-redirect" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-redirect-value" min="0" max="100" value="50">
-                        <span class="weight-description">Direction changes mid-trigram, e.g. qwerty 'SAD'</span>
-                    </div>
-                    <div class="weight-control">
-                        <label for="weight-pinky">Pinky Off</label>
-                        <input type="range" id="weight-pinky" min="0" max="100" value="50">
-                        <input type="number" class="weight-value" id="weight-pinky-value" min="0" max="100" value="50">
-                        <span class="weight-description">Off-home pinky usage, e.g. qwerty 'P'</span>
-                    </div>
+        <div class="search-bar-container">
+            <div class="search-bar-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input 
+                    type="text" 
+                    class="search-box" 
+                    id="searchInput" 
+                    placeholder="Search layouts..."
+                >
+                <div class="search-bar-actions">
+                    <button class="icon-btn filter-toggle-btn" id="filterToggleBtn" title="Filters & Settings" aria-label="Toggle filters">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span class="filter-badge" id="filterBadge"></span>
+                    </button>
+                    <button class="icon-btn share-btn" id="shareBtn" title="Copy shareable link" aria-label="Share">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </button>
                 </div>
             </div>
-        </details>
 
-        <details class="score-explanation-box" id="scoreExplanation">
-            <summary class="score-explanation-toggle">
-                <i class="fa-solid fa-calculator"></i>
-                <span>How is the score calculated?</span>
-                <i class="fa-solid fa-chevron-down toggle-icon"></i>
-            </summary>
-            <div class="score-explanation-content">
-                <p>The <strong>Score</strong> measures improvement over QWERTY using fixed reference points. A score of 0% means the same as QWERTY, 100% means the theoretical best. Negative scores are possible for layouts worse than QWERTY.</p>
-                
-                <h4>Step 1: Normalize each metric</h4>
-                <p>Each metric is normalized to measure improvement over QWERTY, where:</p>
-                <ul>
-                    <li>\( M_{\text{layout}} \) = the layout's metric value</li>
-                    <li>\( M_{\text{qwerty}} \) = QWERTY's metric value</li>
-                </ul>
-                
-                <p>For <em>lower is better</em> metrics (SFB, SFS, LSB, Scissors, Redirect, Pinky):</p>
-                <p>$$\text{normalized} = \frac{M_{\text{qwerty}} - M_{\text{layout}}}{M_{\text{qwerty}} - 0}$$</p>
-                <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 0).</p>
-                
-                <p>For <em>higher is better</em> metrics (Rolls, Alternation):</p>
-                <p>$$\text{normalized} = \frac{M_{\text{layout}} - M_{\text{qwerty}}}{100 - M_{\text{qwerty}}}$$</p>
-                <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 100%).</p>
-                
-                <h4>Step 2: Apply weights</h4>
-                <p>Each normalized value (already in "higher is better" form) is multiplied by its weight:</p>
-                <p>$$\text{contribution} = w \times \text{normalized}$$</p>
-                
-                <h4>Step 3: Calculate final score</h4>
-                <p>The weighted sum is converted to a percentage of maximum possible improvement:</p>
-                <p>$$\text{score} = 100 \times \frac{\sum w_i \times \text{normalized}_i}{\sum w_i}$$</p>
-                
-                <p><em>Note: This QWERTY-fixed approach ensures stable rankings — adding or removing layouts won't change the relative order of existing layouts. QWERTY's metrics are language-specific, so scores may vary by language.</em></p>
+            <!-- Filter dropdown panel -->
+            <div class="filter-panel" id="filterPanel">
+                <div class="filter-panel-section">
+                    <div class="filter-panel-label">Thumbs</div>
+                    <div class="segment-control" id="thumbSegment">
+                        <button class="segment-btn active" data-value="all">All</button>
+                        <button class="segment-btn" data-value="true">With Thumbs</button>
+                        <button class="segment-btn" data-value="false">No Thumbs</button>
+                    </div>
+                    <!-- Hidden radios for compatibility with existing JS -->
+                    <input type="radio" name="thumbFilter" value="all" checked style="display:none">
+                    <input type="radio" name="thumbFilter" value="true" style="display:none">
+                    <input type="radio" name="thumbFilter" value="false" style="display:none">
+                </div>
+
+                <div class="filter-panel-row">
+                    <div class="filter-panel-field">
+                        <label for="languageSelect">Language</label>
+                        <select id="languageSelect" class="filter-select">
+                            <option value="english">English</option>
+                        </select>
+                    </div>
+                    <div class="filter-panel-field">
+                        <label for="modeSelect">Keyboard</label>
+                        <select id="modeSelect" class="filter-select">
+                            <option value="ergo">Ergo</option>
+                            <option value="ansi">ANSI</option>
+                            <option value="iso">ISO</option>
+                            <option value="anglemod">Angle Mod</option>
+                        </select>
+                    </div>
+                    <div class="filter-panel-field">
+                        <label for="familySelect">Families</label>
+                        <select id="familySelect" class="filter-select">
+                            <option value="collapsed">Collapsed</option>
+                            <option value="show-all">Show All</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-panel-divider"></div>
+
+                <div class="filter-panel-section">
+                    <div class="filter-panel-label">Score Preset</div>
+                    <div class="preset-buttons">
+                        <button class="preset-btn active" data-preset="balanced">Balanced</button>
+                        <button class="preset-btn" data-preset="low-pinky">Low Pinky</button>
+                        <button class="preset-btn" data-preset="comfort">Comfort</button>
+                        <button class="preset-btn" data-preset="custom">Custom</button>
+                    </div>
+                </div>
+
+                <div class="filter-panel-section" id="customWeightsPanel">
+                    <div class="weight-sliders">
+                        <div class="weight-control">
+                            <label for="weight-sfb">SFB</label>
+                            <input type="range" id="weight-sfb" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-sfb-value" min="0" max="100" value="50">
+                            <span class="weight-description">Same-finger bigrams</span>
+                        </div>
+                        <div class="weight-control">
+                            <label for="weight-sfs">SFS</label>
+                            <input type="range" id="weight-sfs" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-sfs-value" min="0" max="100" value="50">
+                            <span class="weight-description">Same-finger skipgrams</span>
+                        </div>
+                        <div class="weight-control">
+                            <label for="weight-lsb">LSB</label>
+                            <input type="range" id="weight-lsb" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-lsb-value" min="0" max="100" value="50">
+                            <span class="weight-description">Lateral stretch bigrams</span>
+                        </div>
+                        <div class="weight-control">
+                            <label for="weight-scissors">Scissors</label>
+                            <input type="range" id="weight-scissors" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-scissors-value" min="0" max="100" value="50">
+                            <span class="weight-description">Scissor movements</span>
+                        </div>
+                        <div class="weight-control">
+                            <label for="weight-rolls">Rolls In</label>
+                            <input type="range" id="weight-rolls" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-rolls-value" min="0" max="100" value="50">
+                            <span class="weight-description">Inward rolling motions</span>
+                        </div>
+                        <div class="weight-control">
+                            <label for="weight-alternation">Alternation</label>
+                            <input type="range" id="weight-alternation" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-alternation-value" min="0" max="100" value="50">
+                            <span class="weight-description">Hand alternation</span>
+                        </div>
+                        <div class="weight-control">
+                            <label for="weight-redirect">Redirect</label>
+                            <input type="range" id="weight-redirect" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-redirect-value" min="0" max="100" value="50">
+                            <span class="weight-description">Direction changes</span>
+                        </div>
+                        <div class="weight-control">
+                            <label for="weight-pinky">Pinky Off</label>
+                            <input type="range" id="weight-pinky" min="0" max="100" value="50">
+                            <input type="number" class="weight-value" id="weight-pinky-value" min="0" max="100" value="50">
+                            <span class="weight-description">Off-home pinky usage</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-panel-divider"></div>
+
+                <details class="score-explanation-box" id="scoreExplanation">
+                    <summary class="score-explanation-toggle">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>How is the score calculated?</span>
+                        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                    </summary>
+                    <div class="score-explanation-content">
+                        <p>The <strong>Score</strong> measures improvement over QWERTY using fixed reference points. A score of 0% means the same as QWERTY, 100% means the theoretical best. Negative scores are possible for layouts worse than QWERTY.</p>
+                        
+                        <h4>Step 1: Normalize each metric</h4>
+                        <p>Each metric is normalized to measure improvement over QWERTY, where:</p>
+                        <ul>
+                            <li>\( M_{\text{layout}} \) = the layout's metric value</li>
+                            <li>\( M_{\text{qwerty}} \) = QWERTY's metric value</li>
+                        </ul>
+                        
+                        <p>For <em>lower is better</em> metrics (SFB, SFS, LSB, Scissors, Redirect, Pinky):</p>
+                        <p>$$\text{normalized} = \frac{M_{\text{qwerty}} - M_{\text{layout}}}{M_{\text{qwerty}} - 0}$$</p>
+                        <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 0).</p>
+                        
+                        <p>For <em>higher is better</em> metrics (Rolls, Alternation):</p>
+                        <p>$$\text{normalized} = \frac{M_{\text{layout}} - M_{\text{qwerty}}}{100 - M_{\text{qwerty}}}$$</p>
+                        <p class="formula-explanation">The numerator is the improvement over QWERTY; the denominator is the maximum possible improvement (QWERTY to 100%).</p>
+                        
+                        <h4>Step 2: Apply weights</h4>
+                        <p>Each normalized value (already in "higher is better" form) is multiplied by its weight:</p>
+                        <p>$$\text{contribution} = w \times \text{normalized}$$</p>
+                        
+                        <h4>Step 3: Calculate final score</h4>
+                        <p>The weighted sum is converted to a percentage of maximum possible improvement:</p>
+                        <p>$$\text{score} = 100 \times \frac{\sum w_i \times \text{normalized}_i}{\sum w_i}$$</p>
+                        
+                        <p><em>Note: This QWERTY-fixed approach ensures stable rankings — adding or removing layouts won't change the relative order of existing layouts. QWERTY's metrics are language-specific, so scores may vary by language.</em></p>
+                    </div>
+                </details>
             </div>
-        </details>
+        </div>
 
         <div class="table-wrapper">
             <table id="layoutTable">
@@ -264,7 +279,6 @@
                 <a href="https://getreuer.info/posts/keyboards/glossary/index.html" target="_blank">Glossary of keyboard terms</a> •
                 <a href="https://www.reddit.com/r/KeyboardLayouts" target="_blank">r/KeyboardLayouts</a> •
                 <a href="https://discord.com/invite/sxTV2G5Acg" target="_blank">AKL Discord</a>
-
             </p>
             <p style="font-size: 0.8rem; margin-top: 0.5rem;">
                 Made by <a href="https://timvink.nl" target="_blank" class="keycap-link"><span class="keycap-name"><span class="keycap">T</span><span class="keycap">i</span><span class="keycap">m</span><span class="space"></span><span class="keycap">V</span><span class="keycap">i</span><span class="keycap">n</span><span class="keycap">k</span></span></a>
@@ -272,10 +286,6 @@
             <p id="lastUpdated" style="font-size: 0.8rem; margin-top: 0.5rem;">
                 Last updated: <time id="lastUpdatedTime" datetime=""></time> 
             </p>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                <span class="theme-toggle-light">☀</span>
-                <span class="theme-toggle-dark">☾</span>
-            </button>
         </div>
     </div>
 
@@ -285,9 +295,8 @@
     <script type="module" src="keyboard_visualization.js"></script>
     <script type="module" src="keyboard-accordion.js"></script>
     <script type="module" src="script.js"></script>
+    <script src="theme.js"></script>
     
-    <!-- Test utilities (optional - for debugging in console) -->
-
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0a91ee51062b4ed0b59dc8624a0ed58f"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

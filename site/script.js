@@ -249,6 +249,7 @@ function setupWeightControls() {
                 saveScoreWeights();
                 updateActivePreset();
                 updateUrlParams();
+                updateFilterBadge();
                 recalculateAndRender();
             });
             
@@ -261,6 +262,7 @@ function setupWeightControls() {
                 saveScoreWeights();
                 updateActivePreset();
                 updateUrlParams();
+                updateFilterBadge();
                 recalculateAndRender();
             });
         }
@@ -273,14 +275,12 @@ function setupWeightControls() {
             const customPanel = document.getElementById('customWeightsPanel');
             
             if (preset === 'custom') {
-                // Custom button: open the customize panel
-                if (customPanel) {
-                    customPanel.open = true;
-                }
+                // Custom button: just mark it as active
                 // Mark Custom as active
                 document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 saveSelectedPreset('custom');
+                updateFilterBadge();
             } else if (weightPresets[preset]) {
                 // Regular preset: apply the preset weights
                 scoreWeights = { ...weightPresets[preset] };
@@ -288,6 +288,7 @@ function setupWeightControls() {
                 updateWeightUI();
                 updateActivePreset();
                 updateUrlParams();
+                updateFilterBadge();
                 recalculateAndRender();
             }
         });
@@ -385,24 +386,7 @@ function toggleStar(layoutName) {
     renderTable(sorted);
 }
 
-// Dark mode toggle
-const themeToggle = document.getElementById('themeToggle');
-const body = document.body;
-
-// Check for saved theme preference or system preference
-const savedTheme = localStorage.getItem('theme');
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-// Apply dark mode if saved as dark, or if no saved preference and system prefers dark
-if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-    body.classList.add('dark-mode');
-}
-
-themeToggle.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    const isDark = body.classList.contains('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-});
+// Dark mode toggle is now handled by theme.js
 
 // Populate language dropdown
 function populateLanguageDropdown(languages) {
@@ -463,6 +447,7 @@ function setupLanguageFilter() {
         
         // Update URL params
         updateUrlParams();
+        updateFilterBadge();
     });
 }
 
@@ -488,6 +473,7 @@ function setupModeFilter() {
         
         // Update URL params
         updateUrlParams();
+        updateFilterBadge();
     });
 }
 
@@ -505,6 +491,7 @@ function setupFamilyFilter() {
         currentFamilyMode = e.target.value;
         localStorage.setItem('familyMode', currentFamilyMode);
         expandedFamilies.clear(); // Reset expanded state when switching modes
+        updateFilterBadge();
         const filtered = getFilteredData();
         const sorted = sortData(filtered);
         renderTable(sorted);
@@ -641,7 +628,7 @@ function groupByFamily(filteredLayouts) {
 function updateSearchPlaceholder() {
     const count = layoutsData.length;
     document.getElementById('searchInput').placeholder = 
-        `🔍 Search ${count} layout${count !== 1 ? 's' : ''}...`;
+        `Search ${count} layout${count !== 1 ? 's' : ''}...`;
 }
 
 // Fetch and display data
@@ -733,6 +720,7 @@ async function loadData() {
         
         // Initialize URL params (in case we loaded from localStorage)
         updateUrlParams();
+        updateFilterBadge();
     } catch (error) {
         console.error('Error loading data:', error);
         document.getElementById('tableBody').innerHTML = 
@@ -1148,16 +1136,7 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     updateUrlParams();
 });
 
-// Thumb filter functionality
-document.querySelectorAll('input[name="thumbFilter"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-        currentThumbFilter = e.target.value;
-        updateSearchPlaceholder();
-        const filtered = getFilteredData();
-        const sorted = sortData(filtered);
-        renderTable(sorted);
-    });
-});
+// Thumb filter functionality (handled by segment control in filter panel, kept for programmatic changes)\n// Segment control click handler is in the filter panel setup above
 
 // Sort functionality
 document.querySelectorAll('th[data-column]').forEach(th => {
@@ -1188,12 +1167,12 @@ loadData();
 // Add click handler for the "customize weights" link
 document.querySelector('.score-link')?.addEventListener('click', (e) => {
     e.preventDefault();
-    const wrapper = document.getElementById('customWeightsPanel');
-    const customBtn = document.querySelector('.preset-btn[data-preset="custom"]');
-    if (wrapper) {
-        wrapper.open = true;
-        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Also activate the Custom button
+    const fp = document.getElementById('filterPanel');
+    const ftb = document.getElementById('filterToggleBtn');
+    if (fp) {
+        fp.classList.add('open');
+        if (ftb) ftb.classList.add('active');
+        const customBtn = document.querySelector('.preset-btn[data-preset="custom"]');
         if (customBtn) {
             document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
             customBtn.classList.add('active');
@@ -1203,7 +1182,6 @@ document.querySelector('.score-link')?.addEventListener('click', (e) => {
 
 // Share button functionality
 const shareBtn = document.getElementById('shareBtn');
-const shareBtnOriginalHtml = '<i class="fa-solid fa-share-nodes"></i><span>Share</span>';
 
 shareBtn?.addEventListener('click', async () => {
     try {
@@ -1214,17 +1192,91 @@ shareBtn?.addEventListener('click', async () => {
         await navigator.clipboard.writeText(window.location.href);
         
         // Show success state
-        shareBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+        shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
         shareBtn.classList.add('copied');
         
         // Reset after 2 seconds
         setTimeout(() => {
-            shareBtn.innerHTML = shareBtnOriginalHtml;
+            shareBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i>';
             shareBtn.classList.remove('copied');
         }, 2000);
     } catch (err) {
         console.error('Failed to copy URL:', err);
-        // Fallback: select the URL in a prompt
         prompt('Copy this link:', window.location.href);
     }
 });
+
+// Filter panel toggle
+const filterToggleBtn = document.getElementById('filterToggleBtn');
+const filterPanel = document.getElementById('filterPanel');
+
+if (filterToggleBtn && filterPanel) {
+    filterToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = filterPanel.classList.toggle('open');
+        filterToggleBtn.classList.toggle('active', isOpen);
+    });
+
+    // Close panel when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!filterPanel.contains(e.target) && !filterToggleBtn.contains(e.target)) {
+            filterPanel.classList.remove('open');
+            filterToggleBtn.classList.remove('active');
+        }
+    });
+}
+
+// Segment control for thumb filter
+const thumbSegment = document.getElementById('thumbSegment');
+if (thumbSegment) {
+    thumbSegment.querySelectorAll('.segment-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update visual state
+            thumbSegment.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update hidden radio and state
+            const value = btn.dataset.value;
+            const radio = document.querySelector(`input[name="thumbFilter"][value="${value}"]`);
+            if (radio) radio.checked = true;
+            currentThumbFilter = value;
+            updateSearchPlaceholder();
+            updateFilterBadge();
+            
+            const filtered = getFilteredData();
+            const sorted = sortData(filtered);
+            renderTable(sorted);
+        });
+    });
+}
+
+// Learn more toggle
+const learnMoreToggle = document.getElementById('learnMoreToggle');
+const learnMoreContent = document.getElementById('learnMoreContent');
+if (learnMoreToggle && learnMoreContent) {
+    learnMoreToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isOpen = learnMoreContent.classList.toggle('open');
+        learnMoreToggle.textContent = isOpen ? 'Show less' : 'Learn more';
+    });
+}
+
+// Update filter badge to show when non-default filters are active
+function updateFilterBadge() {
+    const badge = document.getElementById('filterBadge');
+    if (!badge) return;
+    
+    const hasNonDefault = 
+        currentThumbFilter !== 'all' ||
+        (window.currentLanguage && window.currentLanguage !== 'english') ||
+        (window.currentMode && window.currentMode !== 'ergo') ||
+        currentFamilyMode !== 'collapsed' ||
+        !isDefaultWeights();
+    
+    badge.classList.toggle('visible', hasNonDefault);
+}
+
+function isDefaultWeights() {
+    const defaults = weightPresets['balanced'];
+    return Object.keys(defaults).every(k => scoreWeights[k] === defaults[k]);
+}
