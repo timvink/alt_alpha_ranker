@@ -4,6 +4,7 @@ let layoutsData = [];
 let allLanguages = [];
 let currentSort = { column: null, direction: 'asc' };
 let currentThumbFilter = 'all';
+let currentFamilyMode = 'collapsed'; // 'collapsed' or 'show-all'
 let pinnedLayouts = new Set();
 let starredLayouts = new Set();
 let expandedFamilies = new Set(); // Track which families are expanded
@@ -490,6 +491,26 @@ function setupModeFilter() {
     });
 }
 
+// Family filter functionality
+function setupFamilyFilter() {
+    const familySelect = document.getElementById('familySelect');
+    if (!familySelect) return;
+    
+    // Restore saved preference
+    const saved = localStorage.getItem('familyMode') || 'collapsed';
+    currentFamilyMode = saved;
+    familySelect.value = saved;
+    
+    familySelect.addEventListener('change', (e) => {
+        currentFamilyMode = e.target.value;
+        localStorage.setItem('familyMode', currentFamilyMode);
+        expandedFamilies.clear(); // Reset expanded state when switching modes
+        const filtered = getFilteredData();
+        const sorted = sortData(filtered);
+        renderTable(sorted);
+    });
+}
+
 // Update the try-layout link to include current language
 function updateTryLayoutLink() {
     const link = document.getElementById('tryLayoutLink');
@@ -560,6 +581,11 @@ function getFilteredData() {
  *   { type: 'family-member', layout: {...}, familyName: '...' }
  */
 function groupByFamily(filteredLayouts) {
+    // If family mode is 'show-all', skip grouping entirely
+    if (currentFamilyMode === 'show-all') {
+        return filteredLayouts.map(layout => ({ type: 'layout', layout }));
+    }
+
     const scores = cachedScores;
     const families = {};
     const result = [];
@@ -662,6 +688,9 @@ async function loadData() {
         // Initialize mode dropdown and setup filter
         initModeSelect();
         setupModeFilter();
+        
+        // Setup family filter
+        setupFamilyFilter();
         
         // If URL had a mode param, override the default/saved mode
         if (urlState.mode) {
