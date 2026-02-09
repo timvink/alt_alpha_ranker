@@ -659,12 +659,7 @@ th {
     font-weight: 600;
     cursor: pointer;
     user-select: none;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    /* Solid color for sticky header - avoids per-cell gradient banding */
-    background: #6f64c6;
-    color: white;
+    position: relative;
     transition: background 0.2s ease;
     overflow: visible;
 }
@@ -678,7 +673,7 @@ th:last-child {
 }
 
 th:hover {
-    background: #7b71d0;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 th::after {
