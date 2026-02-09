@@ -67,7 +67,7 @@ function updateUrlParams() {
     if (knownLayout && knownLayout !== 'qwerty') {
         params.set('known', knownLayout);
     }
-    if (targetLayout && targetLayout !== 'gallium') {
+    if (targetLayout && targetLayout !== 'gallium v2') {
         params.set('target', targetLayout);
     }
     if (wordsetName && wordsetName !== 'english') {
@@ -532,7 +532,7 @@ function populateLayoutDropdowns() {
         const targetOption = document.createElement('option');
         targetOption.value = layout.name;
         targetOption.textContent = layout.name;
-        if (layout.name === 'gallium') targetOption.selected = true;
+        if (layout.name === 'gallium v2') targetOption.selected = true;
         targetSelect.appendChild(targetOption);
     });
     
