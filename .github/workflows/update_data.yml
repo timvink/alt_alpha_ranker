@@ -5,7 +5,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - 'config/layouts.yml'
+      - 'config/layouts/*.yml'
       - 'config/languages.yml'
   workflow_dispatch:
 
@@ -18,6 +18,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed layout files
+        id: changed
+        run: |
+          # Get layout files changed in this push
+          CHANGED=$(git diff --name-only --diff-filter=ACMR HEAD~1 HEAD -- 'config/layouts/*.yml' | sed 's|config/layouts/||; s|\.yml$||' || true)
+          LANGUAGES_CHANGED=$(git diff --name-only --diff-filter=ACMR HEAD~1 HEAD -- 'config/languages.yml' || true)
+
+          if [ -n "$LANGUAGES_CHANGED" ]; then
+            echo "languages_changed=true" >> $GITHUB_OUTPUT
+            echo "layout_names=" >> $GITHUB_OUTPUT
+            echo "Languages config changed — will do full scrape"
+          elif [ -n "$CHANGED" ]; then
+            echo "languages_changed=false" >> $GITHUB_OUTPUT
+            # Convert newlines to spaces for the --layouts flag
+            NAMES=$(echo "$CHANGED" | tr '\n' ' ')
+            echo "layout_names=$NAMES" >> $GITHUB_OUTPUT
+            echo "Changed layouts: $NAMES"
+          else
+            echo "languages_changed=false" >> $GITHUB_OUTPUT
+            echo "layout_names=" >> $GITHUB_OUTPUT
+            echo "No layout changes detected"
+          fi
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -26,7 +51,17 @@ jobs:
         run: uv run playwright install chromium
 
       - name: Run scrape script
-        run: uv run scripts/scrape_stats.py
+        run: |
+          if [ "${{ steps.changed.outputs.languages_changed }}" = "true" ]; then
+            echo "Languages changed — running full refresh"
+            uv run scripts/scrape_stats.py --full-refresh
+          elif [ -n "${{ steps.changed.outputs.layout_names }}" ]; then
+            echo "Scraping changed layouts: ${{ steps.changed.outputs.layout_names }}"
+            uv run scripts/scrape_stats.py --layouts ${{ steps.changed.outputs.layout_names }}
+          else
+            echo "Running default scrape (update missing/invalid)"
+            uv run scripts/scrape_stats.py
+          fi
 
       - name: Check for changes
         id: check_changes

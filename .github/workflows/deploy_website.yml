@@ -6,7 +6,7 @@ on:
   push:
     branches: ["main"]
     paths-ignore:
-      - 'config/layouts.yml'
+      - 'config/layouts/*.yml'
       - 'config/languages.yml'
 
   # Allows you to run this workflow manually from the Actions tab

@@ -1,19 +1,23 @@
 """
 Script to scrape keyboard layout statistics from cyanophage.github.io playground.
 
-Reads layouts from config/layouts.yml and languages from config/languages.yml
-Scrapes statistics for each layout in each language and keyboard mode.
+Reads layouts from individual YAML files in config/layouts/ and languages
+from config/languages.yml. Scrapes statistics for each layout in each
+language and keyboard mode.
 
 Outputs results to data.json for use by static site generator.
 
 By default, only re-scrapes entries with missing/invalid data.
 Use --full-refresh to re-scrape all layouts.
+Use --layouts to scrape specific layouts only (pass filenames without .yml).
 
 Usage: 
     # Update missing/invalid layouts only
     uv run scripts/scrape_stats.py              
     # Refresh all layouts
     uv run scripts/scrape_stats.py --full-refresh  
+    # Scrape specific layouts only
+    uv run scripts/scrape_stats.py --layouts colemak-dh graphite
 """
 
 import json
@@ -33,11 +37,35 @@ console = Console()
 MODES = ['ergo', 'ansi', 'iso', 'anglemod']
 
 
-def load_layouts(yml_path: str = "config/layouts.yml") -> list[dict]:
-    """Load layouts from YAML file."""
-    with open(yml_path) as f:
-        data = yaml.safe_load(f)
-    return data.get('layouts', [])
+def load_layouts(layouts_dir: str = "config/layouts", names: list[str] | None = None) -> list[dict]:
+    """Load layouts from individual YAML files in a directory.
+    
+    Args:
+        layouts_dir: Path to directory containing per-layout YAML files.
+        names: Optional list of layout filenames (without .yml) to load.
+                If None, loads all .yml files in the directory.
+    """
+    layouts_path = Path(layouts_dir)
+    if not layouts_path.is_dir():
+        raise FileNotFoundError(f"Layouts directory not found: {layouts_dir}")
+    
+    if names:
+        files = []
+        for name in names:
+            f = layouts_path / f"{name}.yml"
+            if not f.exists():
+                raise FileNotFoundError(f"Layout file not found: {f}")
+            files.append(f)
+    else:
+        files = sorted(layouts_path.glob("*.yml"))
+    
+    layouts = []
+    for f in files:
+        with open(f) as fh:
+            data = yaml.safe_load(fh)
+        if data:
+            layouts.append(data)
+    return layouts
 
 
 def load_languages(yml_path: str = "config/languages.yml") -> list[str]:
@@ -347,10 +375,16 @@ def main():
     parser = argparse.ArgumentParser(description='Scrape keyboard layout statistics')
     parser.add_argument('--full-refresh', action='store_true',
                         help='Re-scrape all layouts, modes, and languages')
+    parser.add_argument('--layouts', nargs='+', metavar='NAME',
+                        help='Scrape specific layouts only (filenames without .yml). '
+                             'Implies --full-refresh for the specified layouts.')
     args = parser.parse_args()
     
+    # When scraping specific layouts, force a full refresh for those layouts
+    full_refresh = args.full_refresh or bool(args.layouts)
+    
     # Load configurations
-    layouts = load_layouts()
+    layouts = load_layouts(names=args.layouts)
     languages = load_languages()
     existing_data = load_existing_data()
     
@@ -402,7 +436,7 @@ def main():
                 layout_data['metrics'][mode] = {}
             
             for language in languages:
-                if needs_scraping(layout_data, mode, language, args.full_refresh):
+                if needs_scraping(layout_data, mode, language, full_refresh):
                     scrape_tasks.append((name, mode, language, base_link))
     
     # Calculate stats
@@ -418,12 +452,24 @@ def main():
     console.print(f"  Mode: {'[yellow]Full refresh[/yellow]' if args.full_refresh else '[green]Update missing/invalid only[/green]'}")
     console.print(f"  To scrape: [cyan]{total_tasks}[/cyan] | Already valid: [dim]{total_skipped}[/dim]\n")
     
+    # When scraping specific layouts, merge them into the full existing layout list
+    if args.layouts:
+        # Start from existing layouts, update/add the ones we're scraping
+        all_layout_entries = {}
+        if 'layouts' in existing_data:
+            for entry in existing_data['layouts']:
+                all_layout_entries[entry['name']] = entry
+        all_layout_entries.update(layout_entries)
+        results_layouts = list(all_layout_entries.values())
+    else:
+        results_layouts = list(layout_entries.values())
+    
     # Prepare results structure
     results = {
         'scraped_at': existing_data.get('scraped_at', datetime.now().isoformat()),
         'modes': MODES,
         'languages': languages,
-        'layouts': list(layout_entries.values())
+        'layouts': results_layouts
     }
     
     if total_tasks == 0:
@@ -470,13 +516,21 @@ def main():
             scraped_count += 1
             
             # Save progress after each scrape (don't update timestamp until final save)
-            results['layouts'] = list(layout_entries.values())
+            if args.layouts:
+                all_layout_entries.update(layout_entries)
+                results['layouts'] = list(all_layout_entries.values())
+            else:
+                results['layouts'] = list(layout_entries.values())
             save_results(results, output_file, update_timestamp=False)
             
             progress.advance(task)
     
     # Final save with updated timestamp
-    results['layouts'] = list(layout_entries.values())
+    if args.layouts:
+        all_layout_entries.update(layout_entries)
+        results['layouts'] = list(all_layout_entries.values())
+    else:
+        results['layouts'] = list(layout_entries.values())
     save_results(results, output_file, update_timestamp=True)
     
     # Print summary
