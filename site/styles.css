@@ -1494,3 +1494,89 @@ body.dark-mode .score-value {
         font-size: 0.9rem;
     }
 }
+
+/* Family row styles */
+.family-row {
+    cursor: pointer;
+    background: rgba(102, 126, 234, 0.06);
+}
+
+.family-row:hover {
+    background: rgba(102, 126, 234, 0.12);
+}
+
+body.dark-mode .family-row {
+    background: rgba(159, 122, 234, 0.08);
+}
+
+body.dark-mode .family-row:hover {
+    background: rgba(159, 122, 234, 0.15);
+}
+
+.family-name {
+    font-weight: 600;
+}
+
+.family-toggle {
+    display: inline-block;
+    width: 1.2em;
+    text-align: center;
+    cursor: pointer;
+    margin-right: 0.25em;
+    font-size: 0.75em;
+    color: #667eea;
+    vertical-align: middle;
+}
+
+body.dark-mode .family-toggle {
+    color: #9f7aea;
+}
+
+.family-count {
+    font-weight: 400;
+    font-size: 0.85em;
+    color: #888;
+}
+
+body.dark-mode .family-count {
+    color: #999;
+}
+
+/* Family member rows */
+.family-member-row {
+    background: rgba(102, 126, 234, 0.03);
+}
+
+.family-member-row:hover {
+    background: rgba(102, 126, 234, 0.08);
+}
+
+body.dark-mode .family-member-row {
+    background: rgba(159, 122, 234, 0.04);
+}
+
+body.dark-mode .family-member-row:hover {
+    background: rgba(159, 122, 234, 0.10);
+}
+
+.family-member-name {
+    padding-left: 0.5rem;
+}
+
+.family-indent {
+    display: inline-block;
+    width: 1.2em;
+    margin-right: 0.25em;
+    text-align: center;
+    color: #ccc;
+}
+
+.family-indent::before {
+    content: "└";
+    font-size: 0.85em;
+    color: #bbb;
+}
+
+body.dark-mode .family-indent::before {
+    color: #555;
+}

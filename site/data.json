@@ -535,7 +535,8 @@
         }
       },
       "website": "https://github.com/rpnfan/Anymak",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "aptmak",
@@ -1056,7 +1057,8 @@
         }
       },
       "website": "https://github.com/Apsu/aptmak",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "aptV3",
@@ -1576,7 +1578,8 @@
           }
         }
       },
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "arensito",
@@ -2097,7 +2100,8 @@
         }
       },
       "website": "http://www.pvv.org/~hakonhal/main.cgi/keyboard",
-      "year": 2001
+      "year": 2001,
+      "family": ""
     },
     {
       "name": "beakl19bis",
@@ -2617,7 +2621,8 @@
           }
         }
       },
-      "year": 2020
+      "year": 2020,
+      "family": ""
     },
     {
       "name": "beakl43",
@@ -3138,7 +3143,8 @@
         }
       },
       "website": "http://www.ieants.cc/beakl/index.php",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "birdie",
@@ -3659,7 +3665,8 @@
         }
       },
       "website": "https://layouts.wiki/guides/start/recommendations/#birdie",
-      "year": 2025
+      "year": 2025,
+      "family": ""
     },
     {
       "name": "boo",
@@ -4180,7 +4187,8 @@
         }
       },
       "website": "https://ballerboo.github.io/boolayout/",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "bunya",
@@ -4701,7 +4709,8 @@
         }
       },
       "website": "https://discord.com/channels/807843650717483049/1063291226243207268/1112009138021613568",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "calemog",
@@ -5221,7 +5230,9 @@
           }
         }
       },
-      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts"
+      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts",
+      "year": 0,
+      "family": ""
     },
     {
       "name": "canary",
@@ -5742,7 +5753,8 @@
         }
       },
       "website": "https://github.com/Apsu/Canary",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "capewell_0.9.3",
@@ -6263,7 +6275,8 @@
         }
       },
       "website": "http://www.michaelcapewell.com/projects/keyboard/index.htm",
-      "year": 2005
+      "year": 2005,
+      "family": ""
     },
     {
       "name": "carbyne",
@@ -6782,7 +6795,8 @@
             "scissors": "0.01%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "caster4",
@@ -7303,7 +7317,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1g895nx/comment/lwv6ndi/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "cloud",
@@ -7824,7 +7839,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1gqp6oq/flow_a_smooth_inrolling_comfy_layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "colemak",
@@ -8345,7 +8361,8 @@
         }
       },
       "website": "https://colemak.com/",
-      "year": 2006
+      "year": 2006,
+      "family": ""
     },
     {
       "name": "colemak-dh",
@@ -8866,7 +8883,8 @@
         }
       },
       "website": "https://colemakmods.github.io/mod-dh/",
-      "year": 2014
+      "year": 2014,
+      "family": ""
     },
     {
       "name": "colemak-qi;x",
@@ -9387,7 +9405,8 @@
         }
       },
       "website": "https://github.com/DreymaR/BigBagKbdTrixPKL/tree/master/Layouts/Colemak/Cmk-Qmods#colemak-qix-by-nyfee-2021-03",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "compound",
@@ -9908,7 +9927,8 @@
         }
       },
       "website": "https://oxey.dev/compound/index.html",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "ctgap",
@@ -10428,7 +10448,8 @@
           }
         }
       },
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "dhorf",
@@ -10949,7 +10970,8 @@
         }
       },
       "website": "https://oxey.dev/dhorf/index.html",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "dusk-wp",
@@ -11470,7 +11492,8 @@
         }
       },
       "website": "https://discord.com/channels/807843650717483049/1063291226243207268/1309332617673576529",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "dvorak",
@@ -11991,7 +12014,8 @@
         }
       },
       "website": "https://www.dvzine.org/",
-      "year": 1936
+      "year": 1936,
+      "family": ""
     },
     {
       "name": "engram-2021",
@@ -12512,7 +12536,8 @@
         }
       },
       "website": "https://www.preprints.org/manuscript/202103.0287",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "engram-2025",
@@ -13033,7 +13058,8 @@
         }
       },
       "website": "https://github.com/binarybottle/engram",
-      "year": 2025
+      "year": 2025,
+      "family": ""
     },
     {
       "name": "enthium_v9",
@@ -13554,7 +13580,8 @@
         }
       },
       "website": "https://github.com/sunaku/enthium/tree/v9",
-      "year": 2025
+      "year": 2025,
+      "family": "enthium"
     },
     {
       "name": "enthium_v10",
@@ -14075,7 +14102,8 @@
         }
       },
       "website": "https://github.com/sunaku/enthium/tree/v10",
-      "year": 2025
+      "year": 2025,
+      "family": "enthium"
     },
     {
       "name": "enthium_v11",
@@ -14596,7 +14624,8 @@
         }
       },
       "website": "https://github.com/sunaku/enthium/tree/v11",
-      "year": 2025
+      "year": 2025,
+      "family": "enthium"
     },
     {
       "name": "enthium_v12",
@@ -15117,7 +15146,8 @@
         }
       },
       "website": "https://github.com/sunaku/enthium/tree/v12",
-      "year": 2025
+      "year": 2025,
+      "family": "enthium"
     },
     {
       "name": "enthium_v13",
@@ -15638,7 +15668,8 @@
         }
       },
       "website": "https://github.com/sunaku/enthium/releases/tag/v13",
-      "year": 2025
+      "year": 2025,
+      "family": "enthium"
     },
     {
       "name": "enthium_v14",
@@ -16159,7 +16190,8 @@
         }
       },
       "website": "https://github.com/sunaku/enthium/releases/v14",
-      "year": 2026
+      "year": 2026,
+      "family": "enthium"
     },
     {
       "name": "focal",
@@ -16679,7 +16711,8 @@
           }
         }
       },
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "gallium",
@@ -17200,7 +17233,8 @@
         }
       },
       "website": "https://github.com/GalileoBlues/Gallium",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "gallium colstag",
@@ -17721,7 +17755,8 @@
         }
       },
       "website": "https://github.com/GalileoBlues/Gallium",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "gallium v2",
@@ -18242,7 +18277,8 @@
         }
       },
       "website": "https://github.com/GalileoBlues/Gallium",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "graphite",
@@ -18763,7 +18799,8 @@
         }
       },
       "website": "https://github.com/rdavison/graphite-layout",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "gralmak",
@@ -19284,7 +19321,8 @@
         }
       },
       "website": "https://github.com/DreymaR/Gralmak#gralmak",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "gralmaks",
@@ -19805,7 +19843,8 @@
         }
       },
       "website": "https://github.com/DreymaR/Gralmak#gralmaks",
-      "year": 2025
+      "year": 2025,
+      "family": ""
     },
     {
       "name": "halmak",
@@ -20325,7 +20364,8 @@
           }
         }
       },
-      "year": 2016
+      "year": 2016,
+      "family": ""
     },
     {
       "name": "handsdown-neu",
@@ -20845,7 +20885,8 @@
           }
         }
       },
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "handsdown-promethium",
@@ -21366,7 +21407,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1g66ivi/hands_down_promethium_snth_meets_hd_silverengram/",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "handsdown-vibranium",
@@ -21886,7 +21928,8 @@
           }
         }
       },
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "hanster-21l",
@@ -22407,7 +22450,8 @@
         }
       },
       "website": "https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "hanster-21n",
@@ -22928,7 +22972,8 @@
         }
       },
       "website": "https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "hanster-21r",
@@ -23449,7 +23494,8 @@
         }
       },
       "website": "https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "hanster-21s",
@@ -23970,7 +24016,8 @@
         }
       },
       "website": "https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "hanster-23l",
@@ -24491,7 +24538,8 @@
         }
       },
       "website": "https://cyanophage.github.io/playground.html?layout=qyou-kgnfvzhiea.dtrcs%3Bjxlpb%27m%2Cw%2F%5C%5E&thumb=l",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "hanster-23n",
@@ -25012,7 +25060,8 @@
         }
       },
       "website": "https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "hanster-23r",
@@ -25533,7 +25582,8 @@
         }
       },
       "website": "https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "hanster-23s",
@@ -26054,7 +26104,8 @@
         }
       },
       "website": "https://commons.wikimedia.org/wiki/User:VTSGsRock/the_Hanster_Keyboard_Layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "Hieamtsrn",
@@ -26575,7 +26626,8 @@
         }
       },
       "website": "https://mathematicalmulticore.wordpress.com/the-keyboard-layout-project/#comment-4976",
-      "year": 2014
+      "year": 2014,
+      "family": ""
     },
     {
       "name": "irst",
@@ -27094,7 +27146,8 @@
             "scissors": "0.03%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "isrt",
@@ -27614,7 +27667,8 @@
           }
         }
       },
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "maltron",
@@ -28135,7 +28189,8 @@
         }
       },
       "website": "https://en.wikipedia.org/wiki/Maltron#Layouts",
-      "year": 1977
+      "year": 1977,
+      "family": ""
     },
     {
       "name": "megamak",
@@ -28655,7 +28710,9 @@
           }
         }
       },
-      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts"
+      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts",
+      "year": 0,
+      "family": ""
     },
     {
       "name": "mtgap",
@@ -29176,7 +29233,8 @@
         }
       },
       "website": "https://mathematicalmulticore.wordpress.com/the-keyboard-layout-project/",
-      "year": 2010
+      "year": 2010,
+      "family": ""
     },
     {
       "name": "nerps",
@@ -29696,7 +29754,8 @@
           }
         }
       },
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "nerts",
@@ -30216,7 +30275,9 @@
           }
         }
       },
-      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts"
+      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts",
+      "year": 0,
+      "family": ""
     },
     {
       "name": "night",
@@ -30736,7 +30797,8 @@
           }
         }
       },
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "nitro_s",
@@ -31256,7 +31318,9 @@
           }
         }
       },
-      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts"
+      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts",
+      "year": 0,
+      "family": ""
     },
     {
       "name": "noctum",
@@ -31777,7 +31841,8 @@
         }
       },
       "website": "https://oxey.dev/noctum/index.html",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "nordrassil",
@@ -32298,7 +32363,8 @@
         }
       },
       "website": "https://github.com/empressabyss/nordrassil",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "nordrassil_rejuvenated",
@@ -32819,7 +32885,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1oqqfql/%F0%96%A3%82nordrassils_rejuvenation%EF%BE%9F_a_refinement_of_the/",
-      "year": 2025
+      "year": 2025,
+      "family": ""
     },
     {
       "name": "northstar_pl",
@@ -33340,7 +33407,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/13e4lm4/comment/jjv85pk/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "northstar_v1",
@@ -33861,7 +33929,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/13e4lm4/northstar/",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "octa8",
@@ -34382,7 +34451,8 @@
         }
       },
       "website": "https://github.com/OctahedronV2/Octa8/blob/main/README.md#octa8",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "pine_v1",
@@ -34901,7 +34971,8 @@
             "scissors": "0.16%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "pine_v4",
@@ -35420,7 +35491,8 @@
             "scissors": "0.28%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "qwerty",
@@ -35940,7 +36012,8 @@
           }
         }
       },
-      "year": 1873
+      "year": 1873,
+      "family": ""
     },
     {
       "name": "racket",
@@ -36461,7 +36534,8 @@
         }
       },
       "website": "https://github.com/GalileoBlues",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "really",
@@ -36980,7 +37054,8 @@
             "scissors": "0.02%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "recurva",
@@ -37500,7 +37575,8 @@
           }
         }
       },
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "rollla",
@@ -38021,7 +38097,8 @@
         }
       },
       "website": "https://github.com/samuelxyz/layouts#rollla",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "rsthd",
@@ -38542,7 +38619,8 @@
         }
       },
       "website": "https://simn.me/rsthd/",
-      "year": 2016
+      "year": 2016,
+      "family": ""
     },
     {
       "name": "seht_drai",
@@ -39063,7 +39141,8 @@
         }
       },
       "website": "https://github.com/samuelxyz/layouts#seht-drai",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "semimak",
@@ -39584,7 +39663,8 @@
         }
       },
       "website": "https://github.com/semilin/semimak",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "serotine",
@@ -40105,7 +40185,8 @@
         }
       },
       "website": "https://github.com/drogalis/Serotonin",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "sertain",
@@ -40625,7 +40706,9 @@
           }
         }
       },
-      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts"
+      "website": "https://github.com/GalileoBlues/Layout-Wiki/blob/main/AKL%20Layouts",
+      "year": 0,
+      "family": ""
     },
     {
       "name": "snth",
@@ -41144,7 +41227,8 @@
             "scissors": "0.03%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "stronk",
@@ -41665,7 +41749,8 @@
         }
       },
       "website": "https://oxey.dev/compound/index.html",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "sturdy",
@@ -42186,7 +42271,8 @@
         }
       },
       "website": "https://o-x-e-y.github.io/layouts/sturdy/index.html",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "sunlight",
@@ -42705,7 +42791,8 @@
             "scissors": "0.01%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "whorf",
@@ -43225,7 +43312,8 @@
           }
         }
       },
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "workman",
@@ -43745,7 +43833,8 @@
           }
         }
       },
-      "year": 2010
+      "year": 2010,
+      "family": ""
     },
     {
       "name": "canary-ortho",
@@ -44266,7 +44355,8 @@
         }
       },
       "website": "https://github.com/Apsu/Canary",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "hiyou",
@@ -44785,7 +44875,8 @@
             "scissors": "0.36%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "hyperroll",
@@ -45306,7 +45397,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/122yvm4/thoughts_on_rollheavy_layouts_like_wreathy_and/",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "inqwerted",
@@ -45827,7 +45919,8 @@
         }
       },
       "website": "https://github.com/monkeytypegame/monkeytype/pull/5880",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "kuntem",
@@ -46348,7 +46441,8 @@
         }
       },
       "website": "https://layouts.wiki/layouts/2024/kuntem/",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "kuntum",
@@ -46868,7 +46962,8 @@
           }
         }
       },
-      "year": 2020
+      "year": 2020,
+      "family": ""
     },
     {
       "name": "maya",
@@ -47388,7 +47483,8 @@
           }
         }
       },
-      "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1ea825g/info_on_maya_keyboard_layout/"
+      "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1ea825g/info_on_maya_keyboard_layout/",
+      "family": ""
     },
     {
       "name": "minimak-12",
@@ -47909,7 +48005,8 @@
         }
       },
       "website": "http://www.minimak.org/",
-      "year": 2012
+      "year": 2012,
+      "family": ""
     },
     {
       "name": "mir",
@@ -48428,7 +48525,8 @@
             "scissors": "0.31%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "norman",
@@ -48949,7 +49047,8 @@
         }
       },
       "website": "https://normanlayout.info/",
-      "year": 2013
+      "year": 2013,
+      "family": ""
     },
     {
       "name": "poqtea",
@@ -49470,7 +49569,8 @@
         }
       },
       "website": "https://keyboard-design.com/letterlayout.html?layout=poqtea.en.ansi",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "qgmlwy",
@@ -49991,7 +50091,8 @@
         }
       },
       "website": "http://mk.bcgsc.ca/carpalx/?full_optimization",
-      "year": 2011
+      "year": 2011,
+      "family": ""
     },
     {
       "name": "rolll",
@@ -50512,7 +50613,8 @@
         }
       },
       "website": "https://github.com/samuelxyz/layouts",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "rolly",
@@ -51031,7 +51133,8 @@
             "scissors": "0.08%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "rain",
@@ -51552,7 +51655,8 @@
         }
       },
       "website": "https://discord.com/channels/807843650717483049/1063291226243207268/1242302164886618112",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "rtna",
@@ -52071,7 +52175,8 @@
             "scissors": "1.25%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "semimak-jq",
@@ -52592,7 +52697,8 @@
         }
       },
       "website": "https://github.com/semilin/semimak",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "semimak-jqc",
@@ -53113,7 +53219,8 @@
         }
       },
       "website": "https://github.com/semilin/semimak",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "sind",
@@ -53632,7 +53739,8 @@
             "scissors": "0.67%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "trendei",
@@ -54152,7 +54260,8 @@
           }
         }
       },
-      "website": "https://keyboard-layout-battles.fly.dev/layout/46-Trendei"
+      "website": "https://keyboard-layout-battles.fly.dev/layout/46-Trendei",
+      "family": ""
     },
     {
       "name": "trendy",
@@ -54671,7 +54780,8 @@
             "scissors": "0.46%"
           }
         }
-      }
+      },
+      "family": ""
     },
     {
       "name": "valmak",
@@ -55192,7 +55302,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1quwwfl/valmak_february_update/",
-      "year": 2025
+      "year": 2025,
+      "family": ""
     },
     {
       "name": "vitrimak",
@@ -55713,7 +55824,8 @@
         }
       },
       "website": "https://layouts.wiki/layouts/2021/vitrimak/",
-      "year": 2021
+      "year": 2021,
+      "family": ""
     },
     {
       "name": "wreathy",
@@ -56234,7 +56346,8 @@
         }
       },
       "website": "https://github.com/Apsu/cmini/blob/18d79d0c8651a8169e947c5b1b449d3ff797123e/layouts/wreathy.json#L4",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "cloudy",
@@ -56755,7 +56868,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1gqp6oq/flow_a_smooth_inrolling_comfy_layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "cloudx",
@@ -57276,7 +57390,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1gqp6oq/flow_a_smooth_inrolling_comfy_layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "cloudback",
@@ -57797,7 +57912,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1gqp6oq/flow_a_smooth_inrolling_comfy_layout",
-      "year": 2024
+      "year": 2024,
+      "family": ""
     },
     {
       "name": "kyu",
@@ -58318,7 +58434,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/vx4774/kyu_layout/",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "ufo",
@@ -58839,7 +58956,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/uecosy/ufo_the_worst_known_layout_in_colemakdh_analyzer/",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "gallium-nl",
@@ -59360,7 +59478,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1oazi45/comment/nki8r5l/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button",
-      "year": 2026
+      "year": 2026,
+      "family": ""
     },
     {
       "name": "middlemak-nh",
@@ -59881,7 +60000,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1464vck/introducing_middlemaknh_a_variant_that_puts_all/",
-      "year": 2023
+      "year": 2023,
+      "family": ""
     },
     {
       "name": "xoy",
@@ -60402,7 +60522,8 @@
         }
       },
       "website": "http://adnw.de/index.php?n=Main.SeitlicheNachbaranschl%c3%a4ge",
-      "year": 2011
+      "year": 2011,
+      "family": ""
     },
     {
       "name": "koy",
@@ -60923,7 +61044,8 @@
         }
       },
       "website": "http://adnw.de/index.php?n=Main.SeitlicheNachbaranschl%c3%a4ge",
-      "year": 2010
+      "year": 2010,
+      "family": ""
     },
     {
       "name": "neo_2",
@@ -61444,7 +61566,8 @@
         }
       },
       "website": "https://www.neo-layout.org/",
-      "year": 2010
+      "year": 2010,
+      "family": ""
     },
     {
       "name": "endeu",
@@ -61965,7 +62088,8 @@
         }
       },
       "website": "https://github.com/rpnfan/EnDeu",
-      "year": 2026
+      "year": 2026,
+      "family": ""
     },
     {
       "name": "adnw",
@@ -62486,7 +62610,8 @@
         }
       },
       "website": "http://www.adnw.de/index.php",
-      "year": 2010
+      "year": 2010,
+      "family": ""
     },
     {
       "name": "noted",
@@ -63007,7 +63132,8 @@
         }
       },
       "website": "https://dariogoetz.github.io/noted-layout/index.html",
-      "year": 2022
+      "year": 2022,
+      "family": ""
     },
     {
       "name": "consoc",
@@ -63528,7 +63654,8 @@
         }
       },
       "website": "https://www.reddit.com/r/KeyboardLayouts/comments/1qgzmbl/consoc_layout_an_experiment_in_highrolls/",
-      "year": 2026
+      "year": 2026,
+      "family": ""
     }
   ]
 }

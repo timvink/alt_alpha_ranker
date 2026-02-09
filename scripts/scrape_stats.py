@@ -11,6 +11,10 @@ By default, only re-scrapes entries with missing/invalid data.
 Use --full-refresh to re-scrape all layouts.
 Use --layouts to scrape specific layouts only (pass filenames without .yml).
 
+Metadata fields (year, website, thumb, family) are always synced from
+YAML configs into data.json before scraping. A check for orphaned layouts
+(entries in data.json without a matching .yml file) is also always run.
+
 Usage: 
     # Update missing/invalid layouts only
     uv run scripts/scrape_stats.py              
@@ -369,6 +373,96 @@ def save_results(results: dict, output_file: str = 'site/data.json', update_time
         json.dump(results, f, indent=2)
 
 
+def update_metadata(layouts_dir: str = "config/layouts", json_path: str = "site/data.json"):
+    """Update metadata fields (year, website, thumb, family) in data.json from YAML configs.
+    
+    Does not re-scrape any data - only syncs metadata fields.
+    """
+    METADATA_FIELDS = ['year', 'website', 'thumb', 'family']
+    
+    existing_data = load_existing_data(json_path)
+    if not existing_data or 'layouts' not in existing_data:
+        console.print("[red]Error: No existing data.json found. Run a scrape first.[/red]")
+        return
+    
+    all_layouts_yml = load_layouts(layouts_dir)
+    yml_lookup = {l['name']: l for l in all_layouts_yml}
+    
+    # Fields that should always be present with a default value
+    FIELD_DEFAULTS = {'thumb': False, 'family': ''}
+    
+    updated_count = 0
+    for layout_entry in existing_data['layouts']:
+        name = layout_entry['name']
+        if name not in yml_lookup:
+            continue
+        yml_data = yml_lookup[name]
+        
+        changed = False
+        for field in METADATA_FIELDS:
+            default = FIELD_DEFAULTS.get(field)
+            yml_value = yml_data.get(field, default)
+            existing_value = layout_entry.get(field)
+            
+            if field in FIELD_DEFAULTS:
+                # Always-present fields: sync the value (use default if missing in yml)
+                new_value = yml_value if yml_value is not None else default
+                if existing_value != new_value:
+                    layout_entry[field] = new_value
+                    changed = True
+            else:
+                # Optional fields (year, website): only include when non-empty
+                if yml_value is not None and yml_value != '':
+                    if existing_value != yml_value:
+                        layout_entry[field] = yml_value
+                        changed = True
+                elif yml_value == '' and field in layout_entry:
+                    del layout_entry[field]
+                    changed = True
+        
+        if changed:
+            updated_count += 1
+    
+    save_results(existing_data, json_path, update_timestamp=False)
+    console.print(f"[green]\u2713 Metadata updated for {updated_count} layout(s) in {json_path}[/green]")
+
+
+def check_orphaned_layouts(layouts_dir: str = "config/layouts", json_path: str = "site/data.json"):
+    """Check that every layout in data.json has a corresponding YAML file with matching name.
+    
+    Raises SystemExit if orphaned layouts are found.
+    """
+    existing_data = load_existing_data(json_path)
+    if not existing_data or 'layouts' not in existing_data:
+        console.print("[yellow]Warning: No data.json found, skipping orphan check.[/yellow]")
+        return
+    
+    layouts_path = Path(layouts_dir)
+    
+    # Build lookup: yml filename (without .yml) -> name field in yml
+    yml_names = {}
+    for f in sorted(layouts_path.glob("*.yml")):
+        with open(f) as fh:
+            data = yaml.safe_load(fh)
+        if data and 'name' in data:
+            yml_names[data['name']] = f.name
+    
+    # Check each layout in data.json
+    orphaned = []
+    for layout_entry in existing_data['layouts']:
+        name = layout_entry['name']
+        if name not in yml_names:
+            orphaned.append(name)
+    
+    if orphaned:
+        console.print(f"\n[red bold]Error: {len(orphaned)} orphaned layout(s) in data.json (no matching .yml file):[/red bold]")
+        for name in orphaned:
+            console.print(f"  [red]- {name}[/red]")
+        raise SystemExit(1)
+    else:
+        console.print(f"[green]\u2713 All {len(existing_data['layouts'])} layouts in data.json have matching YAML files.[/green]")
+
+
 def main():
     """Main function to scrape stats for all layouts."""
     # Parse arguments
@@ -379,6 +473,10 @@ def main():
                         help='Scrape specific layouts only (filenames without .yml). '
                              'Implies --full-refresh for the specified layouts.')
     args = parser.parse_args()
+    
+    # Always sync metadata and check for orphaned layouts
+    update_metadata()
+    check_orphaned_layouts()
     
     # When scraping specific layouts, force a full refresh for those layouts
     full_refresh = args.full_refresh or bool(args.layouts)
@@ -426,6 +524,7 @@ def main():
             layout_data['website'] = website
         if year:
             layout_data['year'] = year
+        layout_data['family'] = layout.get('family', '')
         
         layout_entries[name] = layout_data
         
@@ -540,6 +639,9 @@ def main():
     if errors > 0:
         console.print(f"  Errors: [red]{errors}[/red]")
     console.print(f"  Saved to: [blue]{output_file}[/blue]")
+    
+    # Check for orphaned layouts
+    check_orphaned_layouts()
 
 
 if __name__ == '__main__':

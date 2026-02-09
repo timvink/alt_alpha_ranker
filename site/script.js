@@ -6,6 +6,7 @@ let currentSort = { column: null, direction: 'asc' };
 let currentThumbFilter = 'all';
 let pinnedLayouts = new Set();
 let starredLayouts = new Set();
+let expandedFamilies = new Set(); // Track which families are expanded
 
 // Expose currentLanguage and currentMode globally for accordion to access
 window.currentLanguage = 'english';
@@ -535,8 +536,9 @@ function getFilteredData() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     
     let filtered = layoutsData.filter(layout => {
-        // Apply search filter
-        const matchesSearch = layout.name.toLowerCase().includes(searchTerm);
+        // Apply search filter - match against layout name and family name
+        const matchesSearch = layout.name.toLowerCase().includes(searchTerm) ||
+                              (layout.family && layout.family.toLowerCase().includes(searchTerm));
         
         // Apply thumb filter
         const matchesThumb = currentThumbFilter === 'all' || 
@@ -548,16 +550,70 @@ function getFilteredData() {
     return filtered;
 }
 
+/**
+ * Group filtered layouts into display rows.
+ * Layouts with a non-empty `family` field are collapsed into a single family row
+ * (unless the family is expanded). The family row uses the best-scoring member's stats.
+ * Returns an array of display items, each either:
+ *   { type: 'layout', layout: {...} }
+ *   { type: 'family', familyName: '...', members: [...], bestMember: {...} }
+ *   { type: 'family-member', layout: {...}, familyName: '...' }
+ */
+function groupByFamily(filteredLayouts) {
+    const scores = cachedScores;
+    const families = {};
+    const result = [];
+    
+    // First pass: group by family
+    for (const layout of filteredLayouts) {
+        if (layout.family) {
+            if (!families[layout.family]) {
+                families[layout.family] = [];
+            }
+            families[layout.family].push(layout);
+        }
+    }
+    
+    // Track which families we've already added
+    const addedFamilies = new Set();
+    
+    for (const layout of filteredLayouts) {
+        if (layout.family && families[layout.family].length > 1) {
+            // This layout belongs to a multi-member family
+            const familyName = layout.family;
+            if (addedFamilies.has(familyName)) continue;
+            addedFamilies.add(familyName);
+            
+            const members = families[familyName];
+            // Find best member by score (highest score)
+            const bestMember = members.reduce((best, m) => {
+                const bestScore = scores[best.name] ?? -Infinity;
+                const mScore = scores[m.name] ?? -Infinity;
+                return mScore > bestScore ? m : best;
+            }, members[0]);
+            
+            if (expandedFamilies.has(familyName)) {
+                // Family is expanded: show family header + individual members
+                result.push({ type: 'family', familyName, members, bestMember, expanded: true });
+                for (const member of members) {
+                    result.push({ type: 'family-member', layout: member, familyName });
+                }
+            } else {
+                // Family is collapsed: show single family row
+                result.push({ type: 'family', familyName, members, bestMember, expanded: false });
+            }
+        } else {
+            // Standalone layout (no family or single-member family)
+            result.push({ type: 'layout', layout });
+        }
+    }
+    
+    return result;
+}
+
 // Update search placeholder with count
 function updateSearchPlaceholder() {
-    const filtered = layoutsData.filter(layout => {
-        // Apply thumb filter only (not search)
-        const matchesThumb = currentThumbFilter === 'all' || 
-                             layout.thumb.toString() === currentThumbFilter;
-        return matchesThumb;
-    });
-    
-    const count = filtered.length;
+    const count = layoutsData.length;
     document.getElementById('searchInput').placeholder = 
         `🔍 Search ${count} layout${count !== 1 ? 's' : ''}...`;
 }
@@ -656,47 +712,36 @@ async function loadData() {
 }
 
 // Render table with data
-function renderTable(data) {
+function renderTable(displayItems) {
     const tbody = document.getElementById('tableBody');
     
-    if (data.length === 0) {
+    if (displayItems.length === 0) {
         tbody.innerHTML = '<tr><td colspan="11" class="no-results">No layouts found matching your search.</td></tr>';
         return;
     }
 
-    // Use cached scores (calculated from full dataset)
+    // Use cached scores
     const scores = cachedScores;
 
-    // Find the index of the last pinned layout to add visual separator
+    // Find the index of the last pinned item to add visual separator
     let lastPinnedIndex = -1;
-    data.forEach((layout, index) => {
-        if (pinnedLayouts.has(layout.name)) {
-            lastPinnedIndex = index;
+    displayItems.forEach((item, index) => {
+        if (item.type === 'family') {
+            if (item.members.some(m => pinnedLayouts.has(m.name)) || pinnedLayouts.has(`family:${item.familyName}`)) {
+                lastPinnedIndex = index;
+            }
+        } else if (item.type === 'layout') {
+            if (pinnedLayouts.has(item.layout.name)) {
+                lastPinnedIndex = index;
+            }
         }
     });
 
-    tbody.innerHTML = data.map((layout, index) => {
-        const metrics = getMetrics(layout);
-        const yearSuffix = layout.year ? ` (${layout.year})` : '';
-        const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i><i class="fa-regular fa-thumbs-up" style="transform: scaleX(-1);"></i></span>' : '';
-        
-        const isPinned = pinnedLayouts.has(layout.name);
-        const pinClass = isPinned ? 'pinned' : '';
-        const pinIcon = isPinned ? '<i class="fa-solid fa-thumbtack" style="font-size: 0.75em;"></i>' : '<i class="fa-solid fa-map-pin" style="opacity: 0.8; font-size: 0.75em;"></i>';
-        
-        const isStarred = starredLayouts.has(layout.name);
-        const starClass = isStarred ? 'starred' : '';
-        const starIcon = isStarred ? '★' : '☆';
-        
-        const isLastPinned = index === lastPinnedIndex && lastPinnedIndex !== -1;
-        const rowClasses = [isStarred ? 'starred' : '', isLastPinned ? 'last-pinned' : ''].filter(Boolean).join(' ');
-        const rowClass = rowClasses;
-        
-        // Get the calculated score
+    // Helper to render a metric row
+    function renderMetricCells(layout, metrics) {
         const score = scores[layout.name];
         const scoreDisplay = (score !== undefined && score !== null) ? `${score.toFixed(1)}%` : 'N/A';
         
-        // Calculate rolls in (inward rolls only - more comfortable than outward rolls)
         const calculateRolls = (metrics) => {
             const bigramRollIn = parseFloat((metrics.bigram_roll_in || '0').replace('%', '')) || 0;
             const rollIn = parseFloat((metrics.roll_in || '0').replace('%', '')) || 0;
@@ -704,7 +749,6 @@ function renderTable(data) {
             return sum > 0 ? `${sum.toFixed(2)}%` : 'N/A';
         };
         
-        // Calculate alternation (alt + alt_sfs - hand alternation LRL or RLR)
         const calculateAlternation = (metrics) => {
             const alt = parseFloat((metrics.alt || '0').replace('%', '')) || 0;
             const altSfs = parseFloat((metrics.alt_sfs || '0').replace('%', '')) || 0;
@@ -713,31 +757,132 @@ function renderTable(data) {
         };
         
         return `
-            <tr class="${rowClass}">
-                <td class="pin-star-column">
-                    <div class="pin-star-icons">
-                        <span class="pin-icon ${pinClass}" data-layout="${layout.name}" title="${isPinned ? 'Unpin layout' : 'Pin layout to top'}">${pinIcon}</span>
-                        <span class="star-icon ${starClass}" data-layout="${layout.name}" title="${isStarred ? 'Unstar layout' : 'Star layout for highlighting'}">${starIcon}</span>
-                    </div>
-                </td>
-                <td class="layout-name">
-                    ${layout.website 
-                        ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}${yearSuffix}</a>`
-                        : `${layout.name}${yearSuffix}`
-                    }
-                    ${thumbIcon}
-                </td>
-                <td class="stat-value score-value">${scoreDisplay}</td>
-                <td class="stat-value">${metrics.same_finger_bigrams || 'N/A'}</td>
-                <td class="stat-value">${metrics.skip_bigrams_1u || 'N/A'}</td>
-                <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>
-                <td class="stat-value">${metrics.scissors || 'N/A'}</td>
-                <td class="stat-value">${calculateRolls(metrics)}</td>
-                <td class="stat-value">${calculateAlternation(metrics)}</td>
-                <td class="stat-value">${metrics.redirect || 'N/A'}</td>
-                <td class="stat-value">${metrics.pinky_off || 'N/A'}</td>
-            </tr>
+            <td class="stat-value score-value">${scoreDisplay}</td>
+            <td class="stat-value">${metrics.same_finger_bigrams || 'N/A'}</td>
+            <td class="stat-value">${metrics.skip_bigrams_1u || 'N/A'}</td>
+            <td class="stat-value">${metrics.lat_stretch_bigrams || 'N/A'}</td>
+            <td class="stat-value">${metrics.scissors || 'N/A'}</td>
+            <td class="stat-value">${calculateRolls(metrics)}</td>
+            <td class="stat-value">${calculateAlternation(metrics)}</td>
+            <td class="stat-value">${metrics.redirect || 'N/A'}</td>
+            <td class="stat-value">${metrics.pinky_off || 'N/A'}</td>
         `;
+    }
+
+    tbody.innerHTML = displayItems.map((item, index) => {
+        if (item.type === 'family') {
+            // Family row (collapsed or expanded header)
+            const { familyName, members, bestMember, expanded } = item;
+            const metrics = getMetrics(bestMember);
+            
+            const isPinned = members.some(m => pinnedLayouts.has(m.name)) || pinnedLayouts.has(`family:${familyName}`);
+            const pinClass = isPinned ? 'pinned' : '';
+            const pinIcon = isPinned ? '<i class="fa-solid fa-thumbtack" style="font-size: 0.75em;"></i>' : '<i class="fa-solid fa-map-pin" style="opacity: 0.8; font-size: 0.75em;"></i>';
+            
+            const isStarred = members.some(m => starredLayouts.has(m.name)) || starredLayouts.has(`family:${familyName}`);
+            const starClass = isStarred ? 'starred' : '';
+            const starIcon = isStarred ? '★' : '☆';
+            
+            const isLastPinned = index === lastPinnedIndex && lastPinnedIndex !== -1;
+            const expandIcon = expanded ? '<i class="fa-solid fa-chevron-down"></i>' : '<i class="fa-solid fa-chevron-right"></i>';
+            const rowClasses = [
+                'family-row',
+                isStarred ? 'starred' : '',
+                isLastPinned ? 'last-pinned' : '',
+                expanded ? 'family-expanded' : ''
+            ].filter(Boolean).join(' ');
+            
+            return `
+                <tr class="${rowClasses}" data-family="${familyName}">
+                    <td class="pin-star-column">
+                        <div class="pin-star-icons">
+                            <span class="pin-icon ${pinClass}" data-layout="family:${familyName}" title="${isPinned ? 'Unpin family' : 'Pin family to top'}">${pinIcon}</span>
+                            <span class="star-icon ${starClass}" data-layout="family:${familyName}" title="${isStarred ? 'Unstar family' : 'Star family for highlighting'}">${starIcon}</span>
+                        </div>
+                    </td>
+                    <td class="layout-name family-name">
+                        <span class="family-toggle" data-family="${familyName}">${expandIcon}</span>
+                        Family: ${familyName} <span class="family-count">(${members.length})</span>
+                    </td>
+                    ${renderMetricCells(bestMember, metrics)}
+                </tr>
+            `;
+        } else if (item.type === 'family-member') {
+            // Individual member of an expanded family
+            const layout = item.layout;
+            const metrics = getMetrics(layout);
+            const yearSuffix = layout.year ? ` (${layout.year})` : '';
+            const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i><i class="fa-regular fa-thumbs-up" style="transform: scaleX(-1);"></i></span>' : '';
+            
+            const isPinned = pinnedLayouts.has(layout.name);
+            const pinClass = isPinned ? 'pinned' : '';
+            const pinIcon = isPinned ? '<i class="fa-solid fa-thumbtack" style="font-size: 0.75em;"></i>' : '<i class="fa-solid fa-map-pin" style="opacity: 0.8; font-size: 0.75em;"></i>';
+            
+            const isStarred = starredLayouts.has(layout.name);
+            const starClass = isStarred ? 'starred' : '';
+            const starIcon = isStarred ? '★' : '☆';
+            
+            const score = scores[layout.name];
+            const scoreDisplay = (score !== undefined && score !== null) ? `${score.toFixed(1)}%` : 'N/A';
+            
+            const rowClasses = ['family-member-row', isStarred ? 'starred' : ''].filter(Boolean).join(' ');
+            
+            return `
+                <tr class="${rowClasses}" data-family-member="${item.familyName}">
+                    <td class="pin-star-column">
+                        <div class="pin-star-icons">
+                            <span class="pin-icon ${pinClass}" data-layout="${layout.name}" title="${isPinned ? 'Unpin layout' : 'Pin layout to top'}">${pinIcon}</span>
+                            <span class="star-icon ${starClass}" data-layout="${layout.name}" title="${isStarred ? 'Unstar layout' : 'Star layout for highlighting'}">${starIcon}</span>
+                        </div>
+                    </td>
+                    <td class="layout-name family-member-name">
+                        <span class="family-indent"></span>
+                        ${layout.website 
+                            ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}${yearSuffix}</a>`
+                            : `${layout.name}${yearSuffix}`
+                        }
+                        ${thumbIcon}
+                    </td>
+                    ${renderMetricCells(layout, metrics)}
+                </tr>
+            `;
+        } else {
+            // Regular standalone layout row
+            const layout = item.layout;
+            const metrics = getMetrics(layout);
+            const yearSuffix = layout.year ? ` (${layout.year})` : '';
+            const thumbIcon = layout.thumb ? '<span class="thumb-icon" title="Uses thumb keys"><i class="fa-regular fa-thumbs-up"></i><i class="fa-regular fa-thumbs-up" style="transform: scaleX(-1);"></i></span>' : '';
+            
+            const isPinned = pinnedLayouts.has(layout.name);
+            const pinClass = isPinned ? 'pinned' : '';
+            const pinIcon = isPinned ? '<i class="fa-solid fa-thumbtack" style="font-size: 0.75em;"></i>' : '<i class="fa-solid fa-map-pin" style="opacity: 0.8; font-size: 0.75em;"></i>';
+            
+            const isStarred = starredLayouts.has(layout.name);
+            const starClass = isStarred ? 'starred' : '';
+            const starIcon = isStarred ? '★' : '☆';
+            
+            const isLastPinned = index === lastPinnedIndex && lastPinnedIndex !== -1;
+            const rowClasses = [isStarred ? 'starred' : '', isLastPinned ? 'last-pinned' : ''].filter(Boolean).join(' ');
+            
+            return `
+                <tr class="${rowClasses}">
+                    <td class="pin-star-column">
+                        <div class="pin-star-icons">
+                            <span class="pin-icon ${pinClass}" data-layout="${layout.name}" title="${isPinned ? 'Unpin layout' : 'Pin layout to top'}">${pinIcon}</span>
+                            <span class="star-icon ${starClass}" data-layout="${layout.name}" title="${isStarred ? 'Unstar layout' : 'Star layout for highlighting'}">${starIcon}</span>
+                        </div>
+                    </td>
+                    <td class="layout-name">
+                        ${layout.website 
+                            ? `<a href="${layout.website}" target="_blank" rel="noopener noreferrer">${layout.name}${yearSuffix}</a>`
+                            : `${layout.name}${yearSuffix}`
+                        }
+                        ${thumbIcon}
+                    </td>
+                    ${renderMetricCells(layout, metrics)}
+                </tr>
+            `;
+        }
     }).join('');
     
     // Add click handlers for pin icons
@@ -758,101 +903,165 @@ function renderTable(data) {
         });
     });
     
-    // Add click handlers for table rows to toggle keyboard accordion
-    document.querySelectorAll('#layoutTable tbody tr').forEach((row, index) => {
+    // Add click handlers for family toggle
+    document.querySelectorAll('.family-toggle').forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const familyName = toggle.dataset.family;
+            toggleFamily(familyName);
+        });
+    });
+    
+    // Also allow clicking the family name cell to toggle
+    document.querySelectorAll('.family-row').forEach(row => {
         row.addEventListener('click', (e) => {
-            // Don't toggle accordion if clicking on links or icons
+            if (e.target.closest('a') || e.target.closest('.pin-icon') || e.target.closest('.star-icon')) {
+                return;
+            }
+            const familyName = row.dataset.family;
+            toggleFamily(familyName);
+        });
+    });
+    
+    // Add click handlers for table rows to toggle keyboard accordion (non-family rows and family member rows)
+    document.querySelectorAll('#layoutTable tbody tr:not(.family-row)').forEach((row, idx) => {
+        row.addEventListener('click', (e) => {
             if (e.target.closest('a') || e.target.closest('.pin-icon') || e.target.closest('.star-icon')) {
                 return;
             }
             
-            // Get the layout data for this row
-            const layout = data[index];
-            if (layout && window.keyboardAccordion) {
-                window.keyboardAccordion.toggle(layout.name, layout.url, row, layout.thumb, layout.website);
+            // Find the matching display item
+            const allNonFamilyRows = [...document.querySelectorAll('#layoutTable tbody tr:not(.family-row)')];
+            const rowIndex = allNonFamilyRows.indexOf(row);
+            const nonFamilyItems = displayItems.filter(item => item.type !== 'family');
+            const item = nonFamilyItems[rowIndex];
+            
+            if (item) {
+                const layout = item.layout;
+                if (layout && window.keyboardAccordion) {
+                    window.keyboardAccordion.toggle(layout.name, layout.url, row, layout.thumb, layout.website);
+                }
             }
         });
     });
 }
 
+// Toggle family expanded/collapsed
+function toggleFamily(familyName) {
+    if (expandedFamilies.has(familyName)) {
+        expandedFamilies.delete(familyName);
+    } else {
+        expandedFamilies.add(familyName);
+    }
+    const filtered = getFilteredData();
+    const sorted = sortData(filtered);
+    renderTable(sorted);
+}
+
 // Sort data based on current sort settings
 function sortData(data) {
-    // Separate pinned and unpinned layouts
-    const pinned = data.filter(layout => pinnedLayouts.has(layout.name));
-    const unpinned = data.filter(layout => !pinnedLayouts.has(layout.name));
+    // Group by family first
+    const grouped = groupByFamily(data);
     
-    // Use cached scores (calculated from full dataset)
+    // Helper: get the representative layout for a display item (for sorting)
+    function getRepLayout(item) {
+        if (item.type === 'family') return item.bestMember;
+        if (item.type === 'family-member') return item.layout;
+        return item.layout;
+    }
+    
+    // Helper: get the representative name for pinning/sorting
+    function getRepName(item) {
+        if (item.type === 'family') return `family:${item.familyName}`;
+        if (item.type === 'family-member') return item.layout.name;
+        return item.layout.name;
+    }
+    
+    // Helper: check if an item is pinned
+    function isPinned(item) {
+        if (item.type === 'family') {
+            return item.members.some(m => pinnedLayouts.has(m.name)) || pinnedLayouts.has(`family:${item.familyName}`);
+        }
+        if (item.type === 'family-member') return false; // members follow their family
+        return pinnedLayouts.has(item.layout.name);
+    }
+    
+    // Separate top-level items (families and standalone layouts) from family-members
+    // Family members always follow their family header, so we sort only top-level items
+    const topLevel = grouped.filter(item => item.type !== 'family-member');
+    const membersByFamily = {};
+    grouped.filter(item => item.type === 'family-member').forEach(item => {
+        if (!membersByFamily[item.familyName]) membersByFamily[item.familyName] = [];
+        membersByFamily[item.familyName].push(item);
+    });
+    
+    // Separate pinned and unpinned top-level items
+    const pinned = topLevel.filter(item => isPinned(item));
+    const unpinned = topLevel.filter(item => !isPinned(item));
+    
+    // Use cached scores
     const scores = cachedScores;
     
-    // Sort function for a group
+    // Sort function for a group of display items
     const sortGroup = (group) => {
-        if (!currentSort.column) {
-            return group;
-        }
+        if (!currentSort.column) return group;
         
         return [...group].sort((a, b) => {
+            const aLayout = getRepLayout(a);
+            const bLayout = getRepLayout(b);
             let aVal, bVal;
             
-            // Get values from metrics for current language
             if (currentSort.column === 'name') {
-                aVal = a[currentSort.column];
-                bVal = b[currentSort.column];
+                aVal = a.type === 'family' ? `Family: ${a.familyName}` : aLayout.name;
+                bVal = b.type === 'family' ? `Family: ${b.familyName}` : bLayout.name;
+                aVal = aVal.toLowerCase();
+                bVal = bVal.toLowerCase();
             } else if (currentSort.column === 'starred') {
-                // Sort by starred status (starred first when descending)
-                aVal = starredLayouts.has(a.name) ? 1 : 0;
-                bVal = starredLayouts.has(b.name) ? 1 : 0;
+                const aStarred = a.type === 'family'
+                    ? (a.members.some(m => starredLayouts.has(m.name)) || starredLayouts.has(`family:${a.familyName}`) ? 1 : 0)
+                    : (starredLayouts.has(aLayout.name) ? 1 : 0);
+                const bStarred = b.type === 'family'
+                    ? (b.members.some(m => starredLayouts.has(m.name)) || starredLayouts.has(`family:${b.familyName}`) ? 1 : 0)
+                    : (starredLayouts.has(bLayout.name) ? 1 : 0);
+                aVal = aStarred;
+                bVal = bStarred;
             } else if (currentSort.column === 'score') {
-                // Sort by calculated score (null scores go to bottom)
-                const aScore = scores[a.name];
-                const bScore = scores[b.name];
-                // Use -Infinity for null scores so they sort to bottom
+                const aScore = scores[aLayout.name];
+                const bScore = scores[bLayout.name];
                 aVal = (aScore !== null && aScore !== undefined) ? aScore : -Infinity;
                 bVal = (bScore !== null && bScore !== undefined) ? bScore : -Infinity;
             } else if (currentSort.column === 'rolls') {
-                // Calculate rolls in for sorting (inward rolls only)
-                const aMetrics = getMetrics(a);
-                const bMetrics = getMetrics(b);
-                
-                const aRolls = (parseFloat((aMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
-                               (parseFloat((aMetrics.roll_in || '0').replace('%', '')) || 0);
-                
-                const bRolls = (parseFloat((bMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
-                               (parseFloat((bMetrics.roll_in || '0').replace('%', '')) || 0);
-                
-                aVal = aRolls;
-                bVal = bRolls;
+                const aMetrics = getMetrics(aLayout);
+                const bMetrics = getMetrics(bLayout);
+                aVal = (parseFloat((aMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
+                       (parseFloat((aMetrics.roll_in || '0').replace('%', '')) || 0);
+                bVal = (parseFloat((bMetrics.bigram_roll_in || '0').replace('%', '')) || 0) +
+                       (parseFloat((bMetrics.roll_in || '0').replace('%', '')) || 0);
             } else if (currentSort.column === 'alternation') {
-                // Calculate alternation for sorting (alt + alt_sfs)
-                const aMetrics = getMetrics(a);
-                const bMetrics = getMetrics(b);
-                
-                const aAlt = (parseFloat((aMetrics.alt || '0').replace('%', '')) || 0) +
-                             (parseFloat((aMetrics.alt_sfs || '0').replace('%', '')) || 0);
-                
-                const bAlt = (parseFloat((bMetrics.alt || '0').replace('%', '')) || 0) +
-                             (parseFloat((bMetrics.alt_sfs || '0').replace('%', '')) || 0);
-                
-                aVal = aAlt;
-                bVal = bAlt;
+                const aMetrics = getMetrics(aLayout);
+                const bMetrics = getMetrics(bLayout);
+                aVal = (parseFloat((aMetrics.alt || '0').replace('%', '')) || 0) +
+                       (parseFloat((aMetrics.alt_sfs || '0').replace('%', '')) || 0);
+                bVal = (parseFloat((bMetrics.alt || '0').replace('%', '')) || 0) +
+                       (parseFloat((bMetrics.alt_sfs || '0').replace('%', '')) || 0);
             } else {
-                const aMetrics = getMetrics(a);
-                const bMetrics = getMetrics(b);
+                const aMetrics = getMetrics(aLayout);
+                const bMetrics = getMetrics(bLayout);
                 aVal = aMetrics[currentSort.column];
                 bVal = bMetrics[currentSort.column];
             }
 
-            // Convert to numbers if numeric column
+            // Convert to numbers for metric columns
             if (currentSort.column === 'total_word_effort' || currentSort.column === 'effort') {
                 aVal = parseFloat(aVal) || 0;
                 bVal = parseFloat(bVal) || 0;
             } else if (currentSort.column === 'same_finger_bigrams' || currentSort.column === 'skip_bigrams_1u' || 
                        currentSort.column === 'lat_stretch_bigrams' || currentSort.column === 'scissors' || 
                        currentSort.column === 'pinky_off' || currentSort.column === 'redirect') {
-                // Remove % sign and convert to number
                 aVal = parseFloat((aVal || '0').replace('%', '')) || 0;
                 bVal = parseFloat((bVal || '0').replace('%', '')) || 0;
-            } else if (currentSort.column !== 'rolls' && currentSort.column !== 'starred' && currentSort.column !== 'score') {
-                // String comparison for name column
+            } else if (currentSort.column !== 'rolls' && currentSort.column !== 'alternation' && 
+                       currentSort.column !== 'starred' && currentSort.column !== 'score') {
                 aVal = (aVal || '').toString().toLowerCase();
                 bVal = (bVal || '').toString().toLowerCase();
             }
@@ -865,8 +1074,27 @@ function sortData(data) {
         });
     };
     
-    // Sort both groups separately and concatenate
-    return [...sortGroup(pinned), ...sortGroup(unpinned)];
+    // Sort pinned and unpinned groups, then rebuild with family members in place
+    const sortedPinned = sortGroup(pinned);
+    const sortedUnpinned = sortGroup(unpinned);
+    const sortedTopLevel = [...sortedPinned, ...sortedUnpinned];
+    
+    // Also sort family members within each expanded family
+    const sortFamilyMembers = (members) => {
+        if (!currentSort.column) return members;
+        return sortGroup(members);
+    };
+    
+    // Rebuild final list with family members inserted after their family header
+    const finalResult = [];
+    for (const item of sortedTopLevel) {
+        finalResult.push(item);
+        if (item.type === 'family' && item.expanded && membersByFamily[item.familyName]) {
+            finalResult.push(...sortFamilyMembers(membersByFamily[item.familyName]));
+        }
+    }
+    
+    return finalResult;
 }
 
 // Update sort indicators in table headers
