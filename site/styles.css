@@ -695,8 +695,9 @@ th.sort-desc::after {
 }
 
 td {
-    padding: 1rem;
+    padding: 0.75rem 0.85rem;
     border-bottom: 1px solid #e2e8f0;
+    font-size: 0.9rem;
 }
 
 tbody tr {
@@ -710,7 +711,9 @@ tbody tr:hover {
 .layout-name {
     font-weight: 600;
     color: #2d3748;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
+    min-width: 160px;
+    white-space: nowrap;
 }
 
 .layout-name a {
@@ -735,6 +738,7 @@ body.dark-mode .layout-name a:hover {
 .stat-value {
     font-variant-numeric: tabular-nums;
     color: #4a5568;
+    font-size: 0.9rem;
 }
 
 .no-results {
