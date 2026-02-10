@@ -22,6 +22,8 @@ Usage:
     uv run scripts/scrape_stats.py --full-refresh  
     # Scrape specific layouts only
     uv run scripts/scrape_stats.py --layouts colemak-dh graphite
+    # Preview what would be done without scraping
+    uv run scripts/scrape_stats.py --dry-run
 """
 
 import json
@@ -472,6 +474,9 @@ def main():
     parser.add_argument('--layouts', nargs='+', metavar='NAME',
                         help='Scrape specific layouts only (filenames without .yml). '
                              'Implies --full-refresh for the specified layouts.')
+    parser.add_argument('--dry-run', action='store_true',
+                        help='Show what would be done (update metadata, scrape count) '
+                             'without actually scraping. Still runs orphan check.')
     args = parser.parse_args()
     
     # Always sync metadata and check for orphaned layouts
@@ -550,6 +555,13 @@ def main():
     console.print(f"  Languages: {len(languages)} ({', '.join(languages)})")
     console.print(f"  Mode: {'[yellow]Full refresh[/yellow]' if args.full_refresh else '[green]Update missing/invalid only[/green]'}")
     console.print(f"  To scrape: [cyan]{total_tasks}[/cyan] | Already valid: [dim]{total_skipped}[/dim]\n")
+    
+    if args.dry_run:
+        if total_tasks == 0:
+            console.print("[green]\u2713 All layouts already have valid data. Nothing to scrape.[/green]")
+        else:
+            console.print(f"[yellow]Dry run:[/yellow] would scrape [cyan]{total_tasks}[/cyan] layout/mode/language combinations.")
+        return
     
     # When scraping specific layouts, merge them into the full existing layout list
     if args.layouts:

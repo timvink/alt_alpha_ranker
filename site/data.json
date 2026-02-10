@@ -14628,7 +14628,7 @@
       "family": ""
     },
     {
-      "name": "diamond_black_n9",
+      "name": "diamond\\black_n9",
       "url": "https://cyanophage.github.io/playground.html?layout=pyou%3B%5Cwdgv-hiaezjrtscxk.%2C%27%2Fqlmfb%3Dn&mode=ergo&lan=english&thumb=r",
       "thumb": true,
       "metrics": {
@@ -15150,7 +15150,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_black",
+      "name": "diamond\\black",
       "url": "https://cyanophage.github.io/playground.html?layout=pyouq%5Cmdcw%3Bhiaezvrtsnxk.%2C%27%2Fjlgfb-%5Eback&mode=ansi&lan=english&thumb=l",
       "thumb": false,
       "metrics": {
@@ -15672,7 +15672,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_crimson_n9",
+      "name": "diamond\\crimson_n9",
       "url": "https://cyanophage.github.io/playground.html?layout=.ugz%3B%5Cmdcp-iaoe%27jrtshv%2Cxky%2Fqlfwb%3Dn&mode=ergo&lan=english&thumb=r",
       "thumb": true,
       "metrics": {
@@ -16194,7 +16194,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_cyan_r9",
+      "name": "diamond\\cyan_r9",
       "url": "https://cyanophage.github.io/playground.html?layout=kyou%3B%5Cwdfv-hiaezgltsnqx.%2C%27%2Fjcpmb%3Dr&mode=ergo&lan=english&thumb=r",
       "thumb": true,
       "metrics": {
@@ -16716,7 +16716,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_magenta_r9",
+      "name": "diamond\\magenta_r9",
       "url": "https://cyanophage.github.io/playground.html?layout=.uhz%3B%5Cwdfv-iaoe%27gltsnq%2Cxky%2Fjcpmb%3Dr&mode=ergo&lan=english&thumb=r",
       "thumb": true,
       "metrics": {
@@ -17238,7 +17238,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_orange_e9",
+      "name": "diamond\\orange_e9",
       "url": "https://cyanophage.github.io/playground.html?layout=%27yhk%3B%5Cwdgv-ionazjrtscx%2C.pu%2Fqlmfb%3De&mode=ergo&lan=english&thumb=l",
       "thumb": true,
       "metrics": {
@@ -17760,7 +17760,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_pink_n9",
+      "name": "diamond\\pink_n9",
       "url": "https://cyanophage.github.io/playground.html?layout=.uhz%3B%5Cmdgw-iaoe%27jrtscv%2Cxky%2Fqlpfb%3Dn&mode=ergo&lan=english&thumb=r",
       "thumb": true,
       "metrics": {
@@ -18282,7 +18282,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_pink",
+      "name": "diamond\\pink",
       "url": "https://cyanophage.github.io/playground.html?layout=.uhfz%5Cmdcp%3Biaoe%27jrtsnv%2Ckxy%2Fqlgwb-%5Eback&mode=ansi&lan=english&thumb=l",
       "thumb": false,
       "metrics": {
@@ -18804,7 +18804,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_red_n9",
+      "name": "diamond\\red_n9",
       "url": "https://cyanophage.github.io/playground.html?layout=yfgz%3B%5Cwdcv-iaoe%27jrtshx.%2Cku%2Fqlpmb%3Dn&mode=ergo&lan=english&thumb=r",
       "thumb": true,
       "metrics": {
@@ -19326,7 +19326,7 @@
       "family": "diamond"
     },
     {
-      "name": "diamond_red",
+      "name": "diamond\\red",
       "url": "https://cyanophage.github.io/playground.html?layout=yfgxz%5Chdcp%3Biaoe%27jrtsnv.%2Cku%2Fqlmwb-%5Eback&mode=ansi&lan=english&thumb=l",
       "thumb": false,
       "metrics": {
