@@ -5,7 +5,7 @@ Script to scrape r/KeyboardLayouts subreddit for new layout announcements.
 Scrapes posts from the last 48 hours and uses an LLM to determine if they
 announce a new keyboard layout. Creates GitHub issues for:
 1. Posts that appear to announce new layouts
-2. Posts containing cyanophage playground URLs not already in layouts.yml
+2. Posts containing cyanophage playground URLs not already in config/layouts/
 
 Usage:
     uv run scripts/scrape_reddit.py
@@ -39,7 +39,7 @@ SUBREDDIT = "KeyboardLayouts"
 SUBREDDIT_JSON_URL = f"https://www.reddit.com/r/{SUBREDDIT}.json"
 HOURS_TO_LOOK_BACK = 48
 CYANOPHAGE_URL_PATTERN = r"https://cyanophage\.github\.io/playground\.html\?layout=[^\s\)\]\>\"']+"
-LAYOUTS_YML_PATH = "config/layouts.yml"
+LAYOUTS_DIR = "config/layouts"
 GITHUB_REPO_OWNER = "timvink"
 GITHUB_REPO_NAME = "alt_alpha_ranker"
 
@@ -227,21 +227,19 @@ def scrape_recent_posts(hours: int = HOURS_TO_LOOK_BACK) -> list[RedditPost]:
 
 
 def load_existing_cyanophage_urls() -> set[str]:
-    """Load all cyanophage playground URLs from layouts.yml."""
-    layouts_path = Path(LAYOUTS_YML_PATH)
-    if not layouts_path.exists():
+    """Load all cyanophage playground URLs from individual layout config files."""
+    layouts_dir = Path(LAYOUTS_DIR)
+    if not layouts_dir.exists():
         return set()
 
-    with open(layouts_path) as f:
-        data = yaml.safe_load(f)
-
     urls = set()
-    for layout in data.get("layouts", []):
-        link = layout.get("link", "")
-        if link:
-            # Extract just the layout parameter for comparison
-            # This normalizes the URL for comparison
-            urls.add(normalize_cyanophage_url(link))
+    for yml_file in layouts_dir.glob("*.yml"):
+        with open(yml_file) as f:
+            data = yaml.safe_load(f)
+        if data and isinstance(data, dict):
+            link = data.get("link", "")
+            if link:
+                urls.add(normalize_cyanophage_url(link))
 
     return urls
 
@@ -442,7 +440,7 @@ Please review this post to determine if the layout should be added to the ranker
 
 
 def check_for_missing_cyanophage_urls(posts: list[RedditPost]) -> list[tuple[str, RedditPost, RedditComment | None]]:
-    """Check posts and comments for cyanophage URLs not in our layouts.yml."""
+    """Check posts and comments for cyanophage URLs not in our config/layouts/ files."""
     existing_urls = load_existing_cyanophage_urls()
     missing_urls: list[tuple[str, RedditPost, RedditComment | None]] = []
     total_found = 0
@@ -499,7 +497,7 @@ def create_issues_for_missing_urls(missing_urls: list[tuple[str, RedditPost, Red
 
     for url, post, comment in unique_missing:
         if comment:
-            body = f"""A cyanophage playground URL was found in a Reddit comment that is not in our layouts.yml.
+            body = f"""A cyanophage playground URL was found in a Reddit comment that is not in our database.
 
 **Cyanophage URL:** {url}
 
@@ -509,17 +507,17 @@ def create_issues_for_missing_urls(missing_urls: list[tuple[str, RedditPost, Red
 **Found in comment by:** {comment.author}
 **Comment URL:** {comment.url}
 
-Please review this layout and add it to `config/layouts.yml` if appropriate.
+Please review this layout and add a new config file in `config/layouts/` if appropriate.
 """
         else:
-            body = f"""A cyanophage playground URL was found on Reddit that is not in our layouts.yml.
+            body = f"""A cyanophage playground URL was found on Reddit that is not in our database.
 
 **Cyanophage URL:** {url}
 
 **Source Post:** {post.url}
 **Post Title:** {post.title}
 
-Please review this layout and add it to `config/layouts.yml` if appropriate.
+Please review this layout and add a new config file in `config/layouts/` if appropriate.
 """
 
         create_github_issue(

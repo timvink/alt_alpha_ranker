@@ -457,48 +457,75 @@ function updateLayoutDisplay() {
 }
 
 /**
+ * Derive a config filename from a layout name.
+ * Lowercase, replace spaces/underscores with hyphens, strip non-alphanumeric/hyphen chars, collapse hyphens.
+ * @param {string} name - The layout name
+ * @returns {string} - Filename without extension (e.g. "my-layout")
+ */
+function deriveConfigFilename(name) {
+    return name
+        .toLowerCase()
+        .replace(/[\s_]+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+}
+
+/**
  * Update the YAML configuration preview
  */
 function updateYamlPreview() {
     if (!currentUrl) {
         return;
     }
-    
+
     const layoutName = document.getElementById('layoutName').value.trim() || 'my_layout';
     const layoutYear = document.getElementById('layoutYear').value.trim();
     const layoutWebsite = document.getElementById('layoutWebsite').value.trim();
-    
+
     // Strip language and default mode params - the scraper will add appropriate language when scraping
     const cleanUrl = stripUrlParams(currentUrl);
-    
-    let yaml = `- name: ${layoutName.toLowerCase().replace(/\s+/g, '_')}
-  link: ${cleanUrl}
-  thumb: ${hasThumb}`;
-    
+
+    const configFilename = deriveConfigFilename(layoutName);
+
+    let yaml = `name: ${layoutName.toLowerCase().replace(/\s+/g, '_')}
+link: ${cleanUrl}
+thumb: ${hasThumb}`;
+
     if (layoutYear) {
-        yaml += `\n  year: ${layoutYear}`;
+        yaml += `\nyear: ${layoutYear}`;
     }
-    
+
     if (layoutWebsite) {
-        yaml += `\n  website: ${layoutWebsite}`;
+        yaml += `\nwebsite: ${layoutWebsite}`;
     }
-    
+
     const resultYamlDiv = document.getElementById('resultYaml');
     resultYamlDiv.textContent = yaml;
-    
+
+    // Update config filename display
+    const filenameDisplay = document.getElementById('configFilename');
+    if (filenameDisplay) {
+        filenameDisplay.textContent = `config/layouts/${configFilename}.yml`;
+    }
+
     // Update the GitHub issue button
-    updateIssueButton(layoutName, yaml);
+    updateIssueButton(layoutName, yaml, configFilename);
 }
 
 /**
  * Update the GitHub issue button with the correct URL
  */
-function updateIssueButton(layoutName, yaml) {
+function updateIssueButton(layoutName, yaml, configFilename) {
     const btn = document.getElementById('submitIssueBtn');
-    
+
     const title = encodeURIComponent(`Add new layout: ${layoutName || 'new layout'}`);
-    const body = encodeURIComponent(`Please add this layout to the rankings:\n\n\`\`\`yaml\n${yaml}\n\`\`\``);
-    
+    const body = encodeURIComponent(
+        `Please add this layout to the rankings.\n\n` +
+        `**Config file:** \`config/layouts/${configFilename}.yml\`\n\n` +
+        `\`\`\`yaml\n${yaml}\n\`\`\``
+    );
+
     btn.href = `https://github.com/timvink/alt_alpha_ranker/issues/new?title=${title}&body=${body}&assignees=copilot`;
 }
 

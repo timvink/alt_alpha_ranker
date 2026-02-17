@@ -1,10 +1,29 @@
-When creating a new PR to add a new keyboard layout:
-- Only Latin script layouts are in scope. Layouts for non-Latin scripts (e.g., Russian, Arabic, Chinese) are not supported.
-- Only 'normal' layouts are in scope, so no magic layouts or multiple layers (e.g., Dvorak with a separate layer for numbers and symbols) are supported.
-- Add a new file in `config/layouts/` directory. The filename should be `<new_layout_name>.json` (only use hyphens and alphanumeric characters). The actual filename used is in the `name:` field of the file, so the filename can be different from the layout name. The file should follow the same structure as the existing files in that directory. Make sure to check if the layout is part of a family of layouts (e.g. `enthium` which has many versions)
-- No need to update any other files, the stats will be auto-scraped using the scripts in the `scripts/` folder.
+When creating a new PR to close an "Add new layout" issue:
 
-Using python:
-- python scripts should live in `scripts/`. 
-- python can be run using `uv run <path>`. 
-- If you need to add a python dependency, update `pyproject.toml` or use `uv add <dep>`. 
+## Scope
+
+- Only Latin script layouts are in scope. Layouts for non-Latin scripts (e.g., Russian, Arabic, Chinese) are not supported.
+- Only 'normal' layouts are in scope, so no magic layouts or multiple symbol layers.
+
+## How to add a layout
+
+1. The issue body contains a YAML code block and a suggested config filename (e.g. `config/layouts/my-layout.yml`).
+2. Create a new file at that path under `config/layouts/`. The filename should only use lowercase alphanumeric characters and hyphens, with a `.yml` extension.
+3. Paste the YAML content from the issue into the file. The file should look like this:
+
+```yaml
+name: example-layout
+link: https://cyanophage.github.io/playground.html?layout=...
+thumb: false
+year: 2024
+website: https://example.com
+```
+
+4. Check if the layout belongs to a family of layouts (e.g. `semimak` has many versions like `semimak-jqc`). If it does, add a `family` field. If unsure, omit it.
+5. No need to update any other files. The stats will be auto-scraped when the config file is pushed to main.
+
+## Using python
+
+- Python scripts live in `scripts/`.
+- Run with `uv run <path>`.
+- Add dependencies with `uv add <dep>` or update `pyproject.toml`.
