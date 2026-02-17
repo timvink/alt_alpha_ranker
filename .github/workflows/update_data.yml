@@ -79,6 +79,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add site/data.json
           git commit -m "chore: update data.json with latest layout statistics"
+          git pull --rebase
           git push
 
   deploy:
