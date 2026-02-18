@@ -8,8 +8,15 @@ Run using:
 uv run scripts/test_scrape_stats.py
 """
 
+import glob
+import os
+
 import pytest
+import yaml
+
 from scrape_stats import scrape_layout_stats, update_url_language, update_url_mode
+
+LAYOUTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'config', 'layouts')
 
 
 def test_update_url_language_with_existing_lan():
@@ -59,6 +66,23 @@ def test_update_url_mode_anglemod_uses_iso():
     url = "https://cyanophage.github.io/playground.html?layout=abc&mode=ergo"
     result = update_url_mode(url, "anglemod")
     assert result == "https://cyanophage.github.io/playground.html?layout=abc&mode=iso"
+
+
+def test_layout_website_urls_are_valid():
+    """Test that every layout with a 'website' entry has a valid URL starting with https or www."""
+    layout_files = glob.glob(os.path.join(LAYOUTS_DIR, '*.yml'))
+    assert len(layout_files) > 0, "No layout files found"
+
+    invalid = []
+    for path in sorted(layout_files):
+        with open(path) as f:
+            data = yaml.safe_load(f)
+        if data and data.get('website'):
+            url = data['website'].strip()
+            if not (url.startswith('https://') or url.startswith('http://') or url.startswith('www.')):
+                invalid.append((os.path.basename(path), url))
+
+    assert invalid == [], f"Layouts with invalid website URLs: {invalid}"
 
 
 @pytest.mark.integration

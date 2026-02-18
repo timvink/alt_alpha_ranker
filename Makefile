@@ -4,3 +4,6 @@ serve:
 
 test:
 	npm test
+
+scrape:
+	uv run scripts/scrape_stats.py
