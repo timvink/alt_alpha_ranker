@@ -135,23 +135,27 @@ def has_invalid_metrics(metrics: dict) -> bool:
     return False
 
 
-def needs_scraping(layout_data: dict, mode: str, language: str, full_refresh: bool) -> bool:
+def needs_scraping(layout_data: dict, mode: str, language: str, full_refresh: bool, link_changed: bool = False) -> bool:
     """Determine if a layout/mode/language combination needs to be scraped."""
     if full_refresh:
         return True
-    
+
+    # If the link changed in the YAML config, all metrics are stale
+    if link_changed:
+        return True
+
     # Check if this layout has metrics
     if 'metrics' not in layout_data:
         return True
-    
+
     # Check if this mode exists for the layout
     if mode not in layout_data['metrics']:
         return True
-    
+
     # Check if this language exists for the mode
     if language not in layout_data['metrics'][mode]:
         return True
-    
+
     # Check if the metrics have any invalid values
     return has_invalid_metrics(layout_data['metrics'][mode][language])
 
@@ -515,13 +519,16 @@ def main():
         
         # Get existing data for this layout or create new entry
         existing_layout = existing_layouts.get(name, {})
-        
+
+        # Detect if the link changed compared to what's stored in data.json
+        link_changed = existing_layout.get('url', '') != base_link
+
         # Create layout entry
         layout_data = {
             'name': name,
             'url': base_link,
             'thumb': thumb,
-            'metrics': existing_layout.get('metrics', {})
+            'metrics': {} if link_changed else existing_layout.get('metrics', {}),
         }
         
         # Add optional fields
@@ -540,7 +547,7 @@ def main():
                 layout_data['metrics'][mode] = {}
             
             for language in languages:
-                if needs_scraping(layout_data, mode, language, full_refresh):
+                if needs_scraping(layout_data, mode, language, full_refresh, link_changed):
                     scrape_tasks.append((name, mode, language, base_link))
     
     # Calculate stats
