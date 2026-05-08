@@ -341,14 +341,22 @@ body.dark-mode h2 {
     margin-bottom: 1.5rem;
 }
 
+.search-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .search-bar-wrapper {
     display: flex;
     align-items: center;
     gap: 0;
+    flex: 1;
+    min-width: 0;
     background: var(--bg-secondary, white);
     border: 2px solid #e2e8f0;
     border-radius: 12px;
-    padding: 0 0.5rem 0 1rem;
+    padding: 0 1rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     height: 48px;
 }
@@ -450,35 +458,8 @@ body.dark-mode .icon-btn.active {
     display: block;
 }
 
-/* Share button in search bar */
-.search-bar-actions .share-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary, #718096);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    font-size: 1rem;
-    padding: 0;
-}
-
-.search-bar-actions .share-btn:hover {
-    background: rgba(102, 126, 234, 0.1);
-    color: var(--accent-color, #667eea);
-}
-
-.search-bar-actions .share-btn.copied {
+.icon-btn.share-btn.copied {
     color: #48bb78;
-}
-
-body.dark-mode .search-bar-actions .share-btn:hover {
-    background: rgba(159, 122, 234, 0.15);
-    color: #b794f4;
 }
 
 /* Filter panel (slide-open, pushes content down) */
