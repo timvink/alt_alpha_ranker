@@ -261,27 +261,39 @@ def extract_cyanophage_urls(text: str) -> list[str]:
 def create_layout_announcement_agent() -> Agent[None, LayoutAnnouncementResult]:
     """Create a PydanticAI agent for analyzing posts."""
     return Agent(
-        "google-gla:gemini-2.5-flash",
+        "google-gla:gemini-3.1-flash-lite",
         output_type=LayoutAnnouncementResult,
-        system_prompt="""You are an expert at analyzing keyboard layout discussions.
-Your task is to determine if a Reddit post or comment is announcing a NEW keyboard layout.
+        system_prompt="""You are an expert at analyzing keyboard layout discussions on r/KeyboardLayouts.
+Your task is to determine if a Reddit post or comment announces a NEW keyboard ALPHA layout:
+a new arrangement of the LETTER keys on a physical keyboard, finished and released,
+that could be added to a layout ranking website.
 
-A post/comment announces a new layout if it:
-- Introduces a layout the author created or is releasing
-- Presents a layout that appears to be new/original
-- Shares a new variant or modification of an existing layout
-- It is *not* mentioned as a 'work in progress' or 'idea'
-- It mentions a name for the layout
+Return is_new_layout=true ONLY if ALL of the following hold:
+- The author created the layout (or a variant of an existing one) and presents it as
+  finished/released — not something they are still tweaking
+- The layout has an explicit name (e.g. "Strata", "Gallium-EAST", "Monium_v")
+- It changes the arrangement of the LETTER keys (the alphas), not just symbols or layers
+- It targets a physical keyboard with one letter per key
 
-A post/comment does NOT announce a new layout if it:
-- Just asks questions about existing layouts
-- Discusses or reviews existing layouts without introducing anything new
-- Is about typing tests, typing speed, or general keyboard discussions
-- Is asking for help or recommendations
-- Is sharing someone else's existing layout without modifications
-- Is about a mobile phone keyboard layout (e.g., for iOS, Android, or touchscreen devices)
+Return is_new_layout=false if ANY of the following apply:
+- It is a work in progress, design attempt, experiment, prototype, or idea
+- The author asks for feedback, advice, thoughts, or recommendations
+  (e.g. "Thoughts on my layout?", "still not convinced", "what should I swap?")
+- It is about keymap features rather than letter arrangement: layers, home-row mods,
+  combos, one-shot modifiers, navigation/number/symbol layers, or firmware configs
+  (QMK, ZMK, kanata, Vial)
+- The alpha arrangement is unchanged or "pretty standard" and only layers/symbols differ
+  (e.g. a QWERTY-based layout that only adds characters on AltGr)
+- The layout relies on combos, chords, magic/repeat keys, or duplicated letters, so there
+  is no standard one-letter-per-key arrangement
+- It is a mobile/touchscreen keyboard (iOS, Android, Thumb-Key, Unexpected Keyboard, ...)
+- It is a hardware product: keyboards, keycaps, prototypes, group buys
+- The author showcases their personal setup/config for an existing, already-released layout
+- It is about typing tests, typing speed, or general keyboard discussion
+- It shares someone else's existing layout without modifications
 
-Be conservative - only return true if you're confident this is announcing a new layout.""",
+Be conservative: every true creates a GitHub issue a human must review, so when in doubt,
+return false.""",
     )
 
 
