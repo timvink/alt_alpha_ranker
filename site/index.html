@@ -78,9 +78,13 @@
                     >
                 </div>
                 <div class="search-bar-actions">
-                    <button class="icon-btn filter-toggle-btn" id="filterToggleBtn" title="Filters & Settings" aria-label="Toggle filters">
-                        <i class="fa-solid fa-sliders"></i>
+                    <button class="icon-btn filter-toggle-btn" id="filterToggleBtn" title="Filter layouts" aria-label="Toggle filters">
+                        <i class="fa-solid fa-filter"></i>
                         <span class="filter-badge" id="filterBadge"></span>
+                    </button>
+                    <button class="icon-btn scoring-toggle-btn" id="scoringToggleBtn" title="Score weights" aria-label="Toggle score weights">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span class="filter-badge" id="scoringBadge"></span>
                     </button>
                     <button class="icon-btn share-btn" id="shareBtn" title="Copy shareable link" aria-label="Share">
                         <i class="fa-solid fa-share-nodes"></i>
@@ -88,48 +92,53 @@
                 </div>
             </div>
 
-            <!-- Filter dropdown panel -->
+            <!-- Stats settings: always visible, because they change every number in the table -->
+            <div class="stats-settings">
+                <span class="stats-settings-text">Stats for</span>
+                <div class="stats-setting">
+                    <i class="fa-solid fa-earth-americas"></i>
+                    <select id="languageSelect" class="setting-select" aria-label="Language">
+                        <option value="english">English</option>
+                    </select>
+                </div>
+                <span class="stats-settings-text">typed on a</span>
+                <div class="stats-setting">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <select id="modeSelect" class="setting-select" aria-label="Keyboard type">
+                        <option value="ergo">Ergo (column-staggered)</option>
+                        <option value="ansi">ANSI (row-staggered)</option>
+                        <option value="iso">ISO (row-staggered)</option>
+                        <option value="anglemod">Angle Mod (ISO)</option>
+                    </select>
+                </div>
+                <span class="stats-settings-text">keyboard</span>
+                <span class="tooltip tooltip-wide stats-settings-help" data-tooltip="The keyboard shape decides which finger presses which key, so it changes every metric below. Angle Mod is an ISO board where the left bottom row shifts one key to the right, moving ZXCV onto more natural fingers.">
+                    <i class="fa-regular fa-circle-question"></i>
+                </span>
+            </div>
+
+            <!-- Filter dropdown panel: narrows down which layouts are listed -->
             <div class="filter-panel" id="filterPanel">
                 <div class="filter-panel-section">
-                    <div class="filter-panel-label">Thumbs</div>
+                    <div class="filter-panel-label">Thumb keys</div>
                     <div class="segment-control" id="thumbSegment">
                         <button class="segment-btn active" data-value="all">All</button>
-                        <button class="segment-btn" data-value="true">With Thumbs</button>
-                        <button class="segment-btn" data-value="false">No Thumbs</button>
-                    </div>
-                    <!-- Hidden radios for compatibility with existing JS -->
-                    <input type="radio" name="thumbFilter" value="all" checked style="display:none">
-                    <input type="radio" name="thumbFilter" value="true" style="display:none">
-                    <input type="radio" name="thumbFilter" value="false" style="display:none">
-                </div>
-
-                <div class="filter-panel-row">
-                    <div class="filter-panel-field">
-                        <label for="languageSelect">Language</label>
-                        <select id="languageSelect" class="filter-select">
-                            <option value="english">English</option>
-                        </select>
-                    </div>
-                    <div class="filter-panel-field">
-                        <label for="modeSelect">Keyboard</label>
-                        <select id="modeSelect" class="filter-select">
-                            <option value="ergo">Ergo</option>
-                            <option value="ansi">ANSI</option>
-                            <option value="iso">ISO</option>
-                            <option value="anglemod">Angle Mod</option>
-                        </select>
-                    </div>
-                    <div class="filter-panel-field">
-                        <label for="familySelect">Families</label>
-                        <select id="familySelect" class="filter-select">
-                            <option value="collapsed">Collapsed</option>
-                            <option value="show-all">Show All</option>
-                        </select>
+                        <button class="segment-btn" data-value="true">With thumbs</button>
+                        <button class="segment-btn" data-value="false">No thumbs</button>
                     </div>
                 </div>
 
-                <div class="filter-panel-divider"></div>
+                <div class="filter-panel-section">
+                    <div class="filter-panel-label">Layout families</div>
+                    <div class="segment-control" id="familySegment">
+                        <button class="segment-btn active" data-value="collapsed">Grouped</button>
+                        <button class="segment-btn" data-value="show-all">Show all</button>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Scoring dropdown panel: changes how the Score column is calculated -->
+            <div class="filter-panel" id="scoringPanel">
                 <div class="filter-panel-section">
                     <div class="filter-panel-label">Score Preset</div>
                     <div class="preset-buttons">

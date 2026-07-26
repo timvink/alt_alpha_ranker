@@ -462,6 +462,70 @@ body.dark-mode .icon-btn.active {
     color: #48bb78;
 }
 
+/* Stats settings bar (always visible - these change the numbers in the table) */
+.stats-settings {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #718096);
+}
+
+.stats-setting {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    background: var(--bg-secondary, white);
+    transition: border-color 0.2s ease;
+}
+
+.stats-setting:hover,
+.stats-setting:focus-within {
+    border-color: var(--accent-color, #667eea);
+}
+
+.stats-setting i {
+    color: var(--accent-color, #667eea);
+    font-size: 0.85rem;
+}
+
+.setting-select {
+    border: none;
+    background: transparent;
+    color: var(--text-primary, #1a202c);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+}
+
+.stats-settings-help {
+    color: var(--text-tertiary, #a0aec0);
+}
+
+body.dark-mode .stats-settings {
+    color: #a0aec0;
+}
+
+body.dark-mode .stats-setting {
+    background: #2d3748;
+    border-color: #4a5568;
+}
+
+body.dark-mode .setting-select {
+    color: #e2e8f0;
+}
+
+body.dark-mode .setting-select option {
+    background: #2d3748;
+}
+
 /* Filter panel (slide-open, pushes content down) */
 .filter-panel {
     overflow: hidden;
@@ -476,7 +540,10 @@ body.dark-mode .icon-btn.active {
 }
 
 .filter-panel.open {
-    max-height: 800px;
+    /* Tall enough for the weight sliders plus an expanded score explanation;
+       scrolls internally rather than clipping on short screens. */
+    max-height: 85vh;
+    overflow-y: auto;
     opacity: 1;
     padding: 1.25rem;
     margin-top: 0.5rem;
@@ -508,51 +575,6 @@ body.dark-mode .filter-panel.open {
     letter-spacing: 0.05em;
     color: var(--text-tertiary, #a0aec0);
     margin-bottom: 0.5rem;
-}
-
-.filter-panel-row {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-}
-
-.filter-panel-field {
-    flex: 1;
-    min-width: 140px;
-}
-
-.filter-panel-field label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-tertiary, #a0aec0);
-    margin-bottom: 0.35rem;
-}
-
-.filter-select {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    background: var(--bg-primary, #f7fafc);
-    color: var(--text-primary, #1a202c);
-    cursor: pointer;
-    transition: border-color 0.2s;
-}
-
-.filter-select:focus {
-    outline: none;
-    border-color: var(--accent-color, #667eea);
-}
-
-body.dark-mode .filter-select {
-    background: #1a202c;
-    border-color: #4a5568;
-    color: #e2e8f0;
 }
 
 .filter-panel-divider {
@@ -1100,6 +1122,19 @@ body.dark-mode tbody tr.last-pinned {
     z-index: 1000;
 }
 
+/* Wide tooltips for longer explanations (wraps instead of one long line) */
+.tooltip-wide {
+    border-bottom: none;
+}
+
+.tooltip-wide::after {
+    white-space: normal;
+    width: max-content;
+    max-width: min(360px, 80vw);
+    text-align: left;
+    line-height: 1.4;
+}
+
 /* Right-aligned tooltips for last columns */
 th:nth-last-child(-n+4) .tooltip::after {
     left: auto;
@@ -1607,13 +1642,14 @@ body.dark-mode .score-value {
         padding: 0.75rem;
     }
 
-    .filter-panel-row {
-        flex-direction: column;
-        gap: 0.75rem;
+    .stats-settings {
+        font-size: 0.85rem;
+        gap: 0.35rem;
     }
 
-    .filter-panel-field {
-        min-width: 100%;
+    .setting-select {
+        font-size: 0.85rem;
+        max-width: 100%;
     }
 
     .segment-control {
