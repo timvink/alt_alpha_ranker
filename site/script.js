@@ -55,7 +55,15 @@ function updateUrlParams() {
     if (searchInput && searchInput.value.trim()) {
         params.set('search', searchInput.value.trim());
     }
-    
+
+    // Add row filters (only if not default)
+    if (currentThumbFilter !== 'all') {
+        params.set('thumbs', currentThumbFilter);
+    }
+    if (currentFamilyMode !== 'collapsed') {
+        params.set('families', currentFamilyMode);
+    }
+
     // Add weights - check if it matches a preset
     let activePreset = null;
     for (const [presetName, presetWeights] of Object.entries(weightPresets)) {
@@ -119,7 +127,18 @@ function loadFromUrlParams() {
             searchInput.value = search;
         }
     }
-    
+
+    // Load row filters
+    const thumbs = params.get('thumbs');
+    if (thumbs === 'all' || thumbs === 'true' || thumbs === 'false') {
+        currentThumbFilter = thumbs;
+    }
+
+    const families = params.get('families');
+    if (families === 'collapsed' || families === 'show-all') {
+        currentFamilyMode = families;
+    }
+
     // Load weights - either from preset or custom weights
     const preset = params.get('preset');
     const weights = params.get('weights');
@@ -159,6 +178,8 @@ function loadFromUrlParams() {
         lang,
         mode,
         search,
+        thumbs,
+        families,
         preset,
         weights,
         highlight,
@@ -249,7 +270,7 @@ function setupWeightControls() {
                 saveScoreWeights();
                 updateActivePreset();
                 updateUrlParams();
-                updateFilterBadge();
+                updateBadges();
                 recalculateAndRender();
             });
             
@@ -262,7 +283,7 @@ function setupWeightControls() {
                 saveScoreWeights();
                 updateActivePreset();
                 updateUrlParams();
-                updateFilterBadge();
+                updateBadges();
                 recalculateAndRender();
             });
         }
@@ -272,15 +293,13 @@ function setupWeightControls() {
     document.querySelectorAll('.preset-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const preset = btn.dataset.preset;
-            const customPanel = document.getElementById('customWeightsPanel');
-            
             if (preset === 'custom') {
                 // Custom button: just mark it as active
                 // Mark Custom as active
                 document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 saveSelectedPreset('custom');
-                updateFilterBadge();
+                updateBadges();
             } else if (weightPresets[preset]) {
                 // Regular preset: apply the preset weights
                 scoreWeights = { ...weightPresets[preset] };
@@ -288,7 +307,7 @@ function setupWeightControls() {
                 updateWeightUI();
                 updateActivePreset();
                 updateUrlParams();
-                updateFilterBadge();
+                updateBadges();
                 recalculateAndRender();
             }
         });
@@ -447,7 +466,7 @@ function setupLanguageFilter() {
         
         // Update URL params
         updateUrlParams();
-        updateFilterBadge();
+        updateBadges();
     });
 }
 
@@ -473,29 +492,55 @@ function setupModeFilter() {
         
         // Update URL params
         updateUrlParams();
-        updateFilterBadge();
+        updateBadges();
     });
 }
 
-// Family filter functionality
-function setupFamilyFilter() {
-    const familySelect = document.getElementById('familySelect');
-    if (!familySelect) return;
-    
-    // Restore saved preference
-    const saved = localStorage.getItem('familyMode') || 'collapsed';
-    currentFamilyMode = saved;
-    familySelect.value = saved;
-    
-    familySelect.addEventListener('change', (e) => {
-        currentFamilyMode = e.target.value;
-        localStorage.setItem('familyMode', currentFamilyMode);
-        expandedFamilies.clear(); // Reset expanded state when switching modes
-        updateFilterBadge();
-        const filtered = getFilteredData();
-        const sorted = sortData(filtered);
-        renderTable(sorted);
+// Mark the button matching `value` as the active one in a segment control
+function updateSegmentControl(segmentId, value) {
+    const segment = document.getElementById(segmentId);
+    if (!segment) return;
+    segment.querySelectorAll('.segment-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === value);
     });
+}
+
+// Row filters (thumbs + families): restore saved state and wire up the segment controls
+function setupRowFilters(urlState) {
+    if (!urlState.thumbs) {
+        currentThumbFilter = localStorage.getItem('thumbFilter') || 'all';
+    }
+    if (!urlState.families) {
+        currentFamilyMode = localStorage.getItem('familyMode') || 'collapsed';
+    }
+    updateSegmentControl('thumbSegment', currentThumbFilter);
+    updateSegmentControl('familySegment', currentFamilyMode);
+
+    document.querySelectorAll('#thumbSegment .segment-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentThumbFilter = btn.dataset.value;
+            localStorage.setItem('thumbFilter', currentThumbFilter);
+            updateSegmentControl('thumbSegment', currentThumbFilter);
+            updateSearchPlaceholder();
+            applyRowFilterChange();
+        });
+    });
+
+    document.querySelectorAll('#familySegment .segment-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentFamilyMode = btn.dataset.value;
+            localStorage.setItem('familyMode', currentFamilyMode);
+            updateSegmentControl('familySegment', currentFamilyMode);
+            expandedFamilies.clear(); // Reset expanded state when switching modes
+            applyRowFilterChange();
+        });
+    });
+}
+
+function applyRowFilterChange() {
+    updateBadges();
+    updateUrlParams();
+    renderTable(sortData(getFilteredData()));
 }
 
 // Update the try-layout link to include current language
@@ -626,8 +671,10 @@ function groupByFamily(filteredLayouts) {
 
 // Update search placeholder with count
 function updateSearchPlaceholder() {
-    const count = layoutsData.length;
-    document.getElementById('searchInput').placeholder = 
+    const count = currentThumbFilter === 'all'
+        ? layoutsData.length
+        : layoutsData.filter(layout => layout.thumb.toString() === currentThumbFilter).length;
+    document.getElementById('searchInput').placeholder =
         `Search ${count} layout${count !== 1 ? 's' : ''}...`;
 }
 
@@ -676,8 +723,8 @@ async function loadData() {
         initModeSelect();
         setupModeFilter();
         
-        // Setup family filter
-        setupFamilyFilter();
+        // Setup row filters (thumbs + families)
+        setupRowFilters(urlState);
         
         // If URL had a mode param, override the default/saved mode
         if (urlState.mode) {
@@ -720,7 +767,7 @@ async function loadData() {
         
         // Initialize URL params (in case we loaded from localStorage)
         updateUrlParams();
-        updateFilterBadge();
+        updateBadges();
     } catch (error) {
         console.error('Error loading data:', error);
         document.getElementById('tableBody').innerHTML = 
@@ -1164,22 +1211,6 @@ document.querySelectorAll('th[data-column]').forEach(th => {
 // Load data on page load
 loadData();
 
-// Add click handler for the "customize weights" link
-document.querySelector('.score-link')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    const fp = document.getElementById('filterPanel');
-    const ftb = document.getElementById('filterToggleBtn');
-    if (fp) {
-        fp.classList.add('open');
-        if (ftb) ftb.classList.add('active');
-        const customBtn = document.querySelector('.preset-btn[data-preset="custom"]');
-        if (customBtn) {
-            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-            customBtn.classList.add('active');
-        }
-    }
-});
-
 // Share button functionality
 const shareBtn = document.getElementById('shareBtn');
 
@@ -1206,49 +1237,37 @@ shareBtn?.addEventListener('click', async () => {
     }
 });
 
-// Filter panel toggle
-const filterToggleBtn = document.getElementById('filterToggleBtn');
-const filterPanel = document.getElementById('filterPanel');
+// Dropdown panels: filters (which layouts are listed) and scoring (how Score is calculated)
+const dropdownPanels = [
+    { button: document.getElementById('filterToggleBtn'), panel: document.getElementById('filterPanel') },
+    { button: document.getElementById('scoringToggleBtn'), panel: document.getElementById('scoringPanel') }
+].filter(({ button, panel }) => button && panel);
 
-if (filterToggleBtn && filterPanel) {
-    filterToggleBtn.addEventListener('click', (e) => {
+function closeDropdownPanels(except = null) {
+    dropdownPanels.forEach(({ button, panel }) => {
+        if (panel === except) return;
+        panel.classList.remove('open');
+        button.classList.remove('active');
+    });
+}
+
+dropdownPanels.forEach(({ button, panel }) => {
+    button.addEventListener('click', (e) => {
         e.stopPropagation();
-        const isOpen = filterPanel.classList.toggle('open');
-        filterToggleBtn.classList.toggle('active', isOpen);
+        closeDropdownPanels(panel);
+        const isOpen = panel.classList.toggle('open');
+        button.classList.toggle('active', isOpen);
     });
+});
 
-    // Close panel when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!filterPanel.contains(e.target) && !filterToggleBtn.contains(e.target)) {
-            filterPanel.classList.remove('open');
-            filterToggleBtn.classList.remove('active');
-        }
-    });
-}
-
-// Segment control for thumb filter
-const thumbSegment = document.getElementById('thumbSegment');
-if (thumbSegment) {
-    thumbSegment.querySelectorAll('.segment-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Update visual state
-            thumbSegment.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Update hidden radio and state
-            const value = btn.dataset.value;
-            const radio = document.querySelector(`input[name="thumbFilter"][value="${value}"]`);
-            if (radio) radio.checked = true;
-            currentThumbFilter = value;
-            updateSearchPlaceholder();
-            updateFilterBadge();
-            
-            const filtered = getFilteredData();
-            const sorted = sortData(filtered);
-            renderTable(sorted);
-        });
-    });
-}
+// Close panels when clicking outside of them
+document.addEventListener('click', (e) => {
+    const clickedInside = dropdownPanels.some(({ button, panel }) =>
+        panel.contains(e.target) || button.contains(e.target));
+    if (!clickedInside) {
+        closeDropdownPanels();
+    }
+});
 
 // Learn more toggle
 const learnMoreToggle = document.getElementById('learnMoreToggle');
@@ -1261,19 +1280,12 @@ if (learnMoreToggle && learnMoreContent) {
     });
 }
 
-// Update filter badge to show when non-default filters are active
-function updateFilterBadge() {
-    const badge = document.getElementById('filterBadge');
-    if (!badge) return;
-    
-    const hasNonDefault = 
-        currentThumbFilter !== 'all' ||
-        (window.currentLanguage && window.currentLanguage !== 'english') ||
-        (window.currentMode && window.currentMode !== 'ergo') ||
-        currentFamilyMode !== 'collapsed' ||
-        !isDefaultWeights();
-    
-    badge.classList.toggle('visible', hasNonDefault);
+// Show a dot on each toggle button whose panel holds non-default settings.
+// Language and keyboard type are always visible in the stats settings bar, so they need no dot.
+function updateBadges() {
+    document.getElementById('filterBadge')?.classList.toggle('visible',
+        currentThumbFilter !== 'all' || currentFamilyMode !== 'collapsed');
+    document.getElementById('scoringBadge')?.classList.toggle('visible', !isDefaultWeights());
 }
 
 function isDefaultWeights() {
