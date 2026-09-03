@@ -37,6 +37,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Deploy the tip of the branch, not the commit that triggered this
+          # run. update_data.yml calls this workflow after pushing a data.json
+          # commit, and that commit is only on the tip -- github.sha predates
+          # it. Two runs triggered close together would otherwise deploy
+          # different trees, letting the older one land last.
+          ref: ${{ github.ref }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
