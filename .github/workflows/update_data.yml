@@ -12,6 +12,12 @@ on:
 permissions:
   contents: write
 
+# Two scrapes must never overlap: both rewrite site/data.json and then race to
+# push it.
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
@@ -19,14 +25,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          # Start from the tip of the branch: an earlier run may have pushed a
+          # data.json commit while this one sat in the queue, and scraping on
+          # top of a stale tree is what makes the push below conflict.
+          ref: ${{ github.ref }}
+          fetch-depth: 0
 
       - name: Detect changed layout files
         id: changed
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
         run: |
-          # Get layout files changed in this push
-          CHANGED=$(git diff --name-only --diff-filter=ACMR HEAD~1 HEAD -- 'config/layouts/*.yml' | sed 's|config/layouts/||; s|\.yml$||' || true)
-          LANGUAGES_CHANGED=$(git diff --name-only --diff-filter=ACMR HEAD~1 HEAD -- 'config/languages.yml' || true)
+          # Diff the range this push covers. HEAD is the branch tip, which can
+          # already be ahead of this run's commit, so HEAD~1..HEAD would look at
+          # somebody else's change.
+          CHANGED=""
+          LANGUAGES_CHANGED=""
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            CHANGED=$(git diff --name-only --diff-filter=ACMR "$BEFORE" "$AFTER" -- 'config/layouts/*.yml' | sed 's|config/layouts/||; s|\.yml$||' || true)
+            LANGUAGES_CHANGED=$(git diff --name-only --diff-filter=ACMR "$BEFORE" "$AFTER" -- 'config/languages.yml' || true)
+          else
+            echo "No push range to diff (manual run, or a force push dropped the previous commit)"
+          fi
 
           if [ -n "$LANGUAGES_CHANGED" ]; then
             echo "languages_changed=true" >> $GITHUB_OUTPUT
@@ -74,13 +95,34 @@ jobs:
 
       - name: Commit and push changes
         if: steps.check_changes.outputs.changed == 'true'
+        env:
+          BRANCH: ${{ github.ref_name }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add site/data.json
-          git commit -m "chore: update data.json with latest layout statistics"
-          git pull --rebase
-          git push
+
+          # If the branch moved under us, replay the file we just generated onto
+          # the new tip instead of rebasing. site/data.json is derived from
+          # config/ plus the scrape, and a rebase conflicts on every metric that
+          # both sides touched -- including the scraped_at line, every time.
+          for attempt in 1 2 3; do
+            git add site/data.json
+            git diff --cached --quiet || \
+              git commit -m "chore: update data.json with latest layout statistics"
+
+            if git push origin "HEAD:$BRANCH"; then
+              exit 0
+            fi
+
+            echo "Push rejected (attempt $attempt) - replaying data.json onto the updated branch"
+            cp site/data.json "$RUNNER_TEMP/data.json"
+            git fetch origin "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            cp "$RUNNER_TEMP/data.json" site/data.json
+          done
+
+          echo "::error::Could not push site/data.json after 3 attempts"
+          exit 1
 
   deploy:
     needs: update-data
