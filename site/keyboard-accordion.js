@@ -18,18 +18,6 @@ class KeyboardAccordion {
         });
     }
     
-    /**
-     * Update the button position to align with the top key Y position
-     */
-    updateButtonPosition(accordionRow) {
-        const actionsEl = accordionRow.querySelector('.accordion-actions');
-        if (actionsEl) {
-            const viewType = getKeyboardViewPreference();
-            const topKeyY = getTopKeyY(viewType);
-            actionsEl.style.paddingTop = `${topKeyY}px`;
-        }
-    }
-
     initialize() {
         if (this.isInitialized) return;
         this.isInitialized = true;
@@ -64,10 +52,9 @@ class KeyboardAccordion {
      * @param {string} website - Optional website/source URL
      */
     toggle(layoutName, layoutUrl, rowElement, hasThumbs, website) {
-        const accordionRow = rowElement.nextElementSibling;
-        const isOpen = accordionRow && accordionRow.classList.contains('accordion-row');
-        
-        if (isOpen) {
+        // Track openness via openRows, not the DOM: a closing accordion lingers for the
+        // 300ms removal animation, and reading the DOM would treat it as still open.
+        if (this.isOpen(rowElement)) {
             this.close(rowElement);
         } else {
             this.open(layoutName, layoutUrl, rowElement, hasThumbs, website);
@@ -92,6 +79,13 @@ class KeyboardAccordion {
         // Get current language from global state (set by script.js)
         const currentLanguage = window.currentLanguage || 'english';
         
+        // Drop any accordion row still animating out from a recent close, so reopening
+        // quickly cannot leave two accordion rows attached to this row.
+        const closingRow = rowElement.nextElementSibling;
+        if (closingRow && closingRow.classList.contains('accordion-row')) {
+            closingRow.remove();
+        }
+
         // Create accordion row
         const accordionRow = this.createAccordionRow(layoutName, layoutUrl);
         rowElement.insertAdjacentElement('afterend', accordionRow);
@@ -104,7 +98,7 @@ class KeyboardAccordion {
         content.classList.add('open');
         
         // Convert URL to KeyboardLayout and render
-        const svg = accordionRow.querySelector('#keyboard-svg');
+        const svg = accordionRow.querySelector('.keyboard-svg');
         const layout = cyanophageToKeyboard(layoutUrl);
         
         // Build layout info for the left panel
@@ -209,7 +203,7 @@ class KeyboardAccordion {
                 <div class="accordion-content">
                     <div class="accordion-layout">
                         <div class="keyboard-container">
-                            <svg id="keyboard-svg" width="800" height="280" viewBox="0 0 800 280"></svg>
+                            <svg class="keyboard-svg" width="800" height="280" viewBox="0 0 800 280"></svg>
                         </div>
                         <div class="accordion-actions">
                             <a href="${tryLayoutUrl}" class="try-layout-btn">

@@ -988,23 +988,19 @@ function renderTable(displayItems) {
     });
     
     // Add click handlers for table rows to toggle keyboard accordion (non-family rows and family member rows)
+    // The row -> item mapping is captured here, at render time: the accordion inserts extra
+    // rows into the tbody, so re-querying the DOM on click would shift every index below an
+    // open accordion and show the wrong layout.
+    const nonFamilyItems = displayItems.filter(item => item.type !== 'family');
     document.querySelectorAll('#layoutTable tbody tr:not(.family-row)').forEach((row, idx) => {
         row.addEventListener('click', (e) => {
             if (e.target.closest('a') || e.target.closest('.pin-icon') || e.target.closest('.star-icon')) {
                 return;
             }
             
-            // Find the matching display item
-            const allNonFamilyRows = [...document.querySelectorAll('#layoutTable tbody tr:not(.family-row)')];
-            const rowIndex = allNonFamilyRows.indexOf(row);
-            const nonFamilyItems = displayItems.filter(item => item.type !== 'family');
-            const item = nonFamilyItems[rowIndex];
-            
-            if (item) {
-                const layout = item.layout;
-                if (layout && window.keyboardAccordion) {
-                    window.keyboardAccordion.toggle(layout.name, layout.url, row, layout.thumb, layout.website);
-                }
+            const layout = nonFamilyItems[idx]?.layout;
+            if (layout && window.keyboardAccordion) {
+                window.keyboardAccordion.toggle(layout.name, layout.url, row, layout.thumb, layout.website);
             }
         });
     });
