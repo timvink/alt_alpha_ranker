@@ -20,7 +20,9 @@ concurrency:
 
 jobs:
   update-data:
-    runs-on: ubuntu-latest
+    # Playwright 1.55 cannot install Chromium on Ubuntu 26.04 (ubuntu-latest
+    # since Oct 2026); stay on 24.04 until Playwright is upgraded.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
