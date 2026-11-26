@@ -20,3 +20,6 @@ dev = [
     "pytest>=9.0.1",
     "seaborn>=0.13.2",
 ]
+
+[tool.uv]
+exclude-newer = "24 hours"
