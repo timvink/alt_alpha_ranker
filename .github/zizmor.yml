@@ -1,0 +1,13 @@
+rules:
+  artipacked:
+    ignore:
+      # update-data commits site/data.json and `git push`es with the checkout's credentials.
+      - update_data.yml
+  excessive-permissions:
+    ignore:
+      # Only update-data inherits contents: write (it pushes); deploy declares its own permissions.
+      - update_data.yml
+  self-repository:
+    ignore:
+      # Keep the plain ./ path for the reusable deploy workflow.
+      - update_data.yml
