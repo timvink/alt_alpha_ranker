@@ -38,6 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           # Deploy the tip of the branch, not the commit that triggered this
           # run. update_data.yml calls this workflow after pushing a data.json
           # commit, and that commit is only on the tip -- github.sha predates

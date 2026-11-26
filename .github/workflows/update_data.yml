@@ -74,13 +74,17 @@ jobs:
         run: uv run playwright install chromium
 
       - name: Run scrape script
+        env:
+          LANGUAGES_CHANGED: ${{ steps.changed.outputs.languages_changed }}
+          LAYOUT_NAMES: ${{ steps.changed.outputs.layout_names }}
         run: |
-          if [ "${{ steps.changed.outputs.languages_changed }}" = "true" ]; then
+          if [ "$LANGUAGES_CHANGED" = "true" ]; then
             echo "Languages changed — running full refresh"
             uv run scripts/scrape_stats.py --full-refresh
-          elif [ -n "${{ steps.changed.outputs.layout_names }}" ]; then
-            echo "Scraping changed layouts: ${{ steps.changed.outputs.layout_names }}"
-            uv run scripts/scrape_stats.py --layouts ${{ steps.changed.outputs.layout_names }}
+          elif [ -n "$LAYOUT_NAMES" ]; then
+            echo "Scraping changed layouts: $LAYOUT_NAMES"
+            # Unquoted on purpose: one --layouts argument per name.
+            uv run scripts/scrape_stats.py --layouts $LAYOUT_NAMES
           else
             echo "Running default scrape (update missing/invalid)"
             uv run scripts/scrape_stats.py
